@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState, useMemo, type Key } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { modules } from "@/lib/data";
 import type { Module, Problem, Step } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { BrainCircuit, CheckCircle2, Lightbulb, XCircle } from "lucide-react";
 import { CalculatorCallout } from "./CalculatorCallout";
 import { MathRenderer } from "./MathRenderer";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 
 type StepStatus = "unanswered" | "correct" | "incorrect";
 
@@ -21,14 +24,40 @@ export function FocusedMasteryApp() {
   const { toast } = useToast();
   const [currentModuleId, setCurrentModuleId] = useState(modules[0].id);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   const [stepInputs, setStepInputs] = useState<Record<string, string>>({});
   const [stepStatuses, setStepStatuses] = useState<Record<string, StepStatus>>({});
   const [stepFeedback, setStepFeedback] = useState<Record<string, string>>({});
   const [stepCorrectiveFeedback, setStepCorrectiveFeedback] = useState<Record<string, string>>({});
   const [stepHints, setStepHints] = useState<Record<string, string>>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    try {
+      const savedInputs = localStorage.getItem('fm-stepInputs');
+      const savedStatuses = localStorage.getItem('fm-stepStatuses');
+      if (savedInputs) setStepInputs(JSON.parse(savedInputs));
+      if (savedStatuses) setStepStatuses(JSON.parse(savedStatuses));
+    } catch (error) {
+      console.error("Failed to load state from localStorage", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('fm-stepInputs', JSON.stringify(stepInputs));
+    } catch (error) {
+      console.error("Failed to save inputs to localStorage", error);
+    }
+  }, [stepInputs]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('fm-stepStatuses', JSON.stringify(stepStatuses));
+    } catch (error) {
+      console.error("Failed to save statuses to localStorage", error);
+    }
+  }, [stepStatuses]);
 
   const currentModule = useMemo(
     () => modules.find((m) => m.id === currentModuleId) as Module,
@@ -38,19 +67,13 @@ export function FocusedMasteryApp() {
     () => currentModule.problems[currentProblemIndex],
     [currentModule, currentProblemIndex]
   );
-  const currentStep = useMemo(
-    () => currentProblem.steps[currentStepIndex],
-    [currentProblem, currentStepIndex]
-  );
-  
-  const stepKey = `${currentProblem.id}-${currentStep.id}`;
-  const currentStatus = stepStatuses[stepKey] || "unanswered";
 
-  const handleInputChange = (value: string) => {
-    setStepInputs((prev) => ({ ...prev, [stepKey]: value }));
+  const handleInputChange = (key: string, value: string) => {
+    setStepInputs((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleCheckAnswer = async () => {
+  const handleCheckAnswer = async (step: Step, index: number) => {
+    const stepKey = `${currentProblem.id}-${step.id}`;
     const userInput = stepInputs[stepKey] || "";
     if (!userInput) {
       toast({
@@ -61,12 +84,12 @@ export function FocusedMasteryApp() {
       return;
     }
 
-    setIsLoading(true);
+    setIsLoading((prev) => ({ ...prev, [stepKey]: true }));
     const result = await checkAnswerAction({
       studentAnswer: userInput,
-      expectedAnswer: currentStep.solution,
+      expectedAnswer: step.solution,
     });
-    setIsLoading(false);
+    setIsLoading((prev) => ({ ...prev, [stepKey]: false }));
     
     if (result.error) {
         toast({ title: "Error", description: result.error, variant: "destructive" });
@@ -81,18 +104,18 @@ export function FocusedMasteryApp() {
         } else {
              toast({
                 title: "Correct!",
-                description: "Great job! Click Next to continue.",
+                description: "Great job!",
             });
         }
     } else {
       setStepStatuses((prev) => ({ ...prev, [stepKey]: "incorrect" }));
-      setIsLoading(true);
-      const previousSteps = currentProblem.steps.slice(0, currentStepIndex).map(step => ({
-        title: step.title,
-        answer: stepInputs[`${currentProblem.id}-${step.id}`] || "Not answered",
+      setIsLoading(prev => ({ ...prev, [stepKey]: true }));
+      const previousSteps = currentProblem.steps.slice(0, index).map(s => ({
+        title: s.title,
+        answer: stepInputs[`${currentProblem.id}-${s.id}`] || "Not answered",
       }));
-      const feedbackResult = await getFeedbackAction({ problem: currentProblem, previousSteps, currentStep, studentInput: userInput });
-      setIsLoading(false);
+      const feedbackResult = await getFeedbackAction({ problem: currentProblem, previousSteps, currentStep: step, studentInput: userInput });
+      setIsLoading(prev => ({ ...prev, [stepKey]: false }));
       if (feedbackResult.error) {
         toast({ title: "Error", description: feedbackResult.error, variant: "destructive" });
       } else if (feedbackResult.feedback) {
@@ -101,9 +124,10 @@ export function FocusedMasteryApp() {
     }
   };
 
-  const handleGetHint = () => {
-    if (currentStep.hint) {
-      setStepHints(prev => ({ ...prev, [stepKey]: currentStep.hint as string }));
+  const handleGetHint = (step: Step) => {
+    const stepKey = `${currentProblem.id}-${step.id}`;
+    if (step.hint) {
+      setStepHints(prev => ({ ...prev, [stepKey]: step.hint as string }));
     } else {
         toast({
             title: "No hint available",
@@ -111,46 +135,28 @@ export function FocusedMasteryApp() {
         });
     }
   };
-
-  const handleNext = () => {
-    // Clear feedback/hints for the current step
-    setStepFeedback(prev => ({...prev, [stepKey]: ''}));
-    setStepCorrectiveFeedback(prev => ({...prev, [stepKey]: ''}));
-    setStepHints(prev => ({...prev, [stepKey]: ''}));
-    
-    if (currentStepIndex < currentProblem.steps.length - 1) {
-      setCurrentStepIndex(currentStepIndex + 1);
-    } else {
-      // Move to next problem or finish module
-      if (currentProblemIndex < currentModule.problems.length - 1) {
-        setCurrentProblemIndex(currentProblemIndex + 1);
-        setCurrentStepIndex(0);
-      } else {
-        toast({
-          title: `Module ${currentModule.name} Complete!`,
-          description: "Select another module to continue learning.",
-        });
-      }
-    }
-  };
   
   const handleModuleChange = (moduleId: string) => {
     setCurrentModuleId(moduleId);
     setCurrentProblemIndex(0);
-    setCurrentStepIndex(0);
     setStepInputs({});
     setStepStatuses({});
     setStepFeedback({});
     setStepCorrectiveFeedback({});
     setStepHints({});
+    setIsLoading({});
   }
 
-  const progress = ((currentStepIndex + 1) / currentProblem.steps.length) * 100;
+  const correctStepsCount = currentProblem.steps.filter(step => {
+      const stepKey = `${currentProblem.id}-${step.id}`;
+      return stepStatuses[stepKey] === 'correct';
+  }).length;
+  const progress = (correctStepsCount / currentProblem.steps.length) * 100;
 
   return (
     <div className="container mx-auto p-4 md:p-8">
       <Tabs value={currentModuleId} onValueChange={handleModuleChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-4">
+        <TabsList className="grid w-full grid-cols-1 md:grid-cols-4 mb-4">
           {modules.map((module) => (
             <TabsTrigger key={module.id} value={module.id}>
               {module.name}
@@ -163,87 +169,123 @@ export function FocusedMasteryApp() {
             <Card>
               <CardHeader>
                 <CardTitle className="font-headline text-3xl">
-                  <MathRenderer text={currentProblem.title} />
+                  {currentModule.name}
                 </CardTitle>
                 <CardDescription>
-                  <MathRenderer text={currentProblem.description} />
+                  {currentModule.description}
                 </CardDescription>
+
+                <div className="pt-4 space-y-2">
+                    <label htmlFor="problem-select" className="text-sm font-medium text-muted-foreground">Select a Problem:</label>
+                    <Select
+                        value={String(currentProblemIndex)}
+                        onValueChange={(value) => setCurrentProblemIndex(Number(value))}
+                    >
+                        <SelectTrigger id="problem-select" className="mt-1">
+                            <SelectValue placeholder="Select a problem" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {currentModule.problems.map((problem, index) => (
+                                <SelectItem key={problem.id} value={String(index)}>
+                                    <MathRenderer text={problem.title} />
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                
                 <div className="pt-4">
                   <Progress value={progress} className="w-full" />
-                  <p className="text-sm text-muted-foreground mt-2 text-center">Step {currentStepIndex + 1} of {currentProblem.steps.length}</p>
+                  <p className="text-sm text-muted-foreground mt-2 text-center">{correctStepsCount} of {currentProblem.steps.length} steps completed</p>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="step-description space-y-2">
-                  <h3 className="font-headline text-xl font-semibold">
-                    <MathRenderer text={currentStep.title} />
-                  </h3>
-                  <p className="text-muted-foreground">
-                     <MathRenderer text={currentStep.description} />
-                  </p>
+              <CardContent className="space-y-8 pt-6">
+                <div className="problem-description space-y-2">
+                    <h2 className="font-headline text-2xl font-semibold"><MathRenderer text={currentProblem.title} /></h2>
+                    <p className="text-muted-foreground"><MathRenderer text={currentProblem.description} /></p>
                 </div>
 
-                <MathInput
-                  value={stepInputs[stepKey] || ""}
-                  onChange={handleInputChange}
-                  placeholder="Enter your step here in LaTeX format..."
-                  disabled={currentStatus === 'correct' || isLoading}
-                />
-                
-                {currentStep.calculator_callout && (
-                  <CalculatorCallout 
-                    title={currentStep.calculator_callout.title}
-                    description={currentStep.calculator_callout.description}
-                  />
-                )}
+                {currentProblem.steps.map((step, index) => {
+                  const stepKey = `${currentProblem.id}-${step.id}`;
+                  const currentStatus = stepStatuses[stepKey] || "unanswered";
+                  const isStepUnlocked = index === 0 || stepStatuses[`${currentProblem.id}-${currentProblem.steps[index - 1].id}`] === 'correct';
+                  const isStepLoading = isLoading[stepKey] || false;
 
-                {isLoading && (
-                  <Alert>
-                    <BrainCircuit className="h-4 w-4 animate-pulse" />
-                    <AlertTitle>Thinking...</AlertTitle>
-                    <AlertDescription>The AI is generating a response.</AlertDescription>
-                  </Alert>
-                )}
+                  return (
+                    <div key={stepKey} className="space-y-4">
+                      <Separator />
+                      <div className="step-description space-y-2 pt-4">
+                        <h3 className="font-headline text-xl font-semibold">
+                          Step {index + 1}: <MathRenderer text={step.title} />
+                        </h3>
+                        <p className="text-muted-foreground">
+                          <MathRenderer text={step.description} />
+                        </p>
+                      </div>
 
-                {!isLoading && currentStatus === 'correct' && (
-                  <Alert variant="success">
-                    <CheckCircle2 className="h-4 w-4" />
-                    <AlertTitle>
-                      {stepCorrectiveFeedback[stepKey] ? "Mathematically Correct!" : "Correct!"}
-                    </AlertTitle>
-                    <AlertDescription>
-                      {stepCorrectiveFeedback[stepKey] || "Excellent work! Please proceed to the next step."}
-                    </AlertDescription>
-                  </Alert>
-                )}
-                
-                {!isLoading && currentStatus === 'incorrect' && stepFeedback[stepKey] && (
-                  <Alert variant="destructive">
-                    <XCircle className="h-4 w-4" />
-                    <AlertTitle>Not quite...</AlertTitle>
-                    <AlertDescription>{stepFeedback[stepKey]}</AlertDescription>
-                  </Alert>
-                )}
+                      <MathInput
+                        value={stepInputs[stepKey] || ""}
+                        onChange={(value) => handleInputChange(stepKey, value)}
+                        placeholder="Enter your step here in LaTeX format..."
+                        disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
+                      />
+                      
+                      {step.calculator_callout && (
+                        <CalculatorCallout 
+                          title={step.calculator_callout.title}
+                          description={step.calculator_callout.description}
+                        />
+                      )}
 
-                {!isLoading && stepHints[stepKey] && (
-                   <Alert variant="default" className="bg-accent/20 border-accent/50">
-                    <Lightbulb className="h-4 w-4" />
-                    <AlertTitle>Hint</AlertTitle>
-                    <AlertDescription>{stepHints[stepKey]}</AlertDescription>
-                  </Alert>
-                )}
+                      {isStepLoading && (
+                        <Alert>
+                          <BrainCircuit className="h-4 w-4 animate-pulse" />
+                          <AlertTitle>Thinking...</AlertTitle>
+                          <AlertDescription>The AI is generating a response.</AlertDescription>
+                        </Alert>
+                      )}
+
+                      {!isStepLoading && currentStatus === 'correct' && (
+                        <Alert variant="success">
+                          <CheckCircle2 className="h-4 w-4" />
+                          <AlertTitle>
+                            {stepCorrectiveFeedback[stepKey] ? "Mathematically Correct!" : "Correct!"}
+                          </AlertTitle>
+                          <AlertDescription>
+                            {stepCorrectiveFeedback[stepKey] || "Excellent work! You can now proceed to the next step."}
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                      
+                      {!isStepLoading && currentStatus === 'incorrect' && stepFeedback[stepKey] && (
+                        <Alert variant="destructive">
+                          <XCircle className="h-4 w-4" />
+                          <AlertTitle>Not quite...</AlertTitle>
+                          <AlertDescription>{stepFeedback[stepKey]}</AlertDescription>
+                        </Alert>
+                      )}
+
+                      {!isStepLoading && stepHints[stepKey] && (
+                        <Alert variant="default" className="bg-accent/20 border-accent/50">
+                          <Lightbulb className="h-4 w-4" />
+                          <AlertTitle>Hint</AlertTitle>
+                          <AlertDescription>{stepHints[stepKey]}</AlertDescription>
+                        </Alert>
+                      )}
+                       <div className="flex justify-between flex-wrap gap-2">
+                          <Button variant="outline" onClick={() => handleGetHint(step)} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>
+                            <Lightbulb className="mr-2 h-4 w-4" />
+                            Get Hint
+                          </Button>
+                          <Button onClick={() => handleCheckAnswer(step, index)} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>
+                            Check Answer
+                          </Button>
+                        </div>
+                    </div>
+                  );
+                })}
 
               </CardContent>
-              <CardFooter className="flex justify-between flex-wrap gap-2">
-                <Button variant="outline" onClick={handleGetHint} disabled={currentStatus === 'correct' || isLoading}>
-                  <Lightbulb className="mr-2 h-4 w-4" />
-                  Get Hint
-                </Button>
-                <div className="flex gap-2">
-                   <Button onClick={handleCheckAnswer} disabled={currentStatus === 'correct' || isLoading}>Check Answer</Button>
-                   <Button onClick={handleNext} disabled={currentStatus !== 'correct'}>Next Step</Button>
-                </div>
-              </CardFooter>
             </Card>
           </TabsContent>
         ))}
