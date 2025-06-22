@@ -13,6 +13,7 @@ import { getFeedbackAction, getHintAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import { BrainCircuit, CheckCircle2, Lightbulb, XCircle } from "lucide-react";
 import { CalculatorCallout } from "./CalculatorCallout";
+import { MathRenderer } from "./MathRenderer";
 
 type StepStatus = "unanswered" | "correct" | "incorrect";
 
@@ -148,8 +149,12 @@ export function FocusedMasteryApp() {
           <TabsContent key={module.id} value={module.id} className="w-full max-w-4xl mx-auto">
             <Card>
               <CardHeader>
-                <CardTitle className="font-headline text-3xl">{currentProblem.title}</CardTitle>
-                <CardDescription>{currentProblem.description}</CardDescription>
+                <CardTitle className="font-headline text-3xl">
+                  <MathRenderer text={currentProblem.title} />
+                </CardTitle>
+                <CardDescription>
+                  <MathRenderer text={currentProblem.description} />
+                </CardDescription>
                 <div className="pt-4">
                   <Progress value={progress} className="w-full" />
                   <p className="text-sm text-muted-foreground mt-2 text-center">Step {currentStepIndex + 1} of {currentProblem.steps.length}</p>
@@ -157,8 +162,12 @@ export function FocusedMasteryApp() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="step-description space-y-2">
-                  <h3 className="font-headline text-xl font-semibold">{currentStep.title}</h3>
-                  <p className="text-muted-foreground">{currentStep.description}</p>
+                  <h3 className="font-headline text-xl font-semibold">
+                    <MathRenderer text={currentStep.title} />
+                  </h3>
+                  <p className="text-muted-foreground">
+                     <MathRenderer text={currentStep.description} />
+                  </p>
                 </div>
 
                 <MathInput
