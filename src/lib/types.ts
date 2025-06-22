@@ -10,7 +10,7 @@ export type Step = {
 };
 
 export type Problem = {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   steps: Step[];
