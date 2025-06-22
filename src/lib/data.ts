@@ -7,38 +7,6 @@ export const modules: Module[] = [
     description: 'Mastering function domains, advanced algebraic manipulation, and the core principles of linear equations.',
     problems: [
       {
-        id: 'L4-S1-LEAD',
-        title: 'Advanced Algebraic Manipulation: The Difference Quotient',
-        description:
-          'Let $f(x) = 2x^2 - x + 1$. We will find and simplify the difference quotient: $\\frac{f(a+h) - f(a)}{h}$. This is a critical skill for understanding rates of change.',
-        steps: [
-          {
-            id: 1,
-            title: 'Calculate $f(a+h)$',
-            description:
-              'First, substitute $(a+h)$ everywhere you see an $x$ in the function $f(x) = 2x^2 - x + 1$. Your goal is to fully expand this expression.',
-            solution: '2a^2 + 4ah + 2h^2 - a - h + 1',
-            hint: "Remember to correctly expand the $(a+h)^2$ term to $(a^2 + 2ah + h^2)$ and then distribute the 2."
-          },
-          {
-            id: 2,
-            title: 'Calculate the Numerator: $f(a+h) - f(a)$',
-            description:
-              'Take the expression you just found and subtract the entire original function $f(a) = 2a^2 - a + 1$. What is the simplified result?',
-            solution: '4ah + 2h^2 - h',
-            hint: "A common mistake is forgetting to distribute the negative sign to all three terms in $f(a)$. Remember it's $-(2a^2 - a + 1)$."
-          },
-          {
-            id: 3,
-            title: 'Final Simplification: Divide by $h$',
-            description:
-              'Now, take your simplified numerator and divide it by $h$. Factor out the common $h$ from the numerator and cancel.',
-            solution: '4a + 2h - 1',
-            hint: "Every term in your simplified numerator should have an 'h' in it. If not, there was a mistake in the previous step."
-          },
-        ],
-      },
-      {
         id: 'L4-S1-P1',
         title: 'Advanced Algebraic Manipulation: The Difference Quotient',
         description:
@@ -159,8 +127,7 @@ export const modules: Module[] = [
           {
             id: 5,
             title: 'Use the Model',
-            description:
-              'What is the book value of the machine at the end of the 6th year?',
+            description: 'What is the book value of the machine at the end of the 6th year?',
             solution: '48000',
             hint: "Substitute n=6 into your equation from the previous step.",
             calculator_callout: {
