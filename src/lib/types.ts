@@ -3,6 +3,7 @@ export type Step = {
   title: string;
   description: string;
   solution: string;
+  hint?: string;
   calculator_callout?: {
     title: string;
     description: string;

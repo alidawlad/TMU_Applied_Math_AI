@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { MathInput } from "@/components/MathInput";
-import { checkAnswerAction, getFeedbackAction, getHintAction } from "@/lib/actions";
+import { checkAnswerAction, getFeedbackAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import { BrainCircuit, CheckCircle2, Lightbulb, XCircle } from "lucide-react";
 import { CalculatorCallout } from "./CalculatorCallout";
@@ -101,14 +101,14 @@ export function FocusedMasteryApp() {
     }
   };
 
-  const handleGetHint = async () => {
-    setIsLoading(true);
-    const result = await getHintAction({ problem: currentProblem, currentStep, studentInput: stepInputs[stepKey] || "" });
-    setIsLoading(false);
-    if (result.error) {
-      toast({ title: "Error", description: result.error, variant: "destructive" });
-    } else if (result.hint) {
-      setStepHints(prev => ({ ...prev, [stepKey]: result.hint as string }));
+  const handleGetHint = () => {
+    if (currentStep.hint) {
+      setStepHints(prev => ({ ...prev, [stepKey]: currentStep.hint as string }));
+    } else {
+        toast({
+            title: "No hint available",
+            description: "Sorry, there is no hint for this step.",
+        });
     }
   };
 
