@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { MathInput } from "@/components/MathInput";
-import { getFeedbackAction, getHintAction } from "@/lib/actions";
+import { checkAnswerAction, getFeedbackAction, getHintAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import { BrainCircuit, CheckCircle2, Lightbulb, XCircle } from "lucide-react";
 import { CalculatorCallout } from "./CalculatorCallout";
@@ -26,6 +26,7 @@ export function FocusedMasteryApp() {
   const [stepInputs, setStepInputs] = useState<Record<string, string>>({});
   const [stepStatuses, setStepStatuses] = useState<Record<string, StepStatus>>({});
   const [stepFeedback, setStepFeedback] = useState<Record<string, string>>({});
+  const [stepCorrectiveFeedback, setStepCorrectiveFeedback] = useState<Record<string, string>>({});
   const [stepHints, setStepHints] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -49,10 +50,6 @@ export function FocusedMasteryApp() {
     setStepInputs((prev) => ({ ...prev, [stepKey]: value }));
   };
 
-  const normalizeAnswer = (answer: string) => {
-    return answer.replace(/\s+/g, "").toLowerCase();
-  };
-
   const handleCheckAnswer = async () => {
     const userInput = stepInputs[stepKey] || "";
     if (!userInput) {
@@ -64,12 +61,29 @@ export function FocusedMasteryApp() {
       return;
     }
 
-    if (normalizeAnswer(userInput) === normalizeAnswer(currentStep.solution)) {
-      setStepStatuses((prev) => ({ ...prev, [stepKey]: "correct" }));
-      toast({
-        title: "Correct!",
-        description: "Great job! Click Next to continue.",
-      });
+    setIsLoading(true);
+    const result = await checkAnswerAction({
+      studentAnswer: userInput,
+      expectedAnswer: currentStep.solution,
+    });
+    setIsLoading(false);
+    
+    if (result.error) {
+        toast({ title: "Error", description: result.error, variant: "destructive" });
+        setStepStatuses((prev) => ({ ...prev, [stepKey]: "incorrect" }));
+        return;
+    }
+
+    if (result.isEquivalent) {
+        setStepStatuses((prev) => ({ ...prev, [stepKey]: "correct" }));
+        if (result.feedback) {
+            setStepCorrectiveFeedback(prev => ({ ...prev, [stepKey]: result.feedback as string }));
+        } else {
+             toast({
+                title: "Correct!",
+                description: "Great job! Click Next to continue.",
+            });
+        }
     } else {
       setStepStatuses((prev) => ({ ...prev, [stepKey]: "incorrect" }));
       setIsLoading(true);
@@ -77,12 +91,12 @@ export function FocusedMasteryApp() {
         title: step.title,
         answer: stepInputs[`${currentProblem.id}-${step.id}`] || "Not answered",
       }));
-      const result = await getFeedbackAction({ problem: currentProblem, previousSteps, currentStep, studentInput: userInput });
+      const feedbackResult = await getFeedbackAction({ problem: currentProblem, previousSteps, currentStep, studentInput: userInput });
       setIsLoading(false);
-      if (result.error) {
-        toast({ title: "Error", description: result.error, variant: "destructive" });
-      } else if (result.feedback) {
-        setStepFeedback(prev => ({ ...prev, [stepKey]: result.feedback as string }));
+      if (feedbackResult.error) {
+        toast({ title: "Error", description: feedbackResult.error, variant: "destructive" });
+      } else if (feedbackResult.feedback) {
+        setStepFeedback(prev => ({ ...prev, [stepKey]: feedbackResult.feedback as string }));
       }
     }
   };
@@ -101,6 +115,7 @@ export function FocusedMasteryApp() {
   const handleNext = () => {
     // Clear feedback/hints for the current step
     setStepFeedback(prev => ({...prev, [stepKey]: ''}));
+    setStepCorrectiveFeedback(prev => ({...prev, [stepKey]: ''}));
     setStepHints(prev => ({...prev, [stepKey]: ''}));
     
     if (currentStepIndex < currentProblem.steps.length - 1) {
@@ -115,9 +130,6 @@ export function FocusedMasteryApp() {
           title: `Module ${currentModule.name} Complete!`,
           description: "Select another module to continue learning.",
         });
-        // Optionally reset to first problem
-        // setCurrentProblemIndex(0);
-        // setCurrentStepIndex(0);
       }
     }
   };
@@ -129,6 +141,7 @@ export function FocusedMasteryApp() {
     setStepInputs({});
     setStepStatuses({});
     setStepFeedback({});
+    setStepCorrectiveFeedback({});
     setStepHints({});
   }
 
@@ -195,8 +208,12 @@ export function FocusedMasteryApp() {
                 {!isLoading && currentStatus === 'correct' && (
                   <Alert variant="success">
                     <CheckCircle2 className="h-4 w-4" />
-                    <AlertTitle>Correct!</AlertTitle>
-                    <AlertDescription>Excellent work! Please proceed to the next step.</AlertDescription>
+                    <AlertTitle>
+                      {stepCorrectiveFeedback[stepKey] ? "Mathematically Correct!" : "Correct!"}
+                    </AlertTitle>
+                    <AlertDescription>
+                      {stepCorrectiveFeedback[stepKey] || "Excellent work! Please proceed to the next step."}
+                    </AlertDescription>
                   </Alert>
                 )}
                 

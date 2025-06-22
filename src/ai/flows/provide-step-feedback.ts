@@ -15,6 +15,7 @@ const ProvideStepFeedbackInputSchema = z.object({
   problem: z.string().describe('The problem the user is trying to solve.'),
   userSolutionStep: z.string().describe('The current solution step provided by the user.'),
   previousSteps: z.string().describe('The previous steps taken by the user.'),
+  expectedAnswer: z.string().describe('The expected correct answer for this step.'),
 });
 export type ProvideStepFeedbackInput = z.infer<typeof ProvideStepFeedbackInputSchema>;
 
@@ -31,15 +32,19 @@ const prompt = ai.definePrompt({
   name: 'provideStepFeedbackPrompt',
   input: {schema: ProvideStepFeedbackInputSchema},
   output: {schema: ProvideStepFeedbackOutputSchema},
-  prompt: `You are an AI-powered tutor providing feedback to a student on their solution steps for a math problem.
+  prompt: `You are an AI-powered tutor providing feedback to a student on their solution steps for a math problem. The student's answer has been determined to be mathematically incorrect.
 
   Problem: {{{problem}}}
   Previous Steps: {{{previousSteps}}}
   Current Step: {{{userSolutionStep}}}
+  Expected correct answer for this step: {{{expectedAnswer}}}
 
-  Provide targeted, helpful feedback that encourages critical thinking, but never reveals the answer. Focus on guiding the student towards the correct solution by pointing out potential errors in their reasoning or calculations. Do not provide the answer.
-  The feedback should be concise and actionable.
-  `,
+  Your task is to provide targeted, helpful feedback that encourages critical thinking, but never reveals the final answer for the step.
+  Focus on guiding the student towards the correct solution by pointing out potential errors in their reasoning or calculations based on their input.
+  For example, if the student made a sign error, you could say "Check your signs when distributing the negative."
+  If they made an expansion error, you could say "It looks like there might be a small error in how you expanded one of the terms. Can you double-check your multiplication?"
+
+  Do not provide the correct answer. The feedback should be concise, encouraging, and actionable.`,
 });
 
 const provideStepFeedbackFlow = ai.defineFlow(

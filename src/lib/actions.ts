@@ -1,5 +1,6 @@
 "use server";
 
+import { evaluateMathEquivalence } from "@/ai/flows/evaluate-math-equivalence";
 import { generateProblemHint } from "@/ai/flows/generate-problem-hints";
 import { provideStepFeedback } from "@/ai/flows/provide-step-feedback";
 import type { Problem, Step } from "./types";
@@ -50,11 +51,37 @@ export async function getFeedbackAction({
       problem: problem.description,
       previousSteps: previousStepsText || "This is the first step.",
       userSolutionStep: `Step: ${currentStep.title}\nStudent Answer: ${studentInput}`,
+      expectedAnswer: currentStep.solution,
     });
 
     return { feedback: feedback.feedback };
   } catch (error) {
     console.error(error);
     return { error: "Failed to generate feedback." };
+  }
+}
+
+interface CheckAnswerArgs {
+  studentAnswer: string;
+  expectedAnswer: string;
+}
+
+export async function checkAnswerAction({
+  studentAnswer,
+  expectedAnswer,
+}: CheckAnswerArgs) {
+  try {
+    const result = await evaluateMathEquivalence({
+      studentAnswer,
+      expectedAnswer,
+    });
+    return {
+      isEquivalent: result.isEquivalent,
+      feedback: result.feedback,
+      error: null,
+    };
+  } catch (error) {
+    console.error(error);
+    return { isEquivalent: false, feedback: null, error: "Failed to evaluate answer." };
   }
 }
