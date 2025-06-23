@@ -86,6 +86,13 @@ export const modules: Module[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    id: 'module-2-linear-modeling',
+    name: 'Module 2: Modeling with Linear Functions',
+    description: 'Translate real-world scenarios into linear equations to make predictions. Master parallel and perpendicular lines.',
+    problems: [
       {
         id: 'L4-S3-LEAD',
         title: 'Modeling with Linear Functions',
@@ -210,30 +217,41 @@ export const modules: Module[] = [
           },
         ],
       },
-      {
+       {
         id: 'L4-S3-P3',
-        title: 'Modeling with Linear Functions',
-        description:
-          'The point $P(-2,3)$ lies on the line $-2x+ky+10=0$. Find the value of $k$.',
+        title: 'Modeling with Linear Functions (Parallel & Perpendicular)',
+        description: 'Determine the value(s) of a such that the lines $L_1: a^2x+2y+1=0$ and $L_2: 4x+ay-1=0$ are **perpendicular**.',
         steps: [
-          {
-            id: 1,
-            title: 'Substitute the Point',
-            description:
-              "If a point lies on a line, its coordinates must satisfy the line's equation. Substitute the x and y values from point P into the equation.",
-            solution: '-2(-2) + k(3) + 10 = 0',
-            hint: "Replace 'x' with -2 and 'y' with 3."
-          },
-          {
-            id: 2,
-            title: 'Solve for k',
-            description:
-              'Simplify the equation from Step 1 and solve for the variable $k$.',
-            solution: '-14/3',
-            hint: "Be careful with your arithmetic and signs. You should get a negative fraction."
-          },
-        ],
-      },
+            {
+                id: 1,
+                title: 'Find the Slope of Line 1',
+                description: 'First, rearrange the equation for $L_1$ into the slope-intercept form ($y=m_1x+b$). What is the slope, $m_1$?',
+                solution: '-a^2/2',
+                hint: "Isolate the 'y' term on one side of the equation and then divide by its coefficient."
+            },
+            {
+                id: 2,
+                title: 'Find the Slope of Line 2',
+                description: "Now, do the same for $L_2$. Rearrange its equation to find the slope, $m_2$.",
+                solution: '-4/a',
+                hint: "Be careful when dividing by 'a'."
+            },
+            {
+                id: 3,
+                title: 'Apply the Perpendicular Condition',
+                description: "The condition for perpendicular lines is $m_1 \\cdot m_2 = -1$. Set up this equation using the slopes you found.",
+                solution: "(-a^2/2)*(-4/a) = -1",
+                hint: "Make sure you set the product of the slopes equal to negative one."
+            },
+            {
+                id: 4,
+                title: 'Solve for a',
+                description: "Simplify and solve the equation from the previous step to find the value of $a$.",
+                solution: "-1/2",
+                hint: "Be very careful with your algebraic simplification. The 'a' in the denominator will cancel with one of the 'a's in the numerator."
+            }
+        ]
+    }
     ],
   },
 ];
