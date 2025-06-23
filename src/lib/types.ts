@@ -23,3 +23,9 @@ export type Module = {
   description: string;
   problems: Problem[];
 };
+
+export type Lecture = {
+  id: string;
+  title: string;
+  modules: Module[];
+};
