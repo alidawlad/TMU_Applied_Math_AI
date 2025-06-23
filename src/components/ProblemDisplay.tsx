@@ -13,7 +13,6 @@ import { CalculatorCallout } from "./CalculatorCallout";
 import { MathRenderer } from "./MathRenderer";
 import { Separator } from "@/components/ui/separator";
 import { ViewExampleDialog } from "./ViewExampleDialog";
-import { lectures } from "@/lib/data";
 
 type StepStatus = "unanswered" | "correct" | "incorrect";
 
@@ -41,7 +40,7 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
     } catch (error) {
       console.error("Failed to load state from localStorage", error);
     }
-  }, []);
+  }, [problem.id]); // Reload state when problem changes
 
   useEffect(() => {
     try {
@@ -95,7 +94,7 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
         } else {
              toast({
                 title: "Correct!",
-                description: "Great job!",
+                description: "Great job! The next step is now available.",
             });
         }
     } else {
@@ -134,11 +133,16 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
   const progress = (correctStepsCount / problem.steps.length) * 100;
   const leadExample = useMemo(() => module.problems.find(p => p.type === 'lead-example'), [module]);
 
+  const firstIncompleteStepIndex = useMemo(() => {
+    const index = problem.steps.findIndex(step => stepStatuses[`${problem.id}-${step.id}`] !== 'correct');
+    return index === -1 ? problem.steps.length : index;
+  }, [problem.id, problem.steps, stepStatuses]);
+
   return (
     <div className="flex-1 bg-white p-6 md:p-8 overflow-y-auto">
         <div className="problem-description space-y-2 mb-8">
             <h1 className="font-headline text-2xl font-semibold"><MathRenderer text={problem.title} /></h1>
-            <p className="text-muted-foreground"><MathRenderer text={problem.description} /></p>
+            <p className="text-foreground/90 text-base leading-relaxed whitespace-pre-wrap"><MathRenderer text={problem.description} /></p>
              <div className="pt-4">
               <Progress value={progress} className="w-full" />
               <p className="text-sm text-muted-foreground mt-2 text-center">{correctStepsCount} of {problem.steps.length} steps completed</p>
@@ -147,6 +151,10 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
 
         <div className="space-y-8">
           {problem.steps.map((step, index) => {
+            if (index > firstIncompleteStepIndex) {
+              return null;
+            }
+
             const stepKey = `${problem.id}-${step.id}`;
             const currentStatus = stepStatuses[stepKey] || "unanswered";
             const isStepUnlocked = index === 0 || stepStatuses[`${problem.id}-${problem.steps[index - 1].id}`] === 'correct';

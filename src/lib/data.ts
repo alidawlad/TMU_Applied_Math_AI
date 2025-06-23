@@ -517,32 +517,32 @@ export const lectures: Lecture[] = [
           {
             id: 'L5-S1-P2',
             type: 'practice',
-            source: 'F20 Practice Questions, Q13',
-            title: '2-Variable Application: Break-Even Analysis',
-            description: 'An energy drink manufacturer spends \\$1.20 to make each drink and sells them for \\$2. The manufacturer also has fixed costs of \\$8,000 per month. Find the break-even point.',
+            source: 'Practice Questions, Q14',
+            title: 'Break-Even Analysis Application',
+            description: 'The manufacturer of a water bottle spends \\$5 to build each bottle and sells them for \\$10. The manufacturer also has fixed costs each month of \\$6500.\n\na) Find the cost function C(x) when x bottles are manufactured.\nb) Find the revenue function R(x) when x bottles are sold.\nc) Find the break-even point quantity.',
             steps: [
               {
                 id: 1,
-                title: 'Write the Cost Function',
-                description: 'The cost function is $C(x) = (variable\\ cost) \\cdot x + (fixed\\ costs)$. What is the cost function?',
-                solution: 'C(x) = 1.20x + 8000',
-                hint: 'Identify the variable cost per drink and the total fixed costs.'
+                title: 'a) Find the Cost Function',
+                description: 'The cost function is the sum of variable costs and fixed costs. Write the cost function $C(x)$.',
+                solution: 'C(x) = 5x + 6500',
+                hint: 'The cost function is $C(x) = (variable\\_cost) \\cdot x + (fixed\\_costs)$.'
               },
               {
                 id: 2,
-                title: 'Write the Revenue Function',
-                description: 'The revenue function is $R(x) = (selling\\ price) \\cdot x$. What is the revenue function?',
-                solution: 'R(x) = 2x',
-                hint: 'The selling price is given as \\$2 per drink.'
+                title: 'b) Find the Revenue Function',
+                description: 'The revenue function is the selling price per bottle multiplied by the number of bottles sold. Write the revenue function $R(x)$.',
+                solution: 'R(x) = 10x',
+                hint: 'The revenue function is $R(x) = (selling\\_price) \\cdot x$.'
               },
               {
                 id: 3,
-                title: 'Find the Break-Even Quantity',
-                description: 'The break-even point occurs when Cost = Revenue. Set $C(x) = R(x)$ and solve for the quantity $x$.',
-                solution: '10000',
-                hint: 'Solve the equation $1.20x + 8000 = 2x$.'
+                title: 'c) Find the Break-Even Quantity',
+                description: 'The break-even point is where total cost equals total revenue. Set $C(x) = R(x)$ and solve for the quantity $x$.',
+                solution: '1300',
+                hint: 'Solve the equation $5x + 6500 = 10x$ to find the number of bottles.'
               }
-            ],
+            ]
           },
           {
             id: 'L5-S1-P3',
@@ -732,6 +732,6 @@ export const lectures: Lecture[] = [
           }
         ]
       }
-    ]
-  }
+    ],
+  },
 ];
