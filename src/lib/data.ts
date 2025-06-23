@@ -86,27 +86,6 @@ export const modules: Module[] = [
           },
         ],
       },
-       {
-        id: 'L4-S3-P3',
-        title: 'Modeling with Linear Functions',
-        description: 'The point $P(-2,3)$ lies on the line $-2x+ky+10=0$. Find the value of $k$.',
-        steps: [
-            {
-                id: 1,
-                title: 'Substitute the Point',
-                description: "If a point lies on a line, its coordinates must satisfy the line's equation. Substitute the x and y values from point P into the equation.",
-                solution: '-2(-2) + k(3) + 10 = 0',
-                hint: "Replace 'x' with -2 and 'y' with 3."
-            },
-            {
-                id: 2,
-                title: 'Solve for k',
-                description: 'Simplify the equation from Step 1 and solve for the variable $k$.',
-                solution: '-14/3',
-                hint: 'Be careful with your arithmetic and signs. You should get a negative fraction.'
-            }
-        ]
-    }
     ],
   },
   {
@@ -415,5 +394,5 @@ export const modules: Module[] = [
             ]
         }
     ]
-}
+  }
 ];
