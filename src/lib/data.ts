@@ -394,5 +394,157 @@ export const modules: Module[] = [
             ]
         }
     ]
+  },
+  {
+    id: "module-1-systems-modeling",
+    name: "Module 1: Modeling Business Problems with Systems of Equations",
+    description: "The core skill of translating complex word problems into precise systems of 2 or 3 linear equations.",
+    problems: [
+      {
+        id: "L5-S1-LEAD",
+        title: "Modeling from Data Points",
+        description: "At a price of $1.88/lb, the supply for cherries is 16,000 lbs and demand is 10,600 lbs. At $1.46/lb, supply is 10,000 lbs and demand is 12,700 lbs. Find the equilibrium price and quantity.",
+        steps: [
+          {
+            id: 1,
+            title: "Find the Price-Supply Equation",
+            description: "First, let's model the supply. Use the two supply points $(16, 1.88)$ and $(10, 1.46)$ to find a linear equation in the form $p = mx + b$. What is the equation?",
+            solution: "p = 0.07x + 0.76",
+            hint: "First, calculate the slope 'm' using the two supply points. Then, use the point-slope form $p - p_1 = m(x - x_1)$ to find the final equation."
+          },
+          {
+            id: 2,
+            title: "Find the Price-Demand Equation",
+            description: "Now, model the demand. Use the two demand points $(10.6, 1.88)$ and $(12.7, 1.46)$ to find the price-demand equation, also in the form $p = mx + b$.",
+            solution: "p = -0.2x + 4",
+            hint: "The slope for the demand curve should be negative, as demand typically decreases as price increases."
+          },
+          {
+            id: 3,
+            title: "Solve for Equilibrium",
+            description: "The equilibrium occurs when supply equals demand. You now have a system of two equations. Use your TI-Nspire to solve it. What is the equilibrium quantity $x$ (in thousands of pounds)?",
+            solution: "12",
+            hint: "Set the two equations equal to each other: $0.07x + 0.76 = -0.2x + 4$. Then, solve for x.",
+            calculator_callout: {
+              title: "TI-Nspire Tip",
+              description: "On your TI-Nspire Calculator page, use the system solver: [menu] > 3: Algebra > 2: Solve System of Linear Equations. Set it to 2 equations with variables x and p."
+            }
+          },
+          {
+            id: 4,
+            title: "Find Equilibrium Price",
+            description: "Now that you have the equilibrium quantity, substitute it back into either the supply or demand equation to find the equilibrium price $p$.",
+            solution: "1.6",
+            hint: "Plugging x=12 into $p = -0.2x + 4$ is a quick way to find the price."
+          }
+        ]
+      },
+      {
+        id: "L5-S1-P1",
+        title: "2-Variable Application: Investments",
+        description: "A total of $40,000 was invested in two accounts: a CD at 4% annual interest and a money market fund at 9%. The total simple interest for one year was 5% of the total investment. How much was invested in each account?",
+        steps: [
+          {
+            id: 1,
+            title: "Set up the Principal Equation",
+            description: "Let 'c' be the amount in the CD and 'm' be the amount in the money market fund. Write the equation representing the total amount invested.",
+            solution: "c + m = 40000",
+            hint: "The sum of the amounts in the two accounts must equal the total investment."
+          },
+          {
+            id: 2,
+            title: "Set up the Interest Equation",
+            description: "The total interest earned ($0.04c + 0.09m$) was 5% of the total investment. First, calculate the total interest amount in dollars.",
+            solution: "2000",
+            hint: "Calculate 5% of $40,000."
+          },
+          {
+            id: 3,
+            title: "Write the Full Interest Equation",
+            description: "Now, write the equation representing the total interest earned from both accounts.",
+            solution: "0.04c + 0.09m = 2000",
+            hint: "Interest from CD + Interest from Money Market = Total Interest."
+          },
+          {
+            id: 4,
+            title: "Solve the System",
+            description: "You now have a system of two equations. Solve for c and m. What was the amount invested in the CD?",
+            solution: "32000",
+            hint: "Use substitution or elimination. Multiplying the first equation by -0.04 is a good first step for elimination.",
+            calculator_callout: {
+              title: "TI-Nspire Tip",
+              description: "Use the Solve System of Linear Equations tool on your TI-Nspire to solve for c and m quickly and avoid calculation errors."
+            }
+          }
+        ]
+      },
+      {
+        id: "L5-S1-P2",
+        title: "2-Variable Application: Break-Even Analysis",
+        description: "An energy drink manufacturer spends $1.20 to make each drink and sells them for $2. The manufacturer also has fixed costs of $8,000 per month. Find the break-even point.",
+        steps: [
+          {
+            id: 1,
+            title: "Write the Cost Function",
+            description: "The cost function is $C(x) = (variable\\ cost) \\cdot x + (fixed\\ costs)$. What is the cost function?",
+            solution: "C(x) = 1.20x + 8000",
+            hint: "Identify the variable cost per drink and the total fixed costs."
+          },
+          {
+            id: 2,
+            title: "Write the Revenue Function",
+            description: "The revenue function is $R(x) = (selling\\ price) \\cdot x$. What is the revenue function?",
+            solution: "R(x) = 2x",
+            hint: "The selling price is given as $2 per drink."
+          },
+          {
+            id: 3,
+            title: "Find the Break-Even Quantity",
+            description: "The break-even point occurs when Cost = Revenue. Set $C(x) = R(x)$ and solve for the quantity $x$.",
+            solution: "10000",
+            hint: "Solve the equation $1.20x + 8000 = 2x$."
+          }
+        ]
+      },
+      {
+        id: "L5-S1-P3",
+        title: "3-Variable Application with a Twist",
+        description: "William invested a total of $2400 in three funds: Equity (E), Bond (B), and Money Market (M). His investment in E is $400 less than twice his investment in B. The ratio of investments B:M is 2:1. How much did he invest in each fund?",
+        steps: [
+          {
+            id: 1,
+            title: "Total Investment Equation",
+            description: "Write the equation for the total amount invested.",
+            solution: "E + B + M = 2400",
+            hint: "The sum of the three amounts is $2400."
+          },
+          {
+            id: 2,
+            title: "Equity Fund Relationship Equation",
+            description: "Translate 'Equity fund is $400 less than two times his investment in the Bond fund' into an equation.",
+            solution: "E = 2B - 400",
+            hint: "'Less than' means you subtract from the other term."
+          },
+          {
+            id: 3,
+            title: "Ratio Equation (The Twist)",
+            description: "Translate the ratio $B:M = 2:1$ into an equation.",
+            solution: "B = 2M",
+            hint: "A ratio A:B = C:D is equivalent to the equation A/B = C/D. So, B/M = 2/1."
+          },
+          {
+            id: 4,
+            title: "Solve the 3x3 System",
+            description: "You now have a complete system of three equations. Solve it. What was the amount invested in the Equity fund (E)?",
+            solution: "1200",
+            hint: "Use substitution. Substitute `B=2M` into the other two equations to reduce the system to two variables first.",
+            calculator_callout: {
+              title: "TI-Nspire Tip",
+              description: "This is a perfect time to use your calculator. Before using the system solver, you must rearrange your equations into the standard form (e.g., E - 2B = -400). Then, enter the 3x3 system and solve instantly."
+            }
+          }
+        ]
+      }
+    ]
   }
 ];
