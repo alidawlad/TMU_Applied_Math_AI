@@ -16,7 +16,7 @@ export const lectures: Lecture[] = [
             source: "Practice Questions, Q4",
             title: 'Advanced Algebraic Manipulation: The Difference Quotient',
             description:
-              "Let's try a harder version. If $f(x) = \\frac{x}{x+1}$, find and simplify $\\frac{f(x+h) - f(x)}{h}$.",
+              "If $f(x) = \\frac{x}{x+1}$, find and simplify $\\frac{f(x+h) - f(x)}{h}$.",
             steps: [
               {
                 id: 1,
@@ -42,7 +42,7 @@ export const lectures: Lecture[] = [
             source: "Lecture 4, Example 13h",
             title: 'Finding Complex Domains',
             description:
-              "Let's master finding the domain for complex functions. Find the domain of $f(x) = \\frac{\\sqrt{x-2}}{x-3}$.",
+              "Find the domain of $f(x) = \\frac{\\sqrt{x-2}}{x-3}$.",
             steps: [
               {
                 id: 1,
@@ -76,7 +76,7 @@ export const lectures: Lecture[] = [
             source: "Lecture 4, Example 13g",
             title: 'Finding Complex Domains',
             description:
-              "Let's practice with a slight twist. Find the domain of the function $f(x) = \\frac{x+1}{\\sqrt{x-2}}$.",
+              "Find the domain of the function $f(x) = \\frac{x+1}{\\sqrt{x-2}}$.",
             steps: [
               {
                 id: 1,
@@ -282,7 +282,7 @@ export const lectures: Lecture[] = [
                 type: 'lead-example',
                 source: "Lecture 4, Example 21",
                 title: 'Solving for Parameters with Parallel/Perpendicular Rules',
-                description: "This is a top-tier exam problem. Determine the value(s) of the parameter 'a' such that the lines $L_1: a^2x+2y+1=0$ and $L_2: 4x+ay-1=0$ are **parallel**.",
+                description: "Determine the value(s) of the parameter 'a' such that the lines $L_1: a^2x+2y+1=0$ and $L_2: 4x+ay-1=0$ are **parallel**.",
                 steps: [
                     {
                         id: 1,
@@ -383,7 +383,7 @@ export const lectures: Lecture[] = [
                 type: 'practice',
                 source: 'Practice Questions, Q6',
                 title: 'Applying Parallel/Perpendicular Rules',
-                description: 'This problem combines multiple skills. Find the equation of the line that passes through $(-\\frac{1}{2},1)$ and $(1,-1)$ and express it in all three forms.',
+                description: 'Find the equation of the line that passes through $(-\\frac{1}{2},1)$ and $(1,-1)$ and express it in all three forms.',
                 steps: [
                     {
                         id: 1,
@@ -437,39 +437,52 @@ export const lectures: Lecture[] = [
             type: 'lead-example',
             source: 'Lecture 5, Example 10',
             title: 'Modeling from Data Points',
-            description: "At a price of \\$1.88/lb, the supply for cherries is 16,000 lbs and demand is 10,600 lbs. At \\$1.46/lb, supply is 10,000 lbs and demand is 12,700 lbs. Find the equilibrium price and quantity.",
+            description: `At a price of \\$1.88 per pound, the supply for the cherries in a large city is 16,000 pounds, and the demand is 10,600 pounds. When the price drops to \\$1.46 per pound, the supply decreases to 10,000 pounds, and the demand increases to 12,700 pounds. Assume that the price-supply and price-demand equations are linear.
+
+a) Find the price-supply equation.
+b) Find the price-demand equation.
+c) Find the supply and demand at a price of \\$2.09 per pound.
+d) Find the supply and demand at a price of \\$1.32 per pound.
+e) Use the substitution method to find the equilibrium price and equilibrium demand.`,
             steps: [
               {
                 id: 1,
-                title: 'Find the Price-Supply Equation',
-                description: "First, let's model the supply. Use the two supply points $(16, 1.88)$ and $(10, 1.46)$ to find a linear equation in the form $p = mx + b$. What is the equation?",
+                title: 'a) Find the price-supply equation.',
+                description: "Using the two supply data points, $(16, 1.88)$ and $(10, 1.46)$, determine the linear price-supply equation in the form $p = mx + b$, where x is in thousands of pounds.",
                 solution: 'p = 0.07x + 0.76',
                 hint: "First, calculate the slope 'm' using the two supply points. Then, use the point-slope form $p - p_1 = m(x - x_1)$ to find the final equation."
               },
               {
                 id: 2,
-                title: 'Find the Price-Demand Equation',
-                description: 'Now, model the demand. Use the two demand points $(10.6, 1.88)$ and $(12.7, 1.46)$ to find the price-demand equation, also in the form $p = mx + b$.',
+                title: 'b) Find the price-demand equation.',
+                description: 'Using the two demand data points, $(10.6, 1.88)$ and $(12.7, 1.46)$, determine the linear price-demand equation.',
                 solution: 'p = -0.2x + 4',
                 hint: 'The slope for the demand curve should be negative, as demand typically decreases as price increases.'
               },
               {
                 id: 3,
-                title: 'Solve for Equilibrium',
-                description: 'The equilibrium occurs when supply equals demand. You now have a system of two equations. Use your TI-Nspire to solve it. What is the equilibrium quantity $x$ (in thousands of pounds)?',
-                solution: '12',
-                hint: 'Set the two equations equal to each other: $0.07x + 0.76 = -0.2x + 4$. Then, solve for x.',
+                title: 'c) Find supply and demand at \\$2.09/lb.',
+                description: "Substitute $p=2.09$ into both your supply and demand equations to find the corresponding quantities (in thousands of pounds). Provide the supply quantity first, then the demand quantity, separated by a comma. (e.g., '19, 9.55')",
+                solution: '19, 9.55',
+                hint: 'You will need to solve for x in both the supply and demand equations with p=2.09.'
+              },
+              {
+                id: 4,
+                title: 'd) Find supply and demand at \\$1.32/lb.',
+                description: "Now substitute $p=1.32$ into both equations. Provide the supply quantity first, then the demand quantity, separated by a comma. (e.g., '8, 13.4')",
+                solution: '8, 13.4',
+                hint: 'You will need to solve for x in both the supply and demand equations with p=1.32.'
+              },
+              {
+                id: 5,
+                title: 'e) Find the equilibrium price and demand.',
+                description: "Set the price-supply and price-demand equations equal to each other to solve for the equilibrium quantity $x$. Then substitute $x$ back into either equation to find the equilibrium price $p$. Provide the quantity (in thousands) first, then price, separated by a comma. (e.g., '12, 1.6')",
+                solution: '12, 1.6',
                 calculator_callout: {
                   title: 'TI-Nspire Tip',
                   description: 'On your TI-Nspire Calculator page, use the system solver: [menu] > 3: Algebra > 2: Solve System of Linear Equations. Set it to 2 equations with variables x and p.',
                 },
-              },
-              {
-                id: 4,
-                title: 'Find Equilibrium Price',
-                description: 'Now that you have the equilibrium quantity, substitute it back into either the supply or demand equation to find the equilibrium price $p$.',
-                solution: '1.6',
-                hint: 'Plugging x=12 into $p = -0.2x + 4$ is a quick way to find the price.'
+                hint: 'Set $0.07x + 0.76 = -0.2x + 4$ to find the equilibrium quantity.'
               },
             ],
           },
@@ -507,7 +520,7 @@ export const lectures: Lecture[] = [
                 description: 'You now have a system of two equations. Solve for c and m. What was the amount invested in the CD?',
                 solution: '32000',
                 hint: 'Use substitution or elimination. Multiplying the first equation by -0.04 is a good first step for elimination.',
-                 calculator_callout: {
+                calculator_callout: {
                   title: 'TI-Nspire Tip',
                   description: 'Use the Solve System of Linear Equations tool on your TI-Nspire to solve for c and m quickly and avoid calculation errors.',
                 },
@@ -519,7 +532,11 @@ export const lectures: Lecture[] = [
             type: 'practice',
             source: 'Practice Questions, Q14',
             title: 'Break-Even Analysis Application',
-            description: 'The manufacturer of a water bottle spends \\$5 to build each bottle and sells them for \\$10. The manufacturer also has fixed costs each month of \\$6500.\n\na) Find the cost function C(x) when x bottles are manufactured.\nb) Find the revenue function R(x) when x bottles are sold.\nc) Find the break-even point quantity.',
+            description: `The manufacturer of a water bottle spends \\$5 to build each bottle and sells them for \\$10. The manufacturer also has fixed costs each month of \\$6500.
+
+a) Find the cost function C(x) when x bottles are manufactured.
+b) Find the revenue function R(x) when x bottles are sold.
+c) Find the break-even point quantity.`,
             steps: [
               {
                 id: 1,
@@ -597,7 +614,7 @@ export const lectures: Lecture[] = [
             type: 'lead-example',
             source: 'F20 Practice Questions, Q4',
             title: 'Solving for Parameters: No Solution',
-            description: "Let's learn to control the outcome. Determine the value of $k$ for which the system of equations $3x-2y=3$ and $6x+ky=4$ does **not** have a solution.",
+            description: "Determine the value of $k$ for which the system of equations $3x-2y=3$ and $6x+ky=4$ does **not** have a solution.",
             steps: [
               {
                 id: 1,
@@ -638,7 +655,7 @@ export const lectures: Lecture[] = [
             type: 'practice',
             source: 'F20 Practice Questions, Q5',
             title: 'Solving for Parameters: Infinite Solutions',
-            description: 'Now for a different outcome. Determine the value of $r$ for which the system $-2x+6y=11$ and $-rx+18y=33$ has **infinitely many solutions**.',
+            description: 'Determine the value of $r$ for which the system $-2x+6y=11$ and $-rx+18y=33$ has **infinitely many solutions**.',
             steps: [
               {
                 id: 1,
@@ -668,7 +685,7 @@ export const lectures: Lecture[] = [
             type: 'practice',
             source: 'F20 Practice Questions, Q7',
             title: 'Solving for Parameters: Unique Solution',
-            description: "This is a 'twisted' version of the same skill. Determine the value(s) of $a$ for which the system $a^2x-3y=1$ and $9x+ay=1$ has a **unique solution**.",
+            description: "Determine the value(s) of $a$ for which the system $a^2x-3y=1$ and $9x+ay=1$ has a **unique solution**.",
             steps: [
               {
                 id: 1,
