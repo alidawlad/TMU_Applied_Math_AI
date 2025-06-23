@@ -11,7 +11,9 @@ export type Step = {
 };
 
 export type Problem = {
-  id: number | string;
+  id: string;
+  type: 'lead-example' | 'practice';
+  source: string;
   title: string;
   description: string;
   steps: Step[];
