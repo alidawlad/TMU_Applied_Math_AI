@@ -86,6 +86,27 @@ export const modules: Module[] = [
           },
         ],
       },
+       {
+        id: 'L4-S3-P3',
+        title: 'Modeling with Linear Functions',
+        description: 'The point $P(-2,3)$ lies on the line $-2x+ky+10=0$. Find the value of $k$.',
+        steps: [
+            {
+                id: 1,
+                title: 'Substitute the Point',
+                description: "If a point lies on a line, its coordinates must satisfy the line's equation. Substitute the x and y values from point P into the equation.",
+                solution: '-2(-2) + k(3) + 10 = 0',
+                hint: "Replace 'x' with -2 and 'y' with 3."
+            },
+            {
+                id: 2,
+                title: 'Solve for k',
+                description: 'Simplify the equation from Step 1 and solve for the variable $k$.',
+                solution: '-14/3',
+                hint: 'Be careful with your arithmetic and signs. You should get a negative fraction.'
+            }
+        ]
+    }
     ],
   },
   {
@@ -218,7 +239,7 @@ export const modules: Module[] = [
         ],
       },
        {
-        id: 'L4-S3-P3',
+        id: 'L4-S3-P3-Perp',
         title: 'Modeling with Linear Functions (Parallel & Perpendicular)',
         description: 'Determine the value(s) of a such that the lines $L_1: a^2x+2y+1=0$ and $L_2: 4x+ay-1=0$ are **perpendicular**.',
         steps: [
@@ -254,4 +275,145 @@ export const modules: Module[] = [
     }
     ],
   },
+  {
+    id: 'module-3-parallel-perpendicular-lines',
+    name: 'Module 3: Parallel & Perpendicular Lines',
+    description: 'Mastering the rules of parallel and perpendicular slopes to solve for unknown variables and find specific line equations.',
+    problems: [
+        {
+            id: 'L4-S4-LEAD',
+            title: 'Solving for Parameters with Parallel/Perpendicular Rules',
+            description: "This is a top-tier exam problem. Determine the value(s) of the parameter 'a' such that the lines $L_1: a^2x+2y+1=0$ and $L_2: 4x+ay-1=0$ are **parallel**.",
+            steps: [
+                {
+                    id: 1,
+                    title: 'Find the Slope of Line 1',
+                    description: 'First, rearrange the equation for $L_1$ into the slope-intercept form ($y=m_1x+b$). What is the slope, $m_1$?',
+                    solution: '-a^2/2',
+                    hint: "Isolate the 'y' term on one side of the equation and then divide by its coefficient, 2."
+                },
+                {
+                    id: 2,
+                    title: 'Find the Slope of Line 2',
+                    description: "Now, do the same for $L_2$. Rearrange its equation to find the slope, $m_2$.",
+                    solution: '-4/a',
+                    hint: "Be careful when dividing by 'a'. Remember that 'a' cannot be zero."
+                },
+                {
+                    id: 3,
+                    title: 'Apply the Parallel Condition',
+                    description: 'The condition for parallel lines is $m_1 = m_2$. Set up this equation using the two slopes you found.',
+                    solution: '-a^2/2 = -4/a',
+                    hint: 'Make sure you set the two slope expressions equal to each other.'
+                },
+                {
+                    id: 4,
+                    title: "Solve for 'a'",
+                    description: "Simplify and solve the equation from the previous step to find the value of $a$.",
+                    solution: '2',
+                    hint: 'Multiply both sides by `2a` to clear the denominators. This should result in a simple cubic equation: $a^3=8$.',
+                    calculator_callout: {
+                        title: 'TI-Nspire Tip',
+                        description: 'On a Calculator page, you can use the nSolve command. Type `nSolve(-a^2/2 = -4/a, a)` and press enter.'
+                    }
+                }
+            ]
+        },
+        {
+            id: 'L4-S4-P1',
+            title: 'Applying Parallel/Perpendicular Rules',
+            description: 'Find the equation of the line that passes through the point $(1,1)$ and is **parallel** to the line joining points $(2, 4)$ and $(4,7)$.',
+            steps: [
+                {
+                    id: 1,
+                    title: 'Find the Slope of the Given Line',
+                    description: 'First, calculate the slope of the line that passes through $(2, 4)$ and $(4,7)$.',
+                    solution: '3/2',
+                    hint: 'Use the slope formula $m = (y_2 - y_1) / (x_2 - x_1)$.'
+                },
+                {
+                    id: 2,
+                    title: 'Determine the Slope of the Parallel Line',
+                    description: 'A line parallel to the given line will have the same slope. What is the slope of the line we need to find?',
+                    solution: '3/2',
+                    hint: 'Parallel lines have equal slopes.'
+                },
+                {
+                    id: 3,
+                    title: 'Write the Equation of the New Line',
+                    description: 'Now use the point-slope form, $y - y_1 = m(x - x_1)$, with the point $(1,1)$ and the slope you just found to write the final equation.',
+                    solution: 'y - 1 = 3/2(x - 1)',
+                    hint: 'Substitute m = 3/2, x1 = 1, and y1 = 1 into the point-slope formula.'
+                }
+            ]
+        },
+        {
+            id: 'L4-S4-P2',
+            title: 'Applying Parallel/Perpendicular Rules',
+            description: 'Find an equation of the line that passes through the point $(2,4)$ and is **perpendicular** to the line $3x+4y-22=0$.',
+            steps: [
+                {
+                    id: 1,
+                    title: 'Find the Slope of the Given Line',
+                    description: 'The given line is in general form. Rearrange the equation $3x+4y-22=0$ into the slope-intercept form ($y=mx+b$) to find its slope.',
+                    solution: '-3/4',
+                    hint: 'Start by isolating the `4y` term on one side of the equation.'
+                },
+                {
+                    id: 2,
+                    title: 'Determine the Slope of the Perpendicular Line',
+                    description: 'The slope of a perpendicular line is the negative reciprocal of the original slope. Calculate this new slope.',
+                    solution: '4/3',
+                    hint: 'To find the negative reciprocal, flip the fraction and change its sign.'
+                },
+                {
+                    id: 3,
+                    title: 'Write the Equation of the New Line',
+                    description: 'Use the point-slope form, $y - y_1 = m(x - x_1)$, with the point $(2,4)$ and the perpendicular slope you just found.',
+                    solution: 'y - 4 = 4/3(x - 2)',
+                    hint: 'You have the point and the perpendicular slope. Now just plug them into the formula.'
+                }
+            ]
+        },
+        {
+            id: 'L4-S4-P3',
+            title: 'Applying Parallel/Perpendicular Rules',
+            description: 'This problem combines multiple skills. Find the equation of the line that passes through $(-\\frac{1}{2},1)$ and $(1,-1)$ and express it in all three forms.',
+            steps: [
+                {
+                    id: 1,
+                    title: 'Calculate the Slope',
+                    description: 'First, calculate the slope of the line passing through the two given points.',
+                    solution: '-4/3',
+                    hint: 'Be careful with the fraction in the x-coordinate when using the slope formula.'
+                },
+                {
+                    id: 2,
+                    title: 'Point-Slope Form',
+                    description: 'Using the point $(1,-1)$ and the slope you found, write the equation in point-slope form $y - y_1 = m(x - x_1)$.',
+                    solution: 'y + 1 = -4/3(x - 1)',
+                    hint: 'Remember that `y - (-1)` becomes `y + 1`.'
+                },
+                {
+                    id: 3,
+                    title: 'Slope-Intercept Form',
+                    description: 'Convert your point-slope equation into the slope-intercept form $y=mx+b$.',
+                    solution: 'y = -4/3x + 1/3',
+                    hint: 'Distribute the slope `-4/3` and then isolate `y`.'
+                },
+                {
+                    id: 4,
+                    title: 'General Form',
+                    description: 'Finally, convert your slope-intercept equation into the general form $Ax+By+C=0$.',
+                    solution: '4x + 3y - 1 = 0',
+                    hint: 'Move all terms to one side of the equation and multiply by the denominator (3) to clear the fractions. Conventionally, the coefficient of x (A) should be positive.',
+                    calculator_callout: {
+                      title: 'TI-Nspire Tip',
+                      description: 'After getting the slope-intercept form, you can use the **nSolve** command to verify your other forms. For example, `nSolve(y = -4/3x + 1/3, y) | x=1` should give you `-1`.'
+                    }
+                }
+            ]
+        }
+    ]
+}
 ];
