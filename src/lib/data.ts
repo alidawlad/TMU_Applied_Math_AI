@@ -101,7 +101,7 @@ export const lectures: Lecture[] = [
             id: 'L4-S3-LEAD',
             title: 'Modeling with Linear Functions',
             description:
-              "A machine was purchased for \\$120,000 and is depreciated linearly to a value of \\$0 over 10 years. Let's find the linear function $V(n)$ for its value after $n$ years.",
+              "A machine was purchased for $120,000 and is depreciated linearly to a value of $0 over 10 years. Let's find the linear function $V(n)$ for its value after $n$ years.",
             steps: [
               {
                 id: 1,
@@ -413,14 +413,14 @@ export const lectures: Lecture[] = [
           {
             id: 'L5-S1-LEAD',
             title: 'Modeling from Data Points',
-            description: 'At a price of \\$1.88/lb, the supply for cherries is 16,000 lbs and demand is 10,600 lbs. At \\$1.46/lb, supply is 10,000 lbs and demand is 12,700 lbs. Find the equilibrium price and quantity.',
+            description: 'At a price of $1.88/lb, the supply for cherries is 16,000 lbs and demand is 10,600 lbs. At $1.46/lb, supply is 10,000 lbs and demand is 12,700 lbs. Find the equilibrium price and quantity.',
             steps: [
               {
                 id: 1,
                 title: 'Find the Price-Supply Equation',
-                description: 'First, let\'s model the supply. Use the two supply points $(16, 1.88)$ and $(10, 1.46)$ to find a linear equation in the form $p = mx + b$. What is the equation?',
+                description: "First, let's model the supply. Use the two supply points $(16, 1.88)$ and $(10, 1.46)$ to find a linear equation in the form $p = mx + b$. What is the equation?",
                 solution: 'p = 0.07x + 0.76',
-                hint: 'First, calculate the slope \'m\' using the two supply points. Then, use the point-slope form $p - p_1 = m(x - x_1)$ to find the final equation.',
+                hint: "First, calculate the slope 'm' using the two supply points. Then, use the point-slope form $p - p_1 = m(x - x_1)$ to find the final equation.",
               },
               {
                 id: 2,
@@ -452,7 +452,7 @@ export const lectures: Lecture[] = [
           {
             id: 'L5-S1-P1',
             title: '2-Variable Application: Investments',
-            description: 'A total of \\$40,000 was invested in two accounts: a CD at 4% annual interest and a money market fund at 9%. The total simple interest for one year was 5% of the total investment. How much was invested in each account?',
+            description: 'A total of $40,000 was invested in two accounts: a CD at 4% annual interest and a money market fund at 9%. The total simple interest for one year was 5% of the total investment. How much was invested in each account?',
             steps: [
               {
                 id: 1,
@@ -466,7 +466,7 @@ export const lectures: Lecture[] = [
                 title: 'Set up the Interest Equation',
                 description: "The total interest earned ($0.04c + 0.09m$) was 5% of the total investment. First, calculate the total interest amount in dollars.",
                 solution: '2000',
-                hint: 'Calculate 5% of \\$40,000.',
+                hint: "Calculate 5% of $40,000."
               },
               {
                 id: 3,
@@ -491,7 +491,7 @@ export const lectures: Lecture[] = [
           {
             id: 'L5-S1-P2',
             title: '2-Variable Application: Break-Even Analysis',
-            description: 'An energy drink manufacturer spends \\$1.20 to make each drink and sells them for \\$2. The manufacturer also has fixed costs of \\$8,000 per month. Find the break-even point.',
+            description: 'An energy drink manufacturer spends $1.20 to make each drink and sells them for $2. The manufacturer also has fixed costs of $8,000 per month. Find the break-even point.',
             steps: [
               {
                 id: 1,
@@ -505,7 +505,7 @@ export const lectures: Lecture[] = [
                 title: 'Write the Revenue Function',
                 description: 'The revenue function is $R(x) = (selling\\ price) \\cdot x$. What is the revenue function?',
                 solution: 'R(x) = 2x',
-                hint: 'The selling price is given as \\$2 per drink.',
+                hint: 'The selling price is given as $2 per drink.',
               },
               {
                 id: 3,
@@ -519,19 +519,19 @@ export const lectures: Lecture[] = [
           {
             id: 'L5-S1-P3',
             title: '3-Variable Application with a Twist',
-            description: 'William invested a total of \\$2400 in three funds: Equity (E), Bond (B), and Money Market (M). His investment in E is \\$400 less than twice his investment in B. The ratio of investments B:M is 2:1. How much did he invest in each fund?',
+            description: 'William invested a total of $2400 in three funds: Equity (E), Bond (B), and Money Market (M). His investment in E is $400 less than twice his investment in B. The ratio of investments B:M is 2:1. How much did he invest in each fund?',
             steps: [
               {
                 id: 1,
                 title: 'Total Investment Equation',
                 description: 'Write the equation for the total amount invested.',
                 solution: 'E + B + M = 2400',
-                hint: 'The sum of the three amounts is \\$2400.',
+                hint: 'The sum of the three amounts is $2400.',
               },
               {
                 id: 2,
                 title: 'Equity Fund Relationship Equation',
-                description: "Translate 'Equity fund is \\$400 less than two times his investment in the Bond fund' into an equation.",
+                description: "Translate 'Equity fund is $400 less than two times his investment in the Bond fund' into an equation.",
                 solution: 'E = 2B - 400',
                 hint: "'Less than' means you subtract from the other term.",
               },
@@ -560,12 +560,12 @@ export const lectures: Lecture[] = [
       {
         id: 'module-2-system-analysis',
         name: 'Analyzing System Properties & Parameters',
-        description: 'Go beyond just solving. Master the logic behind system types (consistent, inconsistent) and solve for variables that define a system\'s behavior.',
+        description: "Go beyond just solving. Master the logic behind system types (consistent, inconsistent) and solve for variables that define a system's behavior.",
         problems: [
           {
             id: 'L5-S2-LEAD',
             title: 'Solving for Parameters: No Solution',
-            description: 'Let\'s learn to control the outcome. Determine the value of $k$ for which the system of equations $3x-2y=3$ and $6x+ky=4$ does **not** have a solution.',
+            description: "Let's learn to control the outcome. Determine the value of $k$ for which the system of equations $3x-2y=3$ and $6x+ky=4$ does **not** have a solution.",
             steps: [
               {
                 id: 1,
@@ -579,14 +579,14 @@ export const lectures: Lecture[] = [
                 title: 'Find the Slope of Line 2',
                 description: 'Now, do the same for $6x+ky=4$. Rearrange it to find the slope, $m_2$, in terms of $k$.',
                 solution: '-6/k',
-                hint: 'Your expression for the slope will have \'k\' in the denominator.',
+                hint: "Your expression for the slope will have 'k' in the denominator.",
               },
               {
                 id: 3,
-                title: 'Apply the \'No Solution\' Condition',
+                title: "Apply the 'No Solution' Condition",
                 description: 'A system has no solution when the lines are parallel, which means their slopes are equal ($m_1 = m_2$). Set up the equation using the slopes you found.',
                 solution: '3/2 = -6/k',
-                hint: 'Set the two slope expressions equal to each other to find the value of \'k\' that makes them parallel.',
+                hint: "Set the two slope expressions equal to each other to find the value of 'k' that makes them parallel.",
               },
               {
                 id: 4,
@@ -618,7 +618,7 @@ export const lectures: Lecture[] = [
                 title: 'Find Slopes and Intercepts',
                 description: 'Rearrange both equations into slope-intercept form ($y=mx+b$) to find their slopes and y-intercepts in terms of $r$.',
                 solution: 'Line 1: y=(1/3)x + 11/6. Line 2: y=(r/18)x + 33/18',
-                hint: 'For Line 1, the slope is $(-(-2)/6) = 1/3$. For Line 2, the slope is $(-(-r)/18) = r/18$.',
+                hint: 'For Line 1, the slope is $(-(-2)/6) = 1/3$. For Line 2, the slope is $(-(-r)/18) = r/18.',
               },
               {
                 id: 3,
@@ -632,7 +632,7 @@ export const lectures: Lecture[] = [
           {
             id: 'L5-S2-P2',
             title: 'Solving for Parameters: Unique Solution',
-            description: 'This is a \'twisted\' version of the same skill. Determine the value(s) of $a$ for which the system $a^2x-3y=1$ and $9x+ay=1$ has a **unique solution**.',
+            description: "This is a 'twisted' version of the same skill. Determine the value(s) of $a$ for which the system $a^2x-3y=1$ and $9x+ay=1$ has a **unique solution**.",
             steps: [
               {
                 id: 1,
@@ -688,7 +688,7 @@ export const lectures: Lecture[] = [
                 title: 'Classify the System',
                 description: 'Based on your result, is the system consistent or inconsistent? Are the equations dependent or independent?',
                 solution: 'Inconsistent, Independent',
-                hint: '\'Inconsistent\' means no solution. \'Independent\' means the equations represent different lines (in this case, they are parallel).',
+                hint: "'Inconsistent' means no solution. 'Independent' means the equations represent different lines (in this case, they are parallel).",
               },
             ],
           },
