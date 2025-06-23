@@ -21,8 +21,8 @@ export function Timer({ resetKey }: { resetKey: any }) {
   };
 
   return (
-    <div className="flex items-center gap-2 text-sm font-mono bg-muted px-2 py-1 rounded-md">
-      <TimerIcon className="h-4 w-4 text-muted-foreground" />
+    <div className="flex items-center gap-2 text-sm font-mono bg-black/20 text-primary-foreground px-2 py-1 rounded-md">
+      <TimerIcon className="h-4 w-4 text-primary-foreground/80" />
       <span>{formatTime(seconds)}</span>
     </div>
   );
