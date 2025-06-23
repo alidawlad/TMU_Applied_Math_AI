@@ -101,7 +101,7 @@ export const lectures: Lecture[] = [
             id: 'L4-S3-LEAD',
             title: 'Modeling with Linear Functions',
             description:
-              "A machine was purchased for $120,000 and is depreciated linearly to a value of $0 over 10 years. Let's find the linear function $V(n)$ for its value after $n$ years.",
+              "A machine was purchased for \\$120,000 and is depreciated linearly to a value of \\$0 over 10 years. Let's find the linear function $V(n)$ for its value after $n$ years.",
             steps: [
               {
                 id: 1,
@@ -413,7 +413,7 @@ export const lectures: Lecture[] = [
           {
             id: 'L5-S1-LEAD',
             title: 'Modeling from Data Points',
-            description: 'At a price of $1.88/lb, the supply for cherries is 16,000 lbs and demand is 10,600 lbs. At $1.46/lb, supply is 10,000 lbs and demand is 12,700 lbs. Find the equilibrium price and quantity.',
+            description: 'At a price of \\$1.88/lb, the supply for cherries is 16,000 lbs and demand is 10,600 lbs. At \\$1.46/lb, supply is 10,000 lbs and demand is 12,700 lbs. Find the equilibrium price and quantity.',
             steps: [
               {
                 id: 1,
@@ -452,7 +452,7 @@ export const lectures: Lecture[] = [
           {
             id: 'L5-S1-P1',
             title: '2-Variable Application: Investments',
-            description: 'A total of $40,000 was invested in two accounts: a CD at 4% annual interest and a money market fund at 9%. The total simple interest for one year was 5% of the total investment. How much was invested in each account?',
+            description: 'A total of \\$40,000 was invested in two accounts: a CD at 4% annual interest and a money market fund at 9%. The total simple interest for one year was 5% of the total investment. How much was invested in each account?',
             steps: [
               {
                 id: 1,
@@ -464,9 +464,9 @@ export const lectures: Lecture[] = [
               {
                 id: 2,
                 title: 'Set up the Interest Equation',
-                description: 'The total interest earned ($0.04c + 0.09m$) was 5% of the total investment. First, calculate the total interest amount in dollars.',
+                description: "The total interest earned ($0.04c + 0.09m$) was 5% of the total investment. First, calculate the total interest amount in dollars.",
                 solution: '2000',
-                hint: 'Calculate 5% of $40,000.',
+                hint: 'Calculate 5% of \\$40,000.',
               },
               {
                 id: 3,
@@ -491,7 +491,7 @@ export const lectures: Lecture[] = [
           {
             id: 'L5-S1-P2',
             title: '2-Variable Application: Break-Even Analysis',
-            description: 'An energy drink manufacturer spends $1.20 to make each drink and sells them for $2. The manufacturer also has fixed costs of $8,000 per month. Find the break-even point.',
+            description: 'An energy drink manufacturer spends \\$1.20 to make each drink and sells them for \\$2. The manufacturer also has fixed costs of \\$8,000 per month. Find the break-even point.',
             steps: [
               {
                 id: 1,
@@ -505,7 +505,7 @@ export const lectures: Lecture[] = [
                 title: 'Write the Revenue Function',
                 description: 'The revenue function is $R(x) = (selling\\ price) \\cdot x$. What is the revenue function?',
                 solution: 'R(x) = 2x',
-                hint: 'The selling price is given as $2 per drink.',
+                hint: 'The selling price is given as \\$2 per drink.',
               },
               {
                 id: 3,
@@ -519,19 +519,19 @@ export const lectures: Lecture[] = [
           {
             id: 'L5-S1-P3',
             title: '3-Variable Application with a Twist',
-            description: 'William invested a total of $2400 in three funds: Equity (E), Bond (B), and Money Market (M). His investment in E is $400 less than twice his investment in B. The ratio of investments B:M is 2:1. How much did he invest in each fund?',
+            description: 'William invested a total of \\$2400 in three funds: Equity (E), Bond (B), and Money Market (M). His investment in E is \\$400 less than twice his investment in B. The ratio of investments B:M is 2:1. How much did he invest in each fund?',
             steps: [
               {
                 id: 1,
                 title: 'Total Investment Equation',
                 description: 'Write the equation for the total amount invested.',
                 solution: 'E + B + M = 2400',
-                hint: 'The sum of the three amounts is $2400.',
+                hint: 'The sum of the three amounts is \\$2400.',
               },
               {
                 id: 2,
                 title: 'Equity Fund Relationship Equation',
-                description: "Translate 'Equity fund is $400 less than two times his investment in the Bond fund' into an equation.",
+                description: "Translate 'Equity fund is \\$400 less than two times his investment in the Bond fund' into an equation.",
                 solution: 'E = 2B - 400',
                 hint: "'Less than' means you subtract from the other term.",
               },
@@ -559,7 +559,7 @@ export const lectures: Lecture[] = [
       },
       {
         id: 'module-2-system-analysis',
-        name: 'Module 2: Analyzing System Properties & Parameters',
+        name: 'Analyzing System Properties & Parameters',
         description: 'Go beyond just solving. Master the logic behind system types (consistent, inconsistent) and solve for variables that define a system\'s behavior.',
         problems: [
           {
@@ -643,17 +643,17 @@ export const lectures: Lecture[] = [
               },
               {
                 id: 2,
-                title: 'Find the Condition That a Unique Solution *Doesn\'t* Exist',
-                description: 'It\'s easier to first find the value of \'a\' that makes the slopes equal (i.e., makes the lines parallel). Set the slopes of the two lines equal to each other and solve for \'a\'.',
+                title: "Find the Condition That a Unique Solution *Doesn't* Exist",
+                description: "It's easier to first find the value of 'a' that makes the slopes equal (i.e., makes the lines parallel). Set the slopes of the two lines equal to each other and solve for 'a'.",
                 solution: '-3',
-                hint: 'The slope of Line 1 is $a^2/3$. The slope of Line 2 is $-9/a$. Solve $a^2/3 = -9/a$.',
+                hint: "The slope of Line 1 is $a^2/3$. The slope of Line 2 is $-9/a$. Solve $a^2/3 = -9/a$.",
               },
               {
                 id: 3,
                 title: 'State the Final Answer',
-                description: 'A unique solution exists for all values of \'a\' EXCEPT the one you just found. How do you write this condition?',
+                description: "A unique solution exists for all values of 'a' EXCEPT the one you just found. How do you write this condition?",
                 solution: 'a != -3',
-                hint: 'The lines will always intersect unless they are parallel, which only happens at one specific value of \'a\'.',
+                hint: "The lines will always intersect unless they are parallel, which only happens at one specific value of 'a'.",
               },
             ],
           },
@@ -667,14 +667,14 @@ export const lectures: Lecture[] = [
                 title: 'Attempt to Solve the System',
                 description: 'Use the substitution method. Substitute the expression for $y$ from the second equation into the first equation.',
                 solution: '6x - 2(3x - 1) = 12',
-                hint: 'Replace \'y\' in the first equation with \'(3x - 1)\'.',
+                hint: "Replace 'y' in the first equation with '(3x - 1)'.",
               },
               {
                 id: 2,
                 title: 'Simplify and Observe',
                 description: 'Simplify the resulting equation. What do you get?',
                 solution: '2 = 12',
-                hint: 'The \'x\' variables should cancel out, leaving you with a statement that is mathematically impossible.',
+                hint: "The 'x' variables should cancel out, leaving you with a statement that is mathematically impossible.",
               },
               {
                 id: 3,
