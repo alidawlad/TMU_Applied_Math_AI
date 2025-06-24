@@ -1,5 +1,5 @@
 export type Step = {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   solution: string;

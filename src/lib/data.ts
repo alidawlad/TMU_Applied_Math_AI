@@ -103,6 +103,74 @@ export const lectures: Lecture[] = [
         name: 'Modeling with Linear Functions',
         description: 'Translate real-world scenarios into linear equations to make predictions. Master parallel and perpendicular lines.',
         problems: [
+           {
+            id: 'L4-S3-P2',
+            type: 'practice',
+            source: 'Practice Questions, Q12',
+            title: 'Modeling with Linear Functions',
+            description:
+              'A linear function $f(x)=ax+b$ has the values $f(-1)=0$ and $f(1)=4$. Find the values of $a$ and $b$.',
+            steps: [
+              {
+                id: 1,
+                title: 'Set up a System of Equations',
+                description:
+                  'Use the two given conditions to create a system of two linear equations with the variables $a$ and $b$.',
+                solution: '-a+b=0 and a+b=4',
+                hint: "Substitute x=-1 and f(x)=0 into the main equation for your first equation, and x=1 and f(x)=4 for the second."
+              },
+              {
+                id: 2,
+                title: 'Solve the System',
+                description:
+                  'Solve the system of equations you just created to find the values of $a$ and $b$.',
+                solution: 'a=2, b=2',
+                hint: "You can use substitution or elimination. Adding the two equations together is a very fast way to solve this particular system.",
+                calculator_callout: {
+                  title: 'TI-Nspire Tip',
+                  description:
+                    'This is a perfect use case for the system solver. Go to **menu > Algebra > Solve System of Linear Equations** to solve for $a$ and $b$ instantly.',
+                },
+              },
+            ],
+          },
+           {
+            id: 'L4-S3-P3-Perp',
+            type: 'practice',
+            source: 'Lecture 4, Example 21',
+            title: 'Modeling with Linear Functions (Parallel & Perpendicular)',
+            description: 'Determine the value(s) of a such that the lines $L_1: a^2x+2y+1=0$ and $L_2: 4x+ay-1=0$ are **perpendicular**.',
+            steps: [
+                {
+                    id: 1,
+                    title: 'Find the Slope of Line 1',
+                    description: 'First, rearrange the equation for $L_1$ into the slope-intercept form ($y=m_1x+b$). What is the slope, $m_1$?',
+                    solution: '-a^2/2',
+                    hint: "Isolate the 'y' term on one side of the equation and then divide by its coefficient."
+                },
+                {
+                    id: 2,
+                    title: 'Find the Slope of Line 2',
+                    description: "Now, do the same for $L_2$. Rearrange its equation to find the slope, $m_2$.",
+                    solution: '-4/a',
+                    hint: "Be careful when dividing by 'a'."
+                },
+                {
+                    id: 3,
+                    title: 'Apply the Perpendicular Condition',
+                    description: "The condition for perpendicular lines is $m_1 \\cdot m_2 = -1$. Set up this equation using the slopes you found.",
+                    solution: "(-a^2/2)*(-4/a) = -1",
+                    hint: "Make sure you set the product of the slopes equal to negative one."
+                },
+                {
+                    id: 4,
+                    title: 'Solve for a',
+                    description: "Simplify and solve the equation from the previous step to find the value of $a$.",
+                    solution: "-1/2",
+                    hint: "Be very careful with your algebraic simplification. The 'a' in the denominator will cancel with one of the 'a's in the numerator."
+                }
+            ]
+          },
           {
             id: 'L4-S3-LEAD',
             type: 'lead-example',
@@ -202,74 +270,6 @@ export const lectures: Lecture[] = [
               },
             ],
           },
-          {
-            id: 'L4-S3-P2',
-            type: 'practice',
-            source: 'Practice Questions, Q12',
-            title: 'Modeling with Linear Functions',
-            description:
-              'A linear function $f(x)=ax+b$ has the values $f(-1)=0$ and $f(1)=4$. Find the values of $a$ and $b$.',
-            steps: [
-              {
-                id: 1,
-                title: 'Set up a System of Equations',
-                description:
-                  'Use the two given conditions to create a system of two linear equations with the variables $a$ and $b$.',
-                solution: '-a+b=0 and a+b=4',
-                hint: "Substitute x=-1 and f(x)=0 into the main equation for your first equation, and x=1 and f(x)=4 for the second."
-              },
-              {
-                id: 2,
-                title: 'Solve the System',
-                description:
-                  'Solve the system of equations you just created to find the values of $a$ and $b$.',
-                solution: 'a=2, b=2',
-                hint: "You can use substitution or elimination. Adding the two equations together is a very fast way to solve this particular system.",
-                calculator_callout: {
-                  title: 'TI-Nspire Tip',
-                  description:
-                    'This is a perfect use case for the system solver. Go to **menu > Algebra > Solve System of Linear Equations** to solve for $a$ and $b$ instantly.',
-                },
-              },
-            ],
-          },
-           {
-            id: 'L4-S3-P3-Perp',
-            type: 'practice',
-            source: 'Lecture 4, Example 21',
-            title: 'Modeling with Linear Functions (Parallel & Perpendicular)',
-            description: 'Determine the value(s) of a such that the lines $L_1: a^2x+2y+1=0$ and $L_2: 4x+ay-1=0$ are **perpendicular**.',
-            steps: [
-                {
-                    id: 1,
-                    title: 'Find the Slope of Line 1',
-                    description: 'First, rearrange the equation for $L_1$ into the slope-intercept form ($y=m_1x+b$). What is the slope, $m_1$?',
-                    solution: '-a^2/2',
-                    hint: "Isolate the 'y' term on one side of the equation and then divide by its coefficient."
-                },
-                {
-                    id: 2,
-                    title: 'Find the Slope of Line 2',
-                    description: "Now, do the same for $L_2$. Rearrange its equation to find the slope, $m_2$.",
-                    solution: '-4/a',
-                    hint: "Be careful when dividing by 'a'."
-                },
-                {
-                    id: 3,
-                    title: 'Apply the Perpendicular Condition',
-                    description: "The condition for perpendicular lines is $m_1 \\cdot m_2 = -1$. Set up this equation using the slopes you found.",
-                    solution: "(-a^2/2)*(-4/a) = -1",
-                    hint: "Make sure you set the product of the slopes equal to negative one."
-                },
-                {
-                    id: 4,
-                    title: 'Solve for a',
-                    description: "Simplify and solve the equation from the previous step to find the value of $a$.",
-                    solution: "-1/2",
-                    hint: "Be very careful with your algebraic simplification. The 'a' in the denominator will cancel with one of the 'a's in the numerator."
-                }
-            ]
-        }
         ],
       },
       {
@@ -427,7 +427,7 @@ export const lectures: Lecture[] = [
     id: 'lecture-5',
     title: 'Lecture 5: Systems of Equations',
     modules: [
-      {
+       {
         id: 'module-1-systems-modeling',
         name: 'Modeling Business Problems with Systems of Equations',
         description: 'The core skill of translating complex word problems into precise systems of 2 or 3 linear equations.',
@@ -437,172 +437,165 @@ export const lectures: Lecture[] = [
             type: 'lead-example',
             source: 'Lecture 5, Example 10',
             title: 'Modeling from Data Points',
-            description: `At a price of \\$1.88 per pound, the supply for the cherries in a large city is 16,000 pounds, and the demand is 10,600 pounds. When the price drops to \\$1.46 per pound, the supply decreases to 10,000 pounds, and the demand increases to 12,700 pounds. Assume that the price-supply and price-demand equations are linear.
-
-a) Find the price-supply equation.
-b) Find the price-demand equation.
-c) Find the supply and demand at a price of \\$2.09 per pound.
-d) Find the supply and demand at a price of \\$1.32 per pound.
-e) Use the substitution method to find the equilibrium price and equilibrium demand.`,
+            description: "At a price of \\$1.88 per pound, the supply for cherries is 16,000 pounds, and the demand is 10,600 pounds. When the price drops to \\$1.46 per pound, the supply decreases to 10,000 pounds, and the demand increases to 12,700 pounds. Assume that the price-supply and price-demand equations are linear.\n\na) Find the price-supply equation.\nb) Find the price-demand equation.\nc) Find the supply and demand at a price of \\$2.09 per pound.\nd) Find the supply and demand at a price of \\$1.32 per pound.\ne) Use the substitution method to find the equilibrium price and equilibrium demand.",
             steps: [
               {
-                id: 1,
+                id: 'a',
                 title: 'a) Find the price-supply equation.',
-                description: "Using the two supply data points, $(16, 1.88)$ and $(10, 1.46)$, determine the linear price-supply equation in the form $p = mx + b$, where x is in thousands of pounds.",
-                solution: 'p = 0.07x + 0.76',
-                hint: "First, calculate the slope 'm' using the two supply points. Then, use the point-slope form $p - p_1 = m(x - x_1)$ to find the final equation."
+                description: 'Let $p$ be the price and $x$ be the quantity in thousands. Use the two supply points $(16, 1.88)$ and $(10, 1.46)$ to find the linear equation $p = mx + b$.',
+                solution: 'p = 0.07x + 0.76'
               },
               {
-                id: 2,
+                id: 'b',
                 title: 'b) Find the price-demand equation.',
-                description: 'Using the two demand data points, $(10.6, 1.88)$ and $(12.7, 1.46)$, determine the linear price-demand equation.',
-                solution: 'p = -0.2x + 4',
-                hint: 'The slope for the demand curve should be negative, as demand typically decreases as price increases.'
+                description: 'Now, use the two demand points $(10.6, 1.88)$ and $(12.7, 1.46)$ to find the price-demand equation.',
+                solution: 'p = -0.2x + 4'
               },
               {
-                id: 3,
-                title: 'c) Find supply and demand at \\$2.09/lb.',
-                description: "Substitute $p=2.09$ into both your supply and demand equations to find the corresponding quantities (in thousands of pounds). Provide the supply quantity first, then the demand quantity, separated by a comma. (e.g., '19, 9.55')",
-                solution: '19, 9.55',
-                hint: 'You will need to solve for x in both the supply and demand equations with p=2.09.'
-              },
-              {
-                id: 4,
-                title: 'd) Find supply and demand at \\$1.32/lb.',
-                description: "Now substitute $p=1.32$ into both equations. Provide the supply quantity first, then the demand quantity, separated by a comma. (e.g., '8, 13.4')",
-                solution: '8, 13.4',
-                hint: 'You will need to solve for x in both the supply and demand equations with p=1.32.'
-              },
-              {
-                id: 5,
-                title: 'e) Find the equilibrium price and demand.',
-                description: "Set the price-supply and price-demand equations equal to each other to solve for the equilibrium quantity $x$. Then substitute $x$ back into either equation to find the equilibrium price $p$. Provide the quantity (in thousands) first, then price, separated by a comma. (e.g., '12, 1.6')",
-                solution: '12, 1.6',
+                id: 'e',
+                title: 'e) Find the equilibrium quantity and price.',
+                description: 'The equilibrium occurs when the supply and demand equations are equal. First, solve for the equilibrium quantity $x$.',
+                solution: '12',
                 calculator_callout: {
                   title: 'TI-Nspire Tip',
-                  description: 'On your TI-Nspire Calculator page, use the system solver: [menu] > 3: Algebra > 2: Solve System of Linear Equations. Set it to 2 equations with variables x and p.',
-                },
-                hint: 'Set $0.07x + 0.76 = -0.2x + 4$ to find the equilibrium quantity.'
+                  description: "You have a system of two equations. On your TI-Nspire, use the 'Solve System of Linear Equations' tool under the Algebra menu to solve for p and x instantly."
+                }
               },
-            ],
+              {
+                id: 'e2',
+                title: 'e) Find the equilibrium price.',
+                description: 'Now find the equilibrium price $p$ by substituting your value for $x$ into either equation.',
+                solution: '1.60'
+              }
+            ]
           },
           {
             id: 'L5-S1-P1',
             type: 'practice',
-            source: 'F20 Practice Questions, Q8',
-            title: '2-Variable Application: Investments',
-            description: 'A total of \\$40,000 was invested in two accounts: a CD at 4% annual interest and a money market fund at 9%. The total simple interest for one year was 5% of the total investment. How much was invested in each account?',
+            source: 'F20 Practice Questions, Q13',
+            title: 'Break-Even Analysis',
+            description: "An energy drink manufacturer spends \\$1.20 to make each drink and sells them for \\$2. The manufacturer also has fixed costs of \\$8,000 per month.\n\na) Find the cost function C when x energy drinks are manufactured.\nb) Find the revenue function R when x drinks are sold.\nd) Find the break-even point. Interpret what the break-even point means.",
             steps: [
               {
-                id: 1,
-                title: 'Set up the Principal Equation',
-                description: "Let 'c' be the amount in the CD and 'm' be the amount in the money market fund. Write the equation representing the total amount invested.",
-                solution: 'c + m = 40000',
-                hint: 'The sum of the amounts in the two accounts must equal the total investment.'
+                id: 'a',
+                title: 'a) Find the cost function C(x).',
+                description: 'The cost function is $C(x) = (variable\\ cost) \\cdot x + (fixed\\ costs)$. Enter the function.',
+                solution: 'C(x) = 1.20x + 8000'
               },
               {
-                id: 2,
-                title: 'Set up the Interest Equation',
-                description: "The total interest earned ($0.04c + 0.09m$) was 5% of the total investment. First, calculate the total interest amount in dollars.",
-                solution: '2000',
-                hint: "Calculate 5% of \\$40,000."
+                id: 'b',
+                title: 'b) Find the revenue function R(x).',
+                description: 'The revenue function is $R(x) = (selling\\ price) \\cdot x$. Enter the function.',
+                solution: 'R(x) = 2x'
               },
               {
-                id: 3,
-                title: 'Write the Full Interest Equation',
-                description: 'Now, write the equation representing the total interest earned from both accounts.',
-                solution: '0.04c + 0.09m = 2000',
-                hint: 'Interest from CD + Interest from Money Market = Total Interest.'
-              },
-              {
-                id: 4,
-                title: 'Solve the System',
-                description: 'You now have a system of two equations. Solve for c and m. What was the amount invested in the CD?',
-                solution: '32000',
-                hint: 'Use substitution or elimination. Multiplying the first equation by -0.04 is a good first step for elimination.',
-                calculator_callout: {
-                  title: 'TI-Nspire Tip',
-                  description: 'Use the Solve System of Linear Equations tool on your TI-Nspire to solve for c and m quickly and avoid calculation errors.',
-                },
-              },
-            ],
+                id: 'd',
+                title: 'd) Find the break-even quantity.',
+                description: 'The break-even point occurs when Cost = Revenue. Set $C(x) = R(x)$ and solve for the quantity $x$.',
+                solution: '10000'
+              }
+            ]
           },
           {
             id: 'L5-S1-P2',
             type: 'practice',
-            source: 'Practice Questions, Q14',
-            title: 'Break-Even Analysis Application',
-            description: `The manufacturer of a water bottle spends \\$5 to build each bottle and sells them for \\$10. The manufacturer also has fixed costs each month of \\$6500.
-
-a) Find the cost function C(x) when x bottles are manufactured.
-b) Find the revenue function R(x) when x bottles are sold.
-c) Find the break-even point quantity.`,
+            source: 'F20 Practice Questions, Q8',
+            title: 'Investment and Mixture Problems',
+            description: "A total of \\$40,000 was invested in two accounts. Part was invested in a CD at a rate 4% annual interest and part was invested in a money market fund at a rate 9% annual interest rate. If the total simple interest for one year was 5% of the total investment, then how much was invested in each account?",
             steps: [
               {
-                id: 1,
-                title: 'a) Find the Cost Function',
-                description: 'The cost function is the sum of variable costs and fixed costs. Write the cost function $C(x)$.',
-                solution: 'C(x) = 5x + 6500',
-                hint: 'The cost function is $C(x) = (variable\\_cost) \\cdot x + (fixed\\_costs)$.'
+                id: 'a',
+                title: 'a) Set up the system of equations.',
+                description: "Let 'c' be the amount in the CD and 'm' be the amount in the money market. First, write the equation for the total principal invested.",
+                solution: 'c + m = 40000'
               },
               {
-                id: 2,
-                title: 'b) Find the Revenue Function',
-                description: 'The revenue function is the selling price per bottle multiplied by the number of bottles sold. Write the revenue function $R(x)$.',
-                solution: 'R(x) = 10x',
-                hint: 'The revenue function is $R(x) = (selling\\_price) \\cdot x$.'
+                id: 'b',
+                title: 'b) Set up the interest equation.',
+                description: 'Now write the equation for the total interest earned. The total interest was 5% of \\$40,000.',
+                solution: '0.04c + 0.09m = 2000'
               },
               {
-                id: 3,
-                title: 'c) Find the Break-Even Quantity',
-                description: 'The break-even point is where total cost equals total revenue. Set $C(x) = R(x)$ and solve for the quantity $x$.',
-                solution: '1300',
-                hint: 'Solve the equation $5x + 6500 = 10x$ to find the number of bottles.'
+                id: 'c',
+                title: 'c) Solve the system.',
+                description: 'Solve the system to find how much was invested in the CD account (c).',
+                solution: '32000',
+                calculator_callout: {
+                  title: 'TI-Nspire Tip',
+                  description: 'Use the Solve System of Linear Equations tool on your TI-Nspire to solve for c and m quickly and avoid calculation errors.'
+                }
               }
             ]
           },
           {
             id: 'L5-S1-P3',
             type: 'practice',
-            source: 'Lecture 5, Example 16',
-            title: '3-Variable Application with a Twist',
-            description: 'William invested a total of \\$2400 in three funds: Equity (E), Bond (B), and Money Market (M). His investment in E is \\$400 less than twice his investment in B. The ratio of investments B:M is 2:1. How much did he invest in each fund?',
+            source: 'F20 Practice Questions, Q11',
+            title: 'Investment and Mixture Problems',
+            description: "Sasheena needs to make 200 milliliters of a 40% solution of sulfuric acid. The lab has only 25% and 50% solutions in the storeroom. How much should she mix of the 25% and the 50% solutions to make the 40% solution?",
             steps: [
               {
-                id: 1,
-                title: 'Total Investment Equation',
-                description: 'Write the equation for the total amount invested.',
-                solution: 'E + B + M = 2400',
-                hint: 'The sum of the three amounts is \\$2400.'
+                  id: 'a',
+                  title: 'a) Set up the volume equation.',
+                  instruction: "Let 'x' be the volume of the 25% solution and 'y' be the volume of the 50% solution. Write the equation for the total volume of the mixture.",
+                  solution: 'x + y = 200'
               },
               {
-                id: 2,
-                title: 'Equity Fund Relationship Equation',
-                description: "Translate 'Equity fund is \\$400 less than two times his investment in the Bond fund' into an equation.",
-                solution: 'E = 2B - 400',
-                hint: "'Less than' means you subtract from the other term."
+                  id: 'b',
+                  title: 'b) Set up the acid concentration equation.',
+                  description: "The amount of pure acid from the first solution plus the amount from the second must equal the amount of pure acid in the final mixture. Write this equation.",
+                  solution: '0.25x + 0.50y = 80'
               },
               {
-                id: 3,
-                title: 'Ratio Equation (The Twist)',
+                  id: 'c',
+                  title: 'c) Solve the system.',
+                  description: "Solve the system to find how much of the 25% solution (x) is needed.",
+                  solution: '80',
+                  calculator_callout: {
+                    title: 'TI-Nspire Tip',
+                    description: "A 2x2 system is a perfect candidate for the TI-Nspire's system solver to ensure speed and accuracy."
+                  }
+              }
+            ]
+          },
+          {
+            id: 'L5-S1-P4',
+            type: 'practice',
+            source: 'Lecture 5, Example 16',
+            title: '3-Variable Application with a Twist',
+            description: "William invested a total of \\$2400 in three funds: Equity (E), Bond (B), and Money Market (M). His investment in E is \\$400 less than twice his investment in B. The ratio of investments B:M is 2:1. How much did he invest in each fund?",
+            steps: [
+              {
+                id: 'a',
+                title: 'a) Set up the system of three equations.',
+                description: 'First, write the equation for the total investment.',
+                solution: 'E + B + M = 2400'
+              },
+              {
+                id: 'b',
+                title: 'b) Write the second equation.',
+                description: "Now, translate 'Equity fund is \\$400 less than two times his investment in the Bond fund' into an equation.",
+                solution: 'E = 2B - 400'
+              },
+              {
+                id: 'c',
+                title: 'c) Write the third equation (The Twist).',
                 description: 'Translate the ratio $B:M = 2:1$ into an equation.',
-                solution: 'B = 2M',
-                hint: 'A ratio A:B = C:D is equivalent to the equation A/B = C/D. So, B/M = 2/1.'
+                solution: 'B = 2M'
               },
               {
-                id: 4,
-                title: 'Solve the 3x3 System',
-                description: 'You now have a complete system of three equations. Solve it. What was the amount invested in the Equity fund (E)?',
+                id: 'd',
+                title: 'd) Solve the 3x3 system.',
+                description: 'Solve the system to find the amount invested in the Equity fund (E).',
                 solution: '1200',
-                hint: 'Use substitution. Substitute `B=2M` into the other two equations to reduce the system to two variables first.',
                 calculator_callout: {
                   title: 'TI-Nspire Tip',
-                  description: 'This is a perfect time to use your calculator. Before using the system solver, you must rearrange your equations into the standard form (e.g., E - 2B = -400). Then, enter the 3x3 system and solve instantly.',
-                },
-              },
-            ],
-          },
-        ],
+                  description: "For a 3x3 system, the TI-Nspire solver is essential. Rearrange your equations into standard form (e.g., E - 2B = -400) before entering them into the solver."
+                }
+              }
+            ]
+          }
+        ]
       },
       {
         id: 'module-2-system-analysis',
@@ -642,11 +635,11 @@ c) Find the break-even point quantity.`,
                 title: 'Solve for k',
                 description: 'Solve the equation from the previous step to find the specific value of $k$.',
                 solution: '-4',
-                hint: 'Use cross-multiplication to solve the proportion.',
                 calculator_callout: {
                   title: 'TI-Nspire Tip',
                   description: 'You can verify your answer. On your TI-Nspire Graphs page, graph the two lines, substituting the value you found for k. Do they look parallel? For example, plot $y = (3/2)x - 3/2$ and $y = (-6/-4)x + 4/-4$.',
                 },
+                hint: 'Use cross-multiplication to solve the proportion.'
               },
             ],
           },
