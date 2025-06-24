@@ -1,18 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { DateTime } from "@/components/DateTime";
 import { Logo } from "@/components/icons";
-import { Menu, HelpCircle } from "lucide-react";
+import { Menu, HelpCircle, Pencil } from "lucide-react";
 import type { Lecture, Problem } from "@/lib/types";
 import { Timer } from "./Timer";
+import { cn } from "@/lib/utils";
 
 interface AppHeaderProps {
     lecture: Lecture;
     problem: Problem;
     problemIndex: number;
     totalProblems: number;
+    onToggleDrawingMode: () => void;
+    isDrawingModeActive: boolean;
 }
 
-export function AppHeader({ lecture, problem, problemIndex, totalProblems }: AppHeaderProps) {
+export function AppHeader({ lecture, problem, problemIndex, totalProblems, onToggleDrawingMode, isDrawingModeActive }: AppHeaderProps) {
   return (
     <header className="flex-shrink-0">
       <div className="bg-background border-b px-4 h-14 flex items-center justify-between">
@@ -23,6 +26,15 @@ export function AppHeader({ lecture, problem, problemIndex, totalProblems }: App
         <div className="flex items-center gap-4">
           <span className="text-sm font-medium">Ali Houssein</span>
           <DateTime />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onToggleDrawingMode}
+            className={cn(isDrawingModeActive && "bg-accent text-accent-foreground")}
+            aria-label="Toggle Drawing Mode"
+          >
+             <Pencil className="h-5 w-5" />
+          </Button>
           <HelpCircle className="h-5 w-5 text-muted-foreground cursor-pointer" />
         </div>
       </div>

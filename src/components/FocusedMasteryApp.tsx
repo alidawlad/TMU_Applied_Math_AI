@@ -6,6 +6,8 @@ import { AppHeader } from "./AppHeader";
 import { ProblemSidebar } from "./ProblemSidebar";
 import { ProblemDisplay } from "./ProblemDisplay";
 import { Skeleton } from "./ui/skeleton";
+import { DrawingCanvas } from "./DrawingCanvas";
+import { DrawingToolbar } from "./DrawingToolbar";
 
 export function FocusedMasteryApp() {
   const [isClient, setIsClient] = useState(false);
@@ -14,6 +16,7 @@ export function FocusedMasteryApp() {
   const [currentLectureId, setCurrentLectureId] = useState(lectures[0].id);
   const [currentModuleId, setCurrentModuleId] = useState(lectures[0].modules[0].id);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
+  const [isDrawingModeActive, setIsDrawingModeActive] = useState(false);
 
   // Effects
   useEffect(() => {
@@ -36,6 +39,10 @@ export function FocusedMasteryApp() {
   const handleProblemChange = (problemIndex: number) => {
     setCurrentProblemIndex(problemIndex);
   };
+
+  const toggleDrawingMode = () => {
+    setIsDrawingModeActive(prev => !prev);
+  }
 
   // Memoized derived state
   const currentLecture = useMemo(() => lectures.find(l => l.id === currentLectureId)!, [currentLectureId]);
@@ -66,13 +73,18 @@ export function FocusedMasteryApp() {
 
   return (
     <div className="flex flex-col h-screen font-sans">
+      {isDrawingModeActive && <DrawingCanvas />}
+      {isDrawingModeActive && <DrawingToolbar onClose={toggleDrawingMode} />}
+
       <AppHeader 
         lecture={currentLecture}
         problem={currentProblem}
         problemIndex={currentProblemIndex}
         totalProblems={currentModule.problems.length}
+        onToggleDrawingMode={toggleDrawingMode}
+        isDrawingModeActive={isDrawingModeActive}
       />
-      <main className="flex-1 flex overflow-hidden">
+      <main className={`flex-1 flex overflow-hidden ${isDrawingModeActive ? 'pointer-events-none' : ''}`}>
         <ProblemSidebar 
           currentLectureId={currentLectureId}
           onLectureChange={handleLectureChange}
