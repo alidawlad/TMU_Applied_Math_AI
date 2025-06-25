@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { DateTime } from "@/components/DateTime";
 import { Logo } from "@/components/icons";
