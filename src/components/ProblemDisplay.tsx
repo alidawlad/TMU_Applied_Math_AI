@@ -13,6 +13,7 @@ import { CalculatorCallout } from "./CalculatorCallout";
 import { MathRenderer } from "./MathRenderer";
 import { Separator } from "@/components/ui/separator";
 import { ViewExampleDialog } from "./ViewExampleDialog";
+import { Skeleton } from "./ui/skeleton";
 
 type StepStatus = "unanswered" | "correct" | "incorrect";
 
@@ -30,6 +31,7 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
   const [stepCorrectiveFeedback, setStepCorrectiveFeedback] = useState<Record<string, string>>({});
   const [stepHints, setStepHints] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
     try {
@@ -40,23 +42,28 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
     } catch (error) {
       console.error("Failed to load state from localStorage", error);
     }
-  }, [problem.id]); // Reload state when problem changes
+    setIsHydrated(true);
+  }, [problem.id]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('fm-stepInputs', JSON.stringify(stepInputs));
-    } catch (error) {
-      console.error("Failed to save inputs to localStorage", error);
+    if (isHydrated) {
+      try {
+        localStorage.setItem('fm-stepInputs', JSON.stringify(stepInputs));
+      } catch (error) {
+        console.error("Failed to save inputs to localStorage", error);
+      }
     }
-  }, [stepInputs]);
+  }, [stepInputs, isHydrated]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('fm-stepStatuses', JSON.stringify(stepStatuses));
-    } catch (error) {
-      console.error("Failed to save statuses to localStorage", error);
+    if (isHydrated) {
+      try {
+        localStorage.setItem('fm-stepStatuses', JSON.stringify(stepStatuses));
+      } catch (error) {
+        console.error("Failed to save statuses to localStorage", error);
+      }
     }
-  }, [stepStatuses]);
+  }, [stepStatuses, isHydrated]);
 
   const handleInputChange = (key: string, value: string) => {
     setStepInputs((prev) => ({ ...prev, [key]: value }));
@@ -126,10 +133,11 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
     }
   };
   
-  const correctStepsCount = problem.steps.filter(step => {
+  const correctStepsCount = useMemo(() => problem.steps.filter(step => {
       const stepKey = `${problem.id}-${step.id}`;
       return stepStatuses[stepKey] === 'correct';
-  }).length;
+  }).length, [problem.id, problem.steps, stepStatuses]);
+
   const progress = (correctStepsCount / problem.steps.length) * 100;
   const leadExample = useMemo(() => module.problems.find(p => p.type === 'lead-example'), [module]);
 
@@ -137,6 +145,30 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
     const index = problem.steps.findIndex(step => stepStatuses[`${problem.id}-${step.id}`] !== 'correct');
     return index === -1 ? problem.steps.length : index;
   }, [problem.id, problem.steps, stepStatuses]);
+
+  if (!isHydrated) {
+    return (
+      <div className="flex-1 bg-white p-6 md:p-8 overflow-y-auto">
+        <div className="problem-description space-y-2 mb-8">
+            <Skeleton className="h-8 w-3/4 mb-4" />
+            <Skeleton className="h-4 w-full mb-2" />
+            <Skeleton className="h-4 w-5/6 mb-8" />
+             <div className="pt-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-1/2 mx-auto mt-2" />
+            </div>
+        </div>
+        <div className="space-y-8">
+          <Separator />
+          <div className="space-y-4 pt-6">
+            <Skeleton className="h-6 w-1/2 mb-2" />
+            <Skeleton className="h-4 w-full mb-4" />
+            <Skeleton className="h-20 w-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 bg-white p-6 md:p-8 overflow-y-auto">
