@@ -8,20 +8,43 @@ import { ProblemDisplay } from "./ProblemDisplay";
 import { Skeleton } from "./ui/skeleton";
 import { DrawingCanvas } from "./DrawingCanvas";
 import { DrawingToolbar } from "./DrawingToolbar";
+import { Logo } from "@/components/icons";
 
 export function FocusedMasteryApp() {
   const [isClient, setIsClient] = useState(false);
-  
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (lectures.length === 0) {
+    return (
+      <div className="flex flex-col h-screen font-sans bg-muted/30">
+        <header className="flex-shrink-0">
+          <div className="bg-background border-b px-4 h-14 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Logo className="h-8 w-8 text-primary hidden md:block" />
+              <h1 className="text-lg font-semibold font-headline">Applied Mathematics for Business</h1>
+            </div>
+          </div>
+        </header>
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center p-8 bg-background rounded-lg shadow-md">
+            <h2 className="text-2xl font-bold font-headline">Ready for new content!</h2>
+            <p className="text-muted-foreground mt-2">
+              All lectures have been cleared. Please provide the new curriculum.
+            </p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   // State management
   const [currentLectureId, setCurrentLectureId] = useState(lectures[0].id);
   const [currentModuleId, setCurrentModuleId] = useState(lectures[0].modules[0].id);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
   const [isDrawingModeActive, setIsDrawingModeActive] = useState(false);
-
-  // Effects
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   // State change handlers
   const handleLectureChange = (lectureId: string) => {
