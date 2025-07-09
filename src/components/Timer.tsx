@@ -1,16 +1,36 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Timer as TimerIcon } from 'lucide-react';
 
 export function Timer({ resetKey }: { resetKey: any }) {
   const [seconds, setSeconds] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const isRunningRef = useRef(isRunning);
+  isRunningRef.current = isRunning;
 
   useEffect(() => {
+    // Reset state when the problem changes (via resetKey)
     setSeconds(0);
+    setIsRunning(false);
+
+    const handleStart = () => setIsRunning(true);
+    const handleStop = () => setIsRunning(false);
+    
+    // Using document to communicate across components without lifting state
+    document.addEventListener('startTimer', handleStart);
+    document.addEventListener('stopTimer', handleStop);
+
     const interval = setInterval(() => {
-      setSeconds(s => s + 1);
+      if (isRunningRef.current) {
+        setSeconds(s => s + 1);
+      }
     }, 1000);
-    return () => clearInterval(interval);
+    
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('startTimer', handleStart);
+      document.removeEventListener('stopTimer', handleStop);
+    };
   }, [resetKey]);
 
   const formatTime = (totalSeconds: number) => {

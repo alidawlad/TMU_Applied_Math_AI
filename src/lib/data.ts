@@ -16,6 +16,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Example',
                         title: 'Let f(x) = 3x + 2 and g(x) = x^2 + 1. Find formulas for (f ∘ g)(x) and (g ∘ f)(x), and then compute (g ∘ f)(2).',
                         description: 'Let f(x) = 3x + 2 and g(x) = x^2 + 1. Find formulas for (f ∘ g)(x) and (g ∘ f)(x), and then compute (g ∘ f)(2).',
+                        idealTime: 300,
                         steps: [
                             {
                                 id: 'a',
@@ -43,6 +44,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Let f(x) = x^2 - 6 and g(x) = 4x + 5. Compute (g ∘ f)(-2) and (f ∘ f)(3).',
                         description: 'Let f(x) = x^2 - 6 and g(x) = 4x + 5. Compute (g ∘ f)(-2) and (f ∘ f)(3).',
+                        idealTime: 240,
                         steps: [
                             {
                                 id: 'a',
@@ -65,6 +67,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Given f(x) = 2x - 5 and g(x) = 3x^2 + 1, find explicit formulas for (g ∘ f)(x) and (f ∘ g)(x).',
                         description: 'Given f(x) = 2x - 5 and g(x) = 3x^2 + 1, find explicit formulas for (g ∘ f)(x) and (f ∘ g)(x).',
+                        idealTime: 300,
                         steps: [
                             {
                                 id: 'a',
@@ -87,6 +90,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'For f(x) = 2x + 1, g(x) = x^2 - x + 1, and h(x) = √(x^2 + 3), determine (h ∘ g ∘ f)(x).',
                         description: 'For f(x) = 2x + 1, g(x) = x^2 - x + 1, and h(x) = √(x^2 + 3), determine (h ∘ g ∘ f)(x).',
+                        idealTime: 360,
                         steps: [
                             {
                                 id: 'a',
@@ -109,6 +113,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'A company\'s profit P (in dollars) is P = g(x), where x is units sold, and x = f(p), where p is the unit price (in dollars). Express profit directly as a function of price.',
                         description: 'A company\'s profit P (in dollars) is P = g(x), where x is units sold, and x = f(p), where p is the unit price (in dollars). Express profit directly as a function of price.',
+                        idealTime: 180,
                         steps: [
                             {
                                 id: 'a',
@@ -131,6 +136,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Let f(x) = ln x − ln (x + 1) and g(x) = e^x ⁄ (1 − e^x). Evaluate (f ∘ g)(x).',
                         description: 'Let f(x) = ln x − ln (x + 1) and g(x) = e^x ⁄ (1 − e^x). Evaluate (f ∘ g)(x).',
+                        idealTime: 360,
                         steps: [
                             {
                                 id: 'a',
@@ -160,6 +166,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Example',
                         title: 'Find the inverse of f(x) = (2x + 1) / (x - 3) and verify your result.',
                         description: 'Find the inverse of f(x) = (2x + 1) / (x - 3) and verify your result.',
+                        idealTime: 300,
                         steps: [
                             {
                                 id: 'a',
@@ -181,6 +188,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Find f⁻¹(x) for f(x) = 4x + 9. State its domain and range, and verify that (f⁻¹ ∘ f)(x) = x.',
                         description: 'Find f⁻¹(x) for f(x) = 4x + 9. State its domain and range, and verify that (f⁻¹ ∘ f)(x) = x.',
+                        idealTime: 300,
                         steps: [
                             {
                                 id: 'a',
@@ -209,6 +217,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'The function g(x) = x^2 − 2 is not one-to-one on ℝ. Restrict its domain so that it becomes one-to-one, then find g⁻¹ and sketch both graphs on the same axes.',
                         description: 'The function g(x) = x^2 − 2 is not one-to-one on ℝ. Restrict its domain so that it becomes one-to-one, then find g⁻¹ and sketch both graphs on the same axes.',
+                        idealTime: 240,
                         steps: [
                             {
                                 id: 'a',
@@ -231,6 +240,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'For f(x) = 2^{−x}, determine f⁻¹(x) and sketch the graphs of f and f⁻¹ on a common set of axes.',
                         description: 'For f(x) = 2^{−x}, determine f⁻¹(x) and sketch the graphs of f and f⁻¹ on a common set of axes.',
+                        idealTime: 240,
                         steps: [
                             {
                                 id: 'a',
@@ -247,6 +257,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Suppose f(t) = 25 ⁄ [1 + 4 e^{−2t}]. (a) Find f⁻¹(t). (b) Compute f(2).',
                         description: 'Suppose f(t) = 25 ⁄ [1 + 4 e^{−2t}]. (a) Find f⁻¹(t). (b) Compute f(2).',
+                        idealTime: 420,
                         steps: [
                             {
                                 id: 'a',
@@ -269,6 +280,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Let h(x) = (1⁄5)x − 2. Find h⁻¹(x) and verify h∘h⁻¹(x) = x.',
                         description: 'Let h(x) = (1⁄5)x − 2. Find h⁻¹(x) and verify h∘h⁻¹(x) = x.',
+                        idealTime: 240,
                         steps: [
                             {
                                 id: 'a',
@@ -298,6 +310,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Example',
                         title: 'Determine if f(x) = (x-1)^2 is one-to-one using both algebraic proof and the horizontal-line test.',
                         description: 'Determine if f(x) = (x-1)^2 is one-to-one using both algebraic proof and the horizontal-line test.',
+                        idealTime: 240,
                         steps: [
                             {
                                 id: 'a',
@@ -319,6 +332,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Prove algebraically whether f(x) = 5x − 7 is one-to-one.',
                         description: 'Prove algebraically whether f(x) = 5x − 7 is one-to-one.',
+                        idealTime: 120,
                         steps: [
                             {
                                 id: 'a',
@@ -335,6 +349,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Is g(x) = √(x + 3) one-to-one? Justify your answer.',
                         description: 'Is g(x) = √(x + 3) one-to-one? Justify your answer.',
+                        idealTime: 120,
                         steps: [
                             {
                                 id: 'a',
@@ -351,6 +366,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Determine if h(x) = |x − 2| is one-to-one and explain your reasoning.',
                         description: 'Determine if h(x) = |x − 2| is one-to-one and explain your reasoning.',
+                        idealTime: 120,
                         steps: [
                             {
                                 id: 'a',
@@ -367,6 +383,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Use the horizontal-line test to decide whether k(x) = x^3 − 2x is one-to-one. Explain briefly.',
                         description: 'Use the horizontal-line test to decide whether k(x) = x^3 − 2x is one-to-one. Explain briefly.',
+                        idealTime: 180,
                         steps: [
                             {
                                 id: 'a',
@@ -383,6 +400,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'For the piece-wise function m(x) = { x + 2 if x ≤ 0 ; x^2 if x > 0 }, determine whether m is one-to-one.',
                         description: 'For the piece-wise function m(x) = { x + 2 if x ≤ 0 ; x^2 if x > 0 }, determine whether m is one-to-one.',
+                        idealTime: 240,
                         steps: [
                             {
                                 id: 'a',
@@ -406,6 +424,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Example',
                         title: 'An investment of $1000 grows according to the formula A(t) = 1000 * (1.05)^t. When will the investment reach $1500?',
                         description: 'An investment of $1000 grows according to the formula A(t) = 1000 * (1.05)^t. When will the investment reach $1500?',
+                        idealTime: 240,
                         steps: [
                             {
                                 id: 'a',
@@ -433,6 +452,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Which of the following are exponential functions of the form y = ab^x? (a) y = −4^x (b) y = (1⁄2)^{-3x} (c) y = (√7)^{-x} (d) y = (−3)^x',
                         description: 'Which of the following are exponential functions of the form y = ab^x? (a) y = −4^x (b) y = (1⁄2)^{-3x} (c) y = (√7)^{-x} (d) y = (−3)^x',
+                        idealTime: 180,
                         steps: [
                             {
                                 id: 'a',
@@ -449,6 +469,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Sketch f(x) = (1⁄4)·3^x and g(x) = 3^x for −3 ≤ x ≤ 3, clearly labeling any intercepts and asymptotes.',
                         description: 'Sketch f(x) = (1⁄4)·3^x and g(x) = 3^x for −3 ≤ x ≤ 3, clearly labeling any intercepts and asymptotes.',
+                        idealTime: 240,
                         steps: [
                             {
                                 id: 'a',
@@ -471,6 +492,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Solve for x: 5^{2x − 1} = 125.',
                         description: 'Solve for x: 5^{2x − 1} = 125.',
+                        idealTime: 120,
                         steps: [
                             {
                                 id: 'a',
@@ -493,6 +515,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Solve for x: e^{3x − 2} = 7.',
                         description: 'Solve for x: e^{3x − 2} = 7.',
+                        idealTime: 120,
                         steps: [
                             {
                                 id: 'a',
@@ -515,6 +538,7 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'For each function, state whether its graph is increasing or decreasing and give the y-intercept: (i) f(x) = (1⁄3)^x (ii) g(x) = 2^{x − 1}.',
                         description: 'For each function, state whether its graph is increasing or decreasing and give the y-intercept: (i) f(x) = (1⁄3)^x (ii) g(x) = 2^{x − 1}.',
+                        idealTime: 240,
                         steps: [
                             {
                                 id: 'a',

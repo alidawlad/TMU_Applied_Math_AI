@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { DateTime } from "@/components/DateTime";
 import { Logo } from "@/components/icons";
-import { Menu, HelpCircle, Pencil } from "lucide-react";
+import { Menu, HelpCircle, Pencil, Clock } from "lucide-react";
 import type { Lecture, Problem } from "@/lib/types";
 import { Timer } from "./Timer";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,17 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ lecture, problem, problemIndex, totalProblems, onToggleDrawingMode, isDrawingModeActive }: AppHeaderProps) {
+  
+  const formatIdealTime = (totalSeconds: number) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+    const secs = (totalSeconds % 60).toString().padStart(2, '0');
+    if (hours > 0) {
+      return `${hours.toString()}:${minutes}:${secs}`;
+    }
+    return `${minutes}:${secs}`;
+  };
+  
   return (
     <header className="flex-shrink-0">
       <div className="bg-background border-b px-4 h-14 flex items-center justify-between">
@@ -58,6 +69,12 @@ export function AppHeader({ lecture, problem, problemIndex, totalProblems, onTog
          </div>
          <div className="flex items-center gap-4">
             <Timer resetKey={problem.id}/>
+            {problem.idealTime && (
+              <div className="hidden sm:flex items-center gap-2 text-sm font-mono bg-black/20 text-primary-foreground px-2 py-1 rounded-md">
+                <Clock className="h-4 w-4 text-primary-foreground/80" />
+                <span>Ideal: {formatIdealTime(problem.idealTime)}</span>
+              </div>
+            )}
             <Button className="bg-background text-primary hover:bg-background/90">Save</Button>
          </div>
       </div>

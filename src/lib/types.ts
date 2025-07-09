@@ -1,5 +1,5 @@
 export type Step = {
-  id: string;
+  id: string | number;
   title: string;
   description: string;
   solution: string;
@@ -8,12 +8,14 @@ export type Step = {
 };
 
 export type Problem = {
-  id: string;
+  id:string;
   type: 'lead-example' | 'practice';
   source: string;
   title: string;
   description: string;
+  fullQuestion?: string;
   steps: Step[];
+  idealTime?: number;
 };
 
 export type Module = {
