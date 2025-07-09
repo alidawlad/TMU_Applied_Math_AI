@@ -198,7 +198,7 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
                 <div className="space-y-4 pt-6">
                   <div className="step-description space-y-2">
                     <h3 className="font-headline text-xl font-semibold">
-                      Step {index + 1}: <MathRenderer text={step.title} />
+                       <MathRenderer text={step.title} />
                     </h3>
                     <p className="text-muted-foreground">
                       <MathRenderer text={step.description} />
@@ -212,10 +212,10 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
                     disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
                   />
                   
-                  {step.calculator_callout && (
+                  {step.calculator_tip && (
                     <CalculatorCallout 
-                      title={step.calculator_callout.title}
-                      description={step.calculator_callout.description}
+                      title="Calculator Tip"
+                      description={step.calculator_tip}
                     />
                   )}
 
