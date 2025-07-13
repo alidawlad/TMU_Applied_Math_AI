@@ -2,17 +2,28 @@
 
 import 'katex/dist/katex.min.css';
 import { InlineMath } from 'react-katex';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface MathRendererProps {
   text: string;
 }
 
 export function MathRenderer({ text }: MathRendererProps) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   if (!text) {
     return null;
   }
   
+  if (!isClient) {
+    // Render plain text on the server to avoid mismatch
+    return <>{text.replace(/\$/g, '')}</>;
+  }
+
   // Regex to find content between single dollar signs (non-greedy)
   // It will match $math content$ but not stand-alone $ signs for currency.
   const regex = /\$(.*?)\$/g;
