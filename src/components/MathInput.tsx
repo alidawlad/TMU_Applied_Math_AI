@@ -4,7 +4,7 @@ import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 
 interface MathInputProps {
   value: string;
@@ -21,12 +21,11 @@ export function MathInput({
 }: MathInputProps) {
   return (
     <div className="grid gap-4">
-      <Textarea
+      <Input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className="text-lg"
-        rows={2}
         disabled={disabled}
       />
       {value && (

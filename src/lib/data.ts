@@ -1286,5 +1286,117 @@ export const lectures: Lecture[] = [
                 ]
             }
         ]
+    },
+    {
+        id: 'lecture-2',
+        title: 'Week 10: Sequences and Series',
+        modules: [
+            {
+                id: 'sequences',
+                name: 'Sequences',
+                description: 'An infinite sequence is a function a: N → R. A finite sequence is a function a: {1, 2, . . . , n} → R. Given n ∈ N, the n-term of the sequence a is a(n). It is customary to write a_n instead of a(n) and we will adopt this notation.\n\nWe will use $(a_k)^n_{k=1}$ to indicate that the sequence is finite of length n, i.e., $a_1, a_2, a_3, . . . , a_n$. We will use $(a_k)^∞_{k=1}$ to indicate that the sequence is infinite, i.e., $a_1, a_2, a_3, . . . .$\n\nSequences can be given:\na) by specifying its general term, a formula for writing the n-th term of the sequence\nb) by listing the terms of the sequence\nc) by a recursive formula',
+                problems: [
+                    {
+                        id: 'W10-SQ-LEAD',
+                        type: 'lead-example',
+                        skill: 'Sequences by General Term',
+                        source: 'Week 10 Example 1',
+                        title: 'Find the first four terms of the sequence given by the general term $a_n = 2n$.',
+                        description: 'If the sequence $(a_n)^∞_{n=1}$ is given by $a_n = 2n$, then $a_1 = 2 \\cdot 1 = 2$, $a_2 = 2 \\cdot 2 = 4$, $a_3 = 2 \\cdot 3 = 6$, . . . are respectively the 1-st, 2-nd and 3-rd term of the sequence. We see that $a_n = 2n$ is the sequence of even numbers: 2, 4, 6, 8, 10, . . .',
+                        idealTime: 180,
+                        steps: [
+                            {
+                                id: '1',
+                                title: 'Step 1: Find the first term ($a_1$)',
+                                description: 'Substitute n=1 into the formula $a_n = 2n$.',
+                                solution: '2'
+                            },
+                            {
+                                id: '2',
+                                title: 'Step 2: Find the second term ($a_2$)',
+                                description: 'Substitute n=2 into the formula $a_n = 2n$.',
+                                solution: '4'
+                            },
+                            {
+                                id: '3',
+                                title: 'Step 3: Find the third term ($a_3$)',
+                                description: 'Substitute n=3 into the formula $a_n = 2n$.',
+                                solution: '6'
+                            },
+                            {
+                                id: '4',
+                                title: 'Step 4: Find the fourth term ($a_4$)',
+                                description: 'Substitute n=4 into the formula $a_n = 2n$.',
+                                solution: '8'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'SQ1',
+                        type: 'practice',
+                        skill: 'Sequences by General Term',
+                        source: 'Week 10 Example 1 Practice',
+                        title: 'Find the first four terms for $a_n = n^2$.',
+                        description: 'If the sequence $(a_n)^∞_{n=1}$ is given by $a_n = n^2$, then $a_1 = 1^2 = 1$, $a_2 = 2^2 = 4$, $a_3 = 3^2 = 9$, . . . are respectively the 1-st, 2-nd and 3-rd term of the sequence. We see that a(n) = n^2 is the sequence of squares of natural numbers: 1, 4, 9, 16, 25, . . .',
+                        idealTime: 180,
+                        steps: [
+                             {
+                                id: '1',
+                                title: 'Step 1: Find the first term ($a_1$)',
+                                description: 'Substitute n=1 into the formula $a_n = n^2$.',
+                                solution: '1'
+                            },
+                            {
+                                id: '2',
+                                title: 'Step 2: Find the second term ($a_2$)',
+                                description: 'Substitute n=2 into the formula $a_n = n^2$.',
+                                solution: '4'
+                            },
+                            {
+                                id: '3',
+                                title: 'Step 3: Find the third term ($a_3$)',
+                                description: 'Substitute n=3 into the formula $a_n = n^2$.',
+                                solution: '9'
+                            },
+                            {
+                                id: '4',
+                                title: 'Step 4: Find the fourth term ($a_4$)',
+                                description: 'Substitute n=4 into the formula $a_n = n^2$.',
+                                solution: '16'
+                            }
+                        ]
+                    },
+                     {
+                        id: 'SQ2',
+                        type: 'practice',
+                        skill: 'Sequences by General Term',
+                        source: 'Week 10 Example 1 Practice',
+                        title: 'Find specified terms for $a_n = \\frac{1}{2^n}$.',
+                        description: 'If the sequence $(a_n)^∞_{n=1}$ is given by $a_n = \\frac{1}{2^n}$, then $a_1 = \\frac{1}{2^1} = \\frac{1}{2}$, $a_2 = \\frac{1}{2^2} = \\frac{1}{4}$, $a_5 = \\frac{1}{2^5} = \\frac{1}{32}$ are respectively the 1-st, 2-nd and 5-th term of the sequence.',
+                        idealTime: 180,
+                        steps: [
+                             {
+                                id: '1',
+                                title: 'Step 1: Find the first term ($a_1$)',
+                                description: 'Substitute n=1 into the formula $a_n = \\frac{1}{2^n}$.',
+                                solution: '1/2'
+                            },
+                            {
+                                id: '2',
+                                title: 'Step 2: Find the second term ($a_2$)',
+                                description: 'Substitute n=2 into the formula $a_n = \\frac{1}{2^n}$.',
+                                solution: '1/4'
+                            },
+                            {
+                                id: '3',
+                                title: 'Step 3: Find the fifth term ($a_5$)',
+                                description: 'Substitute n=5 into the formula $a_n = \\frac{1}{2^n}$.',
+                                solution: '1/32'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 ];

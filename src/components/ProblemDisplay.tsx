@@ -54,6 +54,18 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
   }, [problem.id]);
 
   useEffect(() => {
+    // This effect ensures that the decision to show steps is only made client-side
+    // after initial hydration, preventing a mismatch with the server render.
+    if(isHydrated && Object.keys(stepStatuses).length > 0) {
+      setAttemptStarted(true);
+      // If the timer was running for this problem, we might need to restart it.
+      // This part depends on how timer state is persisted. For now, we assume
+      // a fresh start on reload.
+    }
+  }, [isHydrated, stepStatuses]);
+
+
+  useEffect(() => {
     if (isHydrated) {
       try {
         localStorage.setItem(`fm-stepInputs-${problem.id}`, JSON.stringify(stepInputs));
@@ -195,30 +207,31 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
 
   return (
     <div className="flex-1 bg-white p-6 md:p-8 overflow-y-auto">
-        <div className="problem-description space-y-2 mb-8">
+        <div className="problem-description space-y-4 mb-8">
             <h1 className="font-headline text-2xl font-semibold leading-snug"><MathRenderer text={problemTitle} /></h1>
-            <div className="text-foreground/90 text-lg leading-relaxed whitespace-pre-wrap"><MathRenderer text={problemDesc} /></div>
+            <div className="text-foreground/90 text-base md:text-lg leading-relaxed whitespace-pre-wrap prose prose-sm md:prose-base max-w-none"><MathRenderer text={problemDesc} /></div>
              <div className="pt-4">
               <Progress value={progress} className="w-full" />
               <p className="text-sm text-muted-foreground mt-2 text-center">{correctStepsCount} of {problem.steps.length} steps completed</p>
             </div>
         </div>
 
-        {!attemptStarted ? (
+        {!attemptStarted && problem.type === 'practice' ? (
           <div className="text-center py-8 border-t">
              <Button size="lg" onClick={handleStartAttempt}>Start Attempt</Button>
           </div>
         ) : (
           <div className="space-y-8">
             {problem.steps.map((step, index) => {
-              if (index > firstIncompleteStepIndex) {
+              if (index > firstIncompleteStepIndex && problem.type === 'practice') {
                 return null;
               }
 
               const stepKey = `${problem.id}-${step.id}`;
               const currentStatus = stepStatuses[stepKey] || "unanswered";
-              const isStepUnlocked = index === 0 || stepStatuses[`${problem.id}-${problem.steps[index - 1].id}`] === 'correct';
+              const isStepUnlocked = index === 0 || stepStatuses[`${problem.id}-${problem.steps[index - 1].id}`] === 'correct' || problem.type === 'lead-example';
               const isStepLoading = isLoading[stepKey] || false;
+              const isExample = problem.type === 'lead-example';
 
               return (
                 <div key={stepKey}>
@@ -233,14 +246,24 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
                       </p>
                     </div>
 
-                    <MathInput
-                      value={stepInputs[stepKey] || ""}
-                      onChange={(value) => handleInputChange(stepKey, value)}
-                      placeholder="Enter your step here in LaTeX format..."
-                      disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
-                    />
+                    {isExample ? (
+                      <Alert variant="success">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <AlertTitle>Solution</AlertTitle>
+                        <AlertDescription>
+                          <MathRenderer text={`$${step.solution}$`} />
+                        </AlertDescription>
+                      </Alert>
+                    ) : (
+                       <MathInput
+                        value={stepInputs[stepKey] || ""}
+                        onChange={(value) => handleInputChange(stepKey, value)}
+                        placeholder="Enter your step here..."
+                        disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
+                      />
+                    )}
                     
-                    {step.calculator_tip && (
+                    {step.calculator_tip && !isExample && (
                       <CalculatorCallout 
                         title="Calculator Tip"
                         description={step.calculator_tip}
@@ -255,7 +278,7 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
                       </Alert>
                     )}
 
-                    {!isStepLoading && currentStatus === 'correct' && (
+                    {!isExample && !isStepLoading && currentStatus === 'correct' && (
                       <Alert variant="success">
                         <CheckCircle2 className="h-4 w-4" />
                         <AlertTitle>
@@ -267,7 +290,7 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
                       </Alert>
                     )}
                     
-                    {!isStepLoading && currentStatus === 'incorrect' && stepFeedback[stepKey] && (
+                    {!isExample && !isStepLoading && currentStatus === 'incorrect' && stepFeedback[stepKey] && (
                       <Alert variant="destructive">
                         <XCircle className="h-4 w-4" />
                         <AlertTitle>Not quite...</AlertTitle>
@@ -275,33 +298,66 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
                       </Alert>
                     )}
 
-                    {!isStepLoading && stepHints[stepKey] && (
+                    {!isExample && !isStepLoading && stepHints[stepKey] && (
                       <Alert variant="default" className="bg-accent/20 border-accent/50">
                         <Lightbulb className="h-4 w-4" />
                         <AlertTitle>Hint</AlertTitle>
                         <AlertDescription>{stepHints[stepKey]}</AlertDescription>
                       </Alert>
                     )}
-                    <div className="flex justify-between items-center flex-wrap gap-2 mt-4">
-                        <div className="flex gap-4">
-                          <Button variant="outline" size="sm" onClick={() => handleGetHint(step)} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>
-                              Get Hint
-                          </Button>
-                          {problem.type === 'practice' && leadExample && (
-                            <ViewExampleDialog exampleProblem={leadExample} />
-                          )}
-                        </div>
-                        <div className="flex gap-2">
-                          <Button variant="ghost" size="sm" onClick={() => handleInputChange(stepKey, '')} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>Clear</Button>
-                          <Button onClick={() => handleCheckAnswer(step, index)} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>
-                              Check Answer
-                          </Button>
-                        </div>
-                      </div>
+                    
+                    {!isExample && (
+                        <div className="flex justify-between items-center flex-wrap gap-2 mt-4">
+                            <div className="flex gap-4">
+                              <Button variant="outline" size="sm" onClick={() => handleGetHint(step)} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>
+                                  Get Hint
+                              </Button>
+                              {problem.type === 'practice' && leadExample && (
+                                <ViewExampleDialog exampleProblem={leadExample} />
+                              )}
+                            </div>
+                            <div className="flex gap-2">
+                              <Button variant="ghost" size="sm" onClick={() => handleInputChange(stepKey, '')} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>Clear</Button>
+                              <Button onClick={() => handleCheckAnswer(step, index)} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>
+                                  Check Answer
+                              </Button>
+                            </div>
+                          </div>
+                    )}
                   </div>
                 </div>
               );
             })}
+
+            {progress === 100 && problem.type === 'practice' && (
+              <div className="text-center py-8 border-t">
+                <h3 className="font-headline text-xl font-semibold mb-4">You mastered it! Ready for more?</h3>
+                <div className="flex justify-center gap-4">
+                  {/* Here you could link to the next problem or back to the study plan */}
+                   <Button size="lg">Next Problem</Button>
+                   <Button size="lg" variant="outline">Back to Study Plan</Button>
+                </div>
+              </div>
+            )}
+             {problem.type === 'lead-example' && (
+                <div className="mt-8 border-t pt-8">
+                    <h3 className="font-headline text-xl font-semibold mb-4">Related Practice Problems</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                        {module.problems.filter(p => p.type === 'practice' && p.skill === problem.skill).map(p => (
+                            <Link key={p.id} href={`/practice?problem=${p.id}`} className="block">
+                                <Card className="h-full hover:border-primary transition-colors">
+                                    <CardHeader>
+                                        <CardTitle className="text-lg font-semibold"><MathRenderer text={p.title}/></CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <p className="text-sm text-muted-foreground line-clamp-2"><MathRenderer text={p.description}/></p>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+             )}
           </div>
         )}
     </div>

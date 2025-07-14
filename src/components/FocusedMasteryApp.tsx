@@ -9,12 +9,16 @@ import { Skeleton } from "./ui/skeleton";
 import { DrawingCanvas } from "./DrawingCanvas";
 import { DrawingToolbar } from "./DrawingToolbar";
 import { Logo } from "@/components/icons";
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { MathRenderer } from "./MathRenderer";
 
 
 export function FocusedMasteryApp() {
   const [isClient, setIsClient] = useState(false);
   const searchParams = useSearchParams()
+  const router = useRouter();
   const problemIdFromUrl = searchParams.get('problem');
 
   useEffect(() => {
@@ -84,18 +88,29 @@ export function FocusedMasteryApp() {
   // State change handlers
   const handleLectureChange = (lectureId: string) => {
     const newLecture = lectures.find(l => l.id === lectureId)!;
+    const newModule = newLecture.modules[0];
+    const newProblem = newModule.problems[0];
     setCurrentLectureId(lectureId);
-    setCurrentModuleId(newLecture.modules[0].id);
+    setCurrentModuleId(newModule.id);
     setCurrentProblemIndex(0);
+    router.push(`/practice?problem=${newProblem.id}`);
   };
 
   const handleModuleChange = (moduleId: string) => {
+    const lecture = lectures.find(l => l.id === currentLectureId)!;
+    const newModule = lecture.modules.find(m => m.id === moduleId)!;
+    const newProblem = newModule.problems[0];
     setCurrentModuleId(moduleId);
     setCurrentProblemIndex(0);
+    router.push(`/practice?problem=${newProblem.id}`);
   };
 
   const handleProblemChange = (problemIndex: number) => {
+    const lecture = lectures.find(l => l.id === currentLectureId)!;
+    const module = lecture.modules.find(m => m.id === currentModuleId)!;
+    const newProblem = module.problems[problemIndex];
     setCurrentProblemIndex(problemIndex);
+    router.push(`/practice?problem=${newProblem.id}`);
   };
 
   const toggleDrawingMode = () => {
@@ -103,7 +118,7 @@ export function FocusedMasteryApp() {
   }
 
   // Memoized derived state
-  const currentLecture = useMemo(() => lectures.find(l => l.id === currentLectureId)!, [currentLectureId]);
+  const currentLecture = useMemo(() => lectures.find(l => l.id === currentLectureId), [currentLectureId]);
   const currentModule = useMemo(() => currentLecture?.modules.find(m => m.id === currentModuleId), [currentLecture, currentModuleId]);
   const currentProblem = useMemo(() => currentModule?.problems[currentProblemIndex], [currentModule, currentProblemIndex]);
 
@@ -151,11 +166,19 @@ export function FocusedMasteryApp() {
           currentProblemIndex={currentProblemIndex}
           onProblemChange={handleProblemChange}
         />
-        <ProblemDisplay 
+        {currentProblem.type === 'lead-example' ? (
+           <ProblemDisplay 
             key={currentProblem.id}
             module={currentModule}
             problem={currentProblem}
-        />
+          />
+        ) : (
+          <ProblemDisplay 
+            key={currentProblem.id}
+            module={currentModule}
+            problem={currentProblem}
+          />
+        )}
       </main>
     </div>
   );
