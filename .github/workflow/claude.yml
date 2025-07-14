@@ -1,0 +1,94 @@
+name: Claude PR Assistant
+on: 
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned]
+  pull_request_review:
+    types: [submitted]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  claude-code-action:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && contains(github.event.issue.body, '@claude')) ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.body, '@claude'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Run Claude PR Action
+        uses: anthropics/claude-code-action@beta
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          mcp_config: |
+            {
+              "mcpServers": {
+                "Context 7": {
+                  "command": "npx",
+                  "args": [
+                    "-y",
+                    "@upstash/context7-mcp@latest"
+                  ],
+                  "description": "Context7 MCP pulls up-to-date, version-specific documentation and code examples straight from the source — and places them directly into your prompt."
+                },
+                "Mermaid Diagram Generator": {
+                  "command": "npx",
+                  "args": [
+                    "-y",
+                    "@smithery/cli",
+                    "run",
+                    "@peng-shawn/mermaid-mcp-server",
+                    "--key",
+                    "441a0cd0-7e90-4c71-b6cc-1638ee510c12"
+                  ],
+                  "description": "Convert textual Mermaid diagram descriptions into high-quality PNG images. Enhance your AI applications with visual representations of data and processes effortlessly. Customize themes and backgrounds to fit your design needs."
+                },
+                "@21st-dev/magic": {
+                  "command": "npx",
+                  "args": [
+                    "-y",
+                    "@21st-dev/magic@latest"
+                  ],
+                  "env": {
+                    "API_KEY": "${{ secrets.TWENTYFIRST_DEV_API_KEY }}"
+                  },
+                  "description": "It will enhance your UI design skills by offering inspirations to base your designs on. We recommend utilizing component inspiration while building UI components, as this will enrich your creativity and provide you with fresh ideas."
+                },
+                "sequential-thinking": {
+                  "command": "npx",
+                  "args": [
+                    "-y",
+                    "@modelcontextprotocol/server-sequential-thinking"
+                  ]
+                }
+              }
+            }
+          allowed_tools: |
+            mcp__sequential-thinking__sequentialthinking,
+            mcp__Context_7__resolve-library-id,
+            mcp__Context_7__get-library-docs,
+            mcp__Mermaid_Diagram_Generator__generate_mermaid_diagram,
+            mcp___21st-dev_magic__21st_magic_component_inspiration,
+            mcp___21st-dev_magic__logo_search,
+            mcp___21st-dev_magic__21st_magic_component_refiner,
+            mcp__github__create_pending_pull_request_review
+            mcp__github__add_pull_request_review_comment_to_pending_review
+            mcp__github__submit_pending_pull_request_review
+            mcp__github__get_pull_request_diff
+          timeout_minutes: "60"
+          assignee_trigger: "claude"
