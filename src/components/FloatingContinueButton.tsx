@@ -33,7 +33,7 @@ export function FloatingContinueButton({
           "min-w-[120px] h-12 text-base font-medium",
           isComplete 
             ? "bg-green-600 hover:bg-green-700 text-white" 
-            : "bg-primary hover:bg-primary/90 animate-pulse"
+            : "bg-primary hover:bg-primary/90"
         )}
       >
         {isComplete ? (
