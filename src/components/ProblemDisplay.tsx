@@ -14,6 +14,8 @@ import { MathRenderer } from "./MathRenderer";
 import { Separator } from "@/components/ui/separator";
 import { ViewExampleDialog } from "./ViewExampleDialog";
 import { Skeleton } from "./ui/skeleton";
+import Link from "next/link";
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 
 type StepStatus = "unanswered" | "correct" | "incorrect";
 
