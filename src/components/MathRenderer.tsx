@@ -11,7 +11,7 @@ interface MathRendererProps {
 // Improved regex for better math parsing
 const MATH_PATTERNS = {
   blockMath: /\$\$([^$]+)\$\$/g,
-  inlineMath: /\$([^$]+)\$/g,
+  inlineMath: /\$(?!\d)([^$]+?)\$/g,
   blockBrackets: /\\\[([^\]]+)\\\]/g,
   inlineBrackets: /\\\(([^\)]+)\\\)/g
 };
