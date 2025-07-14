@@ -93,7 +93,7 @@ export function FocusedMasteryApp() {
     setCurrentLectureId(lectureId);
     setCurrentModuleId(newModule.id);
     setCurrentProblemIndex(0);
-    router.push(`/practice?problem=${newProblem.id}`);
+    router.push(`/practice?problem=${newProblem.id}`, { scroll: false });
   };
 
   const handleModuleChange = (moduleId: string) => {
@@ -102,7 +102,7 @@ export function FocusedMasteryApp() {
     const newProblem = newModule.problems[0];
     setCurrentModuleId(moduleId);
     setCurrentProblemIndex(0);
-    router.push(`/practice?problem=${newProblem.id}`);
+    router.push(`/practice?problem=${newProblem.id}`, { scroll: false });
   };
 
   const handleProblemChange = (problemIndex: number) => {
@@ -110,8 +110,32 @@ export function FocusedMasteryApp() {
     const module = lecture.modules.find(m => m.id === currentModuleId)!;
     const newProblem = module.problems[problemIndex];
     setCurrentProblemIndex(problemIndex);
-    router.push(`/practice?problem=${newProblem.id}`);
+    router.push(`/practice?problem=${newProblem.id}`, { scroll: false });
   };
+  
+  const handleNextProblem = () => {
+    const lecture = lectures.find(l => l.id === currentLectureId)!;
+    const module = lecture.modules.find(m => m.id === currentModuleId)!;
+    
+    // If current problem is an example, find the first practice problem in the same skill set
+    if (currentProblem?.type === 'lead-example') {
+        const firstPracticeProblemIndex = module.problems.findIndex(p => p.type === 'practice' && p.skill === currentProblem.skill);
+        if(firstPracticeProblemIndex !== -1) {
+            handleProblemChange(firstPracticeProblemIndex);
+            return;
+        }
+    }
+    
+    // Otherwise, or if no specific practice problem found, go to the next problem in the list
+    const nextProblemIndex = currentProblemIndex + 1;
+    if (nextProblemIndex < module.problems.length) {
+      handleProblemChange(nextProblemIndex);
+    } else {
+      // Handle case where it's the last problem of the module
+      // Maybe go to next module or show a completion message. For now, just stay.
+    }
+  };
+
 
   const toggleDrawingMode = () => {
     setIsDrawingModeActive(prev => !prev);
@@ -124,8 +148,8 @@ export function FocusedMasteryApp() {
 
   if (!isClient || !currentLecture || !currentModule || !currentProblem) {
     return (
-        <div className="flex h-screen w-full">
-            <div className="w-64 flex-shrink-0 border-r bg-background p-4 space-y-4">
+        <div className="flex h-screen w-full bg-background">
+            <div className="w-80 flex-shrink-0 border-r bg-background/50 p-4 space-y-4">
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-4 w-24 mt-4" />
@@ -166,19 +190,12 @@ export function FocusedMasteryApp() {
           currentProblemIndex={currentProblemIndex}
           onProblemChange={handleProblemChange}
         />
-        {currentProblem.type === 'lead-example' ? (
-           <ProblemDisplay 
+        <ProblemDisplay 
             key={currentProblem.id}
             module={currentModule}
             problem={currentProblem}
+            onNextProblem={handleNextProblem}
           />
-        ) : (
-          <ProblemDisplay 
-            key={currentProblem.id}
-            module={currentModule}
-            problem={currentProblem}
-          />
-        )}
       </main>
     </div>
   );

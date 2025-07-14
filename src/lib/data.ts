@@ -21,19 +21,19 @@ export const lectures: Lecture[] = [
                         steps: [
                             {
                                 id: 'a',
-                                title: 'a) Find the formula for $(f \\circ g)(x)$.',
+                                title: 'Find the formula for $(f \\circ g)(x)$',
                                 description: 'To find $(f \\circ g)(x)$, we substitute the entire function $g(x)$ into $f(x)$ in place of $x$. This is written as $f(g(x))$.\n\n$f(g(x)) = f(x^2 + 1) = 3(x^2 + 1) + 2$',
                                 solution: '3x^2 + 5'
                             },
                             {
                                 id: 'b',
-                                title: 'b) Find the formula for $(g \\circ f)(x)$.',
+                                title: 'Find the formula for $(g \\circ f)(x)$',
                                 description: 'Similarly, to find $(g \\circ f)(x)$, we substitute the entire function $f(x)$ into $g(x)$. This is written as $g(f(x))$.\n\n$g(f(x)) = g(3x+2) = (3x+2)^2 + 1 = (9x^2 + 12x + 4) + 1$',
                                 solution: '9x^2 + 12x + 5'
                             },
                             {
                                 id: 'c',
-                                title: 'c) Compute $(g \\circ f)(2)$.',
+                                title: 'Compute $(g \\circ f)(2)$',
                                 description: 'Now we use the formula for $(g \\circ f)(x)$ we just found and substitute $x=2$.\n\n$(g \\circ f)(2) = 9(2)^2 + 12(2) + 5 = 9(4) + 24 + 5 = 36 + 24 + 5$',
                                 solution: '65'
                             }
@@ -182,13 +182,13 @@ export const lectures: Lecture[] = [
                         steps: [
                             {
                                 id: 'a',
-                                title: 'a) Find the inverse function $f^{-1}(x)$.',
+                                title: 'Find the inverse function $f^{-1}(x)$',
                                 description: 'Set $y = f(x)$, then swap $x$ and $y$. Solve the resulting equation for $y$.\n\nStart with $y = \\frac{2x + 1}{x - 3}$.\nSwap variables: $x = \\frac{2y + 1}{y - 3}$.\nNow, solve for $y$:\n$x(y-3) = 2y+1$\n$xy - 3x = 2y + 1$\n$xy - 2y = 3x + 1$\n$y(x-2) = 3x+1$',
                                 solution: 'f^{-1}(x) = (3x + 1) / (x - 2)'
                             },
                             {
                                 id: 'b',
-                                title: 'b) Verify that $(f \\circ f^{-1})(x) = x$.',
+                                title: 'Verify that $(f \\circ f^{-1})(x) = x$',
                                 description: 'To verify, we substitute the inverse function $f^{-1}(x)$ into the original function $f(x)$ and simplify. The result should be $x$.\n\n$f(f^{-1}(x)) = f(\\frac{3x + 1}{x - 2}) = \\frac{2(\\frac{3x + 1}{x - 2}) + 1}{(\\frac{3x + 1}{x - 2}) - 3}$\n\nMultiplying the numerator and denominator by $(x-2)$ gives:\n$\\frac{2(3x + 1) + (x-2)}{(3x + 1) - 3(x-2)} = \\frac{6x+2+x-2}{3x+1-3x+6} = \\frac{7x}{7}$',
                                 solution: 'x'
                             }
@@ -337,13 +337,13 @@ export const lectures: Lecture[] = [
                         steps: [
                             {
                                 id: 'a',
-                                title: 'a) Algebraic Proof',
+                                title: 'Algebraic Proof',
                                 description: 'To prove algebraically, we set $f(a) = f(b)$ and check if this necessarily implies $a=b$.\n\nSet $f(a) = f(b) \\implies (a-1)^2 = (b-1)^2$.\nTaking the square root of both sides gives $a-1 = \\pm(b-1)$.\nThis gives two possibilities: $a-1 = b-1$, which means $a=b$, or $a-1 = -(b-1) = -b+1$, which means $a+b=2$. \nSince we found a case where $f(a)=f(b)$ but $a \\neq b$ (e.g., $a=0, b=2$), the function is not one-to-one.',
                                 solution: 'Not one-to-one because a=b or a=2-b'
                             },
                             {
                                 id: 'b',
-                                title: 'b) Horizontal-Line Test',
+                                title: 'Horizontal-Line Test',
                                 description: 'The horizontal-line test is a graphical method. If any horizontal line intersects the graph of the function more than once, the function is not one-to-one. The graph of $f(x)=(x-1)^2$ is a parabola opening upwards with its vertex at $(1,0)$. A horizontal line like $y=4$ intersects the graph at $x=-1$ and $x=3$.',
                                 solution: 'Fails the test, so it is not one-to-one.'
                             }
@@ -462,19 +462,19 @@ export const lectures: Lecture[] = [
                         steps: [
                             {
                                 id: 'a',
-                                title: 'a) Set up the equation.',
+                                title: 'Set up the equation',
                                 description: 'Set the function $A(t)$ equal to the target amount of \\$1500.',
                                 solution: '1500 = 1000 * (1.05)^t'
                             },
                             {
                                 id: 'b',
-                                title: 'b) Isolate the exponential term.',
+                                title: 'Isolate the exponential term',
                                 description: 'To solve for $t$, we first need to isolate the part of the equation with the exponent. We can do this by dividing both sides by the principal amount, \\$1000.',
                                 solution: '1.5 = (1.05)^t'
                             },
                             {
                                 id: 'c',
-                                title: 'c) Solve for t.',
+                                title: 'Solve for t',
                                 description: 'Now that the exponential term is isolated, we can use logarithms to solve for $t$. Taking the natural logarithm (ln) of both sides is a common approach.\n\n$\\ln(1.5) = \\ln((1.05)^t)$\nUsing the logarithm power rule, $\\ln(a^b) = b \\ln(a)$, we get:\n$\\ln(1.5) = t \\cdot \\ln(1.05)$\n$t = \\frac{\\ln(1.5)}{\\ln(1.05)}$',
                                 solution: 't = 8.31'
                             }
@@ -617,13 +617,13 @@ export const lectures: Lecture[] = [
                         steps: [
                             {
                                 id: 'a',
-                                title: 'a) Calculate the value of the expression.',
+                                title: 'Calculate the value of the expression',
                                 description: 'Use a calculator to compute $(1 + 1/1000)^{1000}$.\n\n$(1 + 0.001)^{1000} = (1.001)^{1000}$',
                                 solution: '2.71692'
                             },
                             {
                                 id: 'b',
-                                title: 'b) Compare to e.',
+                                title: 'Compare to e',
                                 description: 'The value of $e$ is approximately 2.71828. Our result is very close, showing how the expression approaches $e$ as $n$ gets larger.',
                                 solution: 'The value is very close to e, demonstrating the limit definition.'
                             }
@@ -785,25 +785,25 @@ export const lectures: Lecture[] = [
                         steps: [
                             {
                                 id: 'a',
-                                title: 'a) Express all terms with a base of 3.',
+                                title: 'Express all terms with a base of 3',
                                 description: 'Rewrite 9 as $3^2$ and 27 as $3^3$.',
                                 solution: '\\frac{3^{2x} \\cdot (3^2)^x}{(3^3)^x}'
                             },
                             {
                                 id: 'b',
-                                title: 'b) Simplify the exponents.',
+                                title: 'Simplify the exponents',
                                 description: 'Apply the power of a power rule $(a^m)^n = a^{mn}$ to the terms in the numerator and denominator.',
                                 solution: '\\frac{3^{2x} \\cdot 3^{2x}}{3^{3x}}'
                             },
                             {
                                 id: 'c',
-                                title: 'c) Combine the exponents.',
+                                title: 'Combine the exponents',
                                 description: 'Use the product rule $a^m \\cdot a^n = a^{m+n}$ for the numerator and the quotient rule $\\frac{a^m}{a^n} = a^{m-n}$ for the overall fraction.',
                                 solution: '3^{2x+2x-3x}'
                             },
                             {
                                 id: 'd',
-                                title: 'd) State the final answer.',
+                                title: 'State the final answer',
                                 description: 'Simplify the expression in the exponent to get the final result.',
                                 solution: '3^x'
                             }
@@ -977,13 +977,13 @@ export const lectures: Lecture[] = [
                         steps: [
                             {
                                 id: 'a',
-                                title: 'a) Identify the variables for the formula.',
+                                title: 'Identify the variables for the formula',
                                 description: '$P$ is the principal amount (\\$1000), $r$ is the annual interest rate (0.05), $n$ is the number of times interest is compounded per year (2 for semi-annually), and $t$ is the number of years (10).',
                                 solution: 'P=1000, r=0.05, n=2, t=10'
                             },
                             {
                                 id: 'b',
-                                title: 'b) Calculate the future value.',
+                                title: 'Calculate the future value',
                                 description: 'Substitute the values into the formula: $A = 1000(1 + \\frac{0.05}{2})^{2 \\cdot 10} = 1000(1.025)^{20}$.',
                                 solution: '1638.62'
                             }
@@ -1139,19 +1139,19 @@ export const lectures: Lecture[] = [
                         steps: [
                             {
                                 id: 'a',
-                                title: 'a) Evaluate the first term.',
+                                title: 'Evaluate the first term',
                                 description: 'For $\\log_2(16)$, we are asking $2^? = 16$. Since $2^4 = 16$, the value is 4.',
                                 solution: '4'
                             },
                             {
                                 id: 'b',
-                                title: 'b) Evaluate the second term.',
+                                title: 'Evaluate the second term',
                                 description: 'For $\\log_2(0.5)$, we are asking $2^? = 0.5$. Since $0.5 = 1/2 = 2^{-1}$, the value is -1.',
                                 solution: '-1'
                             },
                             {
                                 id: 'c',
-                                title: 'c) Compute the sum.',
+                                title: 'Compute the sum',
                                 description: 'Add the two results together: $4 + (-1)$.',
                                 solution: '3'
                             }
@@ -1301,33 +1301,27 @@ export const lectures: Lecture[] = [
                         type: 'lead-example',
                         skill: 'Sequences by General Term',
                         source: 'Week 10 Example 1',
-                        title: 'Find the first four terms of the sequence given by the general term $a_n = 2n$.',
-                        description: 'The sequence is given by its general term $a_n = 2n$. To find the terms of the sequence, we need to replace $n$ in the formula with 1, 2, 3, and so on.',
+                        title: 'Sequences given by its general term',
+                        description: 'If the sequence $(a_n)_{n=1}^\\infty$ is given by $a_n = 2n$, then $a_1 = 2 \\cdot 1 = 2$, $a_2 = 2 \\cdot 2 = 4$, $a_3 = 2 \\cdot 3 = 6$, . . . are respectively the 1-st, 2-nd and 3-rd term of the sequence. We see that $a_n = 2n$ is the sequence of even numbers 2, 4, 6, 8, 10, . . .',
                         idealTime: 180,
                         steps: [
                             {
                                 id: '1',
-                                title: 'Step 1: Find the first term ($a_1$)',
-                                description: 'First, let’s find the 1-st term of the sequence. To do so, we replace $n$ with 1 in the formula $a_n = 2n$.\n\n$a_1 = 2(1)$',
-                                solution: '2'
+                                title: 'Example (a)',
+                                description: 'If the sequence $(a_n)_{n=1}^\\infty$ is given by $a_n = 2n$, then $a_1 = 2 \\cdot 1 = 2$, $a_2 = 2 \\cdot 2 = 4$, $a_3 = 2 \\cdot 3 = 6$, . . . are respectively the 1-st, 2-nd and 3-rd term of the sequence. We see that $a_n = 2n$ is the sequence of even numbers 2, 4, 6, 8, 10, . . .',
+                                solution: ''
                             },
                             {
                                 id: '2',
-                                title: 'Step 2: Find the second term ($a_2$)',
-                                description: 'Next, we find the 2-nd term of the sequence by replacing $n$ with 2.\n\n$a_2 = 2(2)$',
-                                solution: '4'
+                                title: 'Example (b)',
+                                description: 'If the sequence $(a_n)_{n=1}^\\infty$ is given by $a_n = n^2$, then $a_1 = 1^2 = 1$, $a_2 = 2^2 = 4$, $a_3 = 3^2 = 9$, . . . are respectively the 1-st, 2-nd and 3-rd term of the sequence. We see that $a(n) = n^2$ is the sequence of squares of natural numbers 1, 4, 9, 16, 25, . . .',
+                                solution: ''
                             },
                             {
                                 id: '3',
-                                title: 'Step 3: Find the third term ($a_3$)',
-                                description: 'Now, we find the 3-rd term of the sequence by replacing $n$ with 3.\n\n$a_3 = 2(3)$',
-                                solution: '6'
-                            },
-                            {
-                                id: '4',
-                                title: 'Step 4: Find the fourth term ($a_4$)',
-                                description: 'Finally, we find the 4-th term of the sequence by replacing $n$ with 4.\n\n$a_4 = 2(4)$',
-                                solution: '8'
+                                title: 'Example (c)',
+                                description: 'If the sequence $(a_n)_{n=1}^\\infty$ is given by $a_n = \\frac{1}{2^n}$, then $a_1 = \\frac{1}{2^1} = \\frac{1}{2}, a_2 = \\frac{1}{2^2} = \\frac{1}{4}, a_5 = \\frac{1}{2^5} = \\frac{1}{32}$ are respectively the 1-st, 2-nd and 5-th term of the sequence.',
+                                solution: ''
                             }
                         ]
                     },

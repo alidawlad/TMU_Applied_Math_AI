@@ -42,12 +42,12 @@ export function ProblemSidebar({
   const practiceProblems = currentModule.problems.filter(p => p.type === 'practice');
 
   return (
-    <div className="w-64 flex-shrink-0 border-r bg-background flex flex-col">
+    <div className="w-80 flex-shrink-0 border-r bg-background/50 flex flex-col">
       <div className="p-4 space-y-4 border-b">
         <div>
           <Label htmlFor="lecture-select" className="text-xs text-muted-foreground">Lecture</Label>
           <Select value={currentLectureId} onValueChange={handleLectureSelect}>
-            <SelectTrigger id="lecture-select" className="w-full">
+            <SelectTrigger id="lecture-select" className="w-full bg-background">
               <SelectValue placeholder="Select a lecture" />
             </SelectTrigger>
             <SelectContent>
@@ -60,7 +60,7 @@ export function ProblemSidebar({
         <div>
           <Label htmlFor="module-select" className="text-xs text-muted-foreground">Module / Skill Set</Label>
           <Select value={currentModuleId} onValueChange={handleModuleSelect}>
-            <SelectTrigger id="module-select" className="w-full">
+            <SelectTrigger id="module-select" className="w-full bg-background">
               <SelectValue placeholder="Select a module" />
             </SelectTrigger>
             <SelectContent>
@@ -75,20 +75,20 @@ export function ProblemSidebar({
         <RadioGroup 
             value={String(currentProblemIndex)} 
             onValueChange={(value) => onProblemChange(Number(value))}
-            className="space-y-1 p-4"
+            className="p-2"
           >
           {leadExamples.length > 0 && (
-            <div>
-              <h3 className="mb-2 text-sm font-medium text-muted-foreground">Lead Examples</h3>
+            <div className="px-2">
+              <h3 className="mb-2 mt-2 text-sm font-semibold text-muted-foreground tracking-wider uppercase">Lead Examples</h3>
               {leadExamples.map((problem) => {
                 const index = currentModule.problems.findIndex(p => p.id === problem.id);
                 return (
                   <Label 
                     key={problem.id} 
                     htmlFor={`problem-${index}`}
-                    className={`flex items-start gap-3 rounded-md p-2 -ml-2 text-sm font-normal cursor-pointer hover:bg-accent/50 transition-colors ${currentProblemIndex === index ? 'bg-accent text-accent-foreground' : ''}`}
+                    className={`flex items-start gap-3 rounded-md p-3 text-sm font-medium cursor-pointer hover:bg-accent/50 transition-colors ${currentProblemIndex === index ? 'bg-accent text-accent-foreground' : ''}`}
                   >
-                    <RadioGroupItem value={String(index)} id={`problem-${index}`} className="mt-1"/>
+                    <RadioGroupItem value={String(index)} id={`problem-${index}`} className="mt-0.5"/>
                     <span className="flex-1"><MathRenderer text={problem.title} /></span>
                   </Label>
                 )
@@ -97,18 +97,18 @@ export function ProblemSidebar({
           )}
 
           {practiceProblems.length > 0 && (
-             <div className="mt-4">
+             <div className="mt-4 px-2">
               <Separator className="mb-4" />
-              <h3 className="mb-2 text-sm font-medium text-muted-foreground">Practice Problems</h3>
+              <h3 className="mb-2 text-sm font-semibold text-muted-foreground tracking-wider uppercase">Practice Problems</h3>
                {practiceProblems.map((problem) => {
                  const index = currentModule.problems.findIndex(p => p.id === problem.id);
                  return (
                   <Label 
                     key={problem.id} 
                     htmlFor={`problem-${index}`}
-                    className={`flex items-start gap-3 rounded-md p-2 -ml-2 text-sm font-normal cursor-pointer hover:bg-accent/50 transition-colors ${currentProblemIndex === index ? 'bg-accent text-accent-foreground' : ''}`}
+                    className={`flex items-start gap-3 rounded-md p-3 text-sm font-medium cursor-pointer hover:bg-accent/50 transition-colors ${currentProblemIndex === index ? 'bg-accent text-accent-foreground' : ''}`}
                   >
-                    <RadioGroupItem value={String(index)} id={`problem-${index}`} className="mt-1" />
+                    <RadioGroupItem value={String(index)} id={`problem-${index}`} className="mt-0.5" />
                     <span className="flex-1"><MathRenderer text={problem.title} /></span>
                   </Label>
                  )

@@ -3,6 +3,7 @@
 import { evaluateMathEquivalence } from "@/ai/flows/evaluate-math-equivalence";
 import { generateProblemHint } from "@/ai/flows/generate-problem-hints";
 import { provideStepFeedback } from "@/ai/flows/provide-step-feedback";
+import { explainExampleStep } from "@/ai/flows/explain-example-step";
 import type { Problem, Step } from "./types";
 
 interface GetHintArgs {
@@ -84,4 +85,20 @@ export async function checkAnswerAction({
     console.error(error);
     return { isEquivalent: false, feedback: null, error: "Failed to evaluate answer." };
   }
+}
+
+interface ExplainExampleStepArgs {
+    exampleTitle: string;
+    revealedSteps: string;
+    userQuestion: string;
+}
+
+export async function explainExampleStepAction(args: ExplainExampleStepArgs) {
+    try {
+        const result = await explainExampleStep(args);
+        return { explanation: result.explanation, error: null };
+    } catch (error) {
+        console.error(error);
+        return { explanation: null, error: "Failed to get explanation from AI." };
+    }
 }

@@ -2,6 +2,8 @@ import { FocusedMasteryApp } from '@/components/FocusedMasteryApp';
 
 export default function PracticePage() {
   return (
-    <FocusedMasteryApp />
+    <main className="h-screen bg-muted/30">
+        <FocusedMasteryApp />
+    </main>
   );
 }
