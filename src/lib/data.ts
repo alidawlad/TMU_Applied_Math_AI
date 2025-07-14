@@ -1,3 +1,4 @@
+
 import type { Lecture } from '@/lib/types';
 
 export const lectures: Lecture[] = [
@@ -1274,7 +1275,7 @@ export const lectures: Lecture[] = [
             {
                 id: 'sequences',
                 name: 'Sequences',
-                description: 'An infinite sequence is a function $a: \\mathbb{N} \\to \\mathbb{R}$. A finite sequence is a function $a: \\{1, 2, . . . , n\\} \\to \\mathbb{R}$. Given $n \\in \\mathbb{N}$, the n-term of the sequence $a$ is $a(n)$. It is customary to write $a_n$ instead of $a(n)$ and we will adopt this notation.\n\nWe will use $(a_k)^n_{k=1}$ to indicate that the sequence is finite of length $n$, i.e., $a_1, a_2, a_3, . . . , a_n$. We will use $(a_k)^\\infty_{k=1}$ to indicate that the sequence is infinite, i.e., $a_1, a_2, a_3, . . . .$\n\nSequences can be given:\na) by specifying its general term, a formula for writing the n-th term of the sequence\nb) by listing the terms of the sequence\nc) by a recursive formula',
+                description: 'Understanding and working with sequences.',
                 lectureContent: {
                     id: 'LC-SEQ-1',
                     title: '1. Sequences',
@@ -1372,3 +1373,5 @@ export const lectures: Lecture[] = [
         ]
     }
 ];
+
+    

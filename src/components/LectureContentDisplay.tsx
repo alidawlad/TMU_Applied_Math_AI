@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -5,11 +6,11 @@ import type { Lecture, Module, LectureContent, LectureContentSegment } from '@/l
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MathRenderer } from "./MathRenderer";
-import { AppHeader } from './AppHeader'; 
 import { Logo } from './icons';
 import { Card } from './ui/card';
-import { Send, MessageSquare, XCircle } from 'lucide-react';
+import { Send, MessageSquare, XCircle, PanelLeftOpen, PanelLeftClose, ArrowLeft } from 'lucide-react';
 import { explainExampleStepAction } from '@/lib/actions';
+import Link from 'next/link';
 
 interface LectureContentDisplayProps {
   lecture: Lecture;
@@ -20,15 +21,15 @@ interface LectureContentDisplayProps {
 function renderSegment(segment: LectureContentSegment, index: number) {
     switch(segment.type) {
         case 'heading':
-            return <h2 key={index} className="font-headline text-2xl md:text-3xl font-bold mt-8 mb-4"><MathRenderer text={segment.text} /></h2>;
+            return <h2 key={index} className="font-headline text-2xl md:text-3xl font-bold mt-10 mb-4 text-primary/90"><MathRenderer text={segment.text!} /></h2>;
         case 'subheading':
-            return <h3 key={index} className="font-headline text-xl md:text-2xl font-semibold mt-6 mb-3"><MathRenderer text={segment.text} /></h3>;
+            return <h3 key={index} className="font-headline text-xl md:text-2xl font-semibold mt-8 mb-3"><MathRenderer text={segment.text!} /></h3>;
         case 'paragraph':
-            return <p key={index} className="text-base md:text-lg leading-relaxed my-4"><MathRenderer text={segment.text} /></p>;
+            return <p key={index} className="text-base md:text-lg leading-relaxed my-4 text-foreground/90"><MathRenderer text={segment.text!} /></p>;
         case 'list':
-            return <ul key={index} className="list-disc list-inside space-y-2 my-4 pl-4">{segment.items.map((item, i) => <li key={i} className="text-base md:text-lg leading-relaxed"><MathRenderer text={item} /></li>)}</ul>
+            return <ul key={index} className="list-disc list-inside space-y-2 my-4 pl-4">{segment.items!.map((item, i) => <li key={i} className="text-base md:text-lg leading-relaxed"><MathRenderer text={item} /></li>)}</ul>
         case 'numbered-list':
-             return <ol key={index} className="list-decimal list-inside space-y-2 my-4 pl-4">{segment.items.map((item, i) => <li key={i} className="text-base md:text-lg leading-relaxed"><MathRenderer text={item} /></li>)}</ol>
+             return <ol key={index} className="list-decimal list-inside space-y-2 my-4 pl-4">{segment.items!.map((item, i) => <li key={i} className="text-base md:text-lg leading-relaxed"><MathRenderer text={item} /></li>)}</ol>
         case 'math':
             return <div key={index} className="flex justify-center my-6 text-lg md:text-xl"><MathRenderer text={`$$${segment.text}$$`} /></div>;
         default:
@@ -43,11 +44,20 @@ export function LectureContentDisplay({ lecture, module, content }: LectureConte
   const [aiQuestion, setAiQuestion] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const handleContinue = () => {
     if (revealedStepIndex < content.segments.length - 1) {
         setRevealedStepIndex(i => i + 1);
     }
+  }
+  
+  const handlePracticeRedirect = () => {
+    const firstPracticeProblem = module.problems.find(p => p.type === 'practice');
+    if (firstPracticeProblem) {
+      return `/practice?problem=${firstPracticeProblem.id}`;
+    }
+    return '/practice';
   }
 
   const handleAskAi = async () => {
@@ -79,8 +89,18 @@ export function LectureContentDisplay({ lecture, module, content }: LectureConte
         <header className="flex-shrink-0">
           <div className="bg-background border-b px-4 h-14 flex items-center justify-between">
             <div className="flex items-center gap-3">
+              <Link href="/study-plan" passHref>
+                <Button variant="ghost" size="icon" aria-label="Back to Study Plan">
+                    <ArrowLeft className="h-5 w-5" />
+                </Button>
+              </Link>
               <Logo className="h-8 w-8 text-primary hidden md:block" />
               <h1 className="text-lg font-semibold font-headline">Applied Mathematics for Business</h1>
+            </div>
+            <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label="Toggle Sidebar">
+                    {isSidebarOpen ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeftOpen className="h-5 w-5" />}
+                </Button>
             </div>
           </div>
            <div className="bg-primary/90 text-primary-foreground px-4 h-16 flex items-center justify-between backdrop-blur-sm">
@@ -91,25 +111,29 @@ export function LectureContentDisplay({ lecture, module, content }: LectureConte
                 </div>
              </div>
              <div className="flex items-center gap-4">
-                <Button variant="outline" className="bg-transparent text-primary-foreground hover:bg-white/20">Go to Practice</Button>
+                <Button variant="outline" className="bg-transparent text-primary-foreground hover:bg-white/20" asChild>
+                    <Link href={handlePracticeRedirect()}>Do Practice</Link>
+                </Button>
              </div>
           </div>
         </header>
 
         <main className="flex-1 flex overflow-hidden">
-            {/* TODO: Add a sidebar for navigating other examples within the same module */}
-            <div className="w-72 flex-shrink-0 border-r bg-background/50 p-4">
-                <h3 className="font-headline font-semibold text-lg mb-4">Examples</h3>
-                <div className="space-y-2">
-                    <Button variant="secondary" className="w-full justify-start">{content.title}</Button>
-                    {/* Add more example buttons here */}
-                </div>
-            </div>
+            {isSidebarOpen && (
+              <div className="w-72 flex-shrink-0 border-r bg-background/50 p-4 transition-all duration-300 ease-in-out">
+                  <h3 className="font-headline font-semibold text-lg mb-4">Examples</h3>
+                  <div className="space-y-2">
+                      <Button variant="secondary" className="w-full justify-start text-left h-auto py-2">
+                        {content.title}
+                      </Button>
+                  </div>
+              </div>
+            )}
 
             <div className="flex-1 bg-background p-6 md:p-12 overflow-y-auto pb-48">
                 <div className="max-w-4xl mx-auto">
                     <h1 className="font-headline text-4xl md:text-5xl font-extrabold mb-8 text-primary/90">{content.title}</h1>
-                    <div className="prose prose-lg max-w-none">
+                    <div className="prose-lg max-w-none">
                         {content.segments.slice(0, revealedStepIndex + 1).map((segment, index) => (
                            <div key={index} className="mb-4">
                              {renderSegment(segment, index)}
@@ -122,41 +146,49 @@ export function LectureContentDisplay({ lecture, module, content }: LectureConte
         
         <footer className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t z-10">
             <div className="max-w-4xl mx-auto w-full">
-                 {isAiPanelOpen ? (
-                    <Card className="p-4 shadow-lg">
-                        <div className="flex justify-between items-center mb-2">
-                            <h4 className="font-semibold text-sm">Ask a question about the revealed content</h4>
-                            <Button variant="ghost" size="icon" onClick={() => setIsAiPanelOpen(false)}><XCircle className="h-5 w-5"/></Button>
-                        </div>
-                        {isAiLoading && <p className="text-sm text-muted-foreground animate-pulse mb-2">AI is thinking...</p>}
-                        {aiResponse && <div className="p-3 bg-muted rounded-md text-sm mb-2"><MathRenderer text={aiResponse} /></div>}
-                        <div className="flex gap-2">
-                            <Input 
-                                value={aiQuestion}
-                                onChange={(e) => setAiQuestion(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleAskAi()}
-                                placeholder="e.g., Can you explain why a(n) is used?"
-                                disabled={isAiLoading}
-                            />
-                            <Button onClick={handleAskAi} disabled={isAiLoading} size="icon"><Send className="h-4 w-4" /></Button>
-                        </div>
-                    </Card>
-                ) : (
-                    <div className="flex justify-between items-center">
-                        <Button variant="outline" onClick={() => setIsAiPanelOpen(true)}>
-                            <MessageSquare className="h-4 w-4 mr-2" />
-                            Ask AI a Question
-                        </Button>
-                         {revealedStepIndex < content.segments.length - 1 && (
+                 <div className="flex items-start gap-4">
+                    <div className="flex-1">
+                        {isAiPanelOpen ? (
+                            <Card className="p-4 shadow-lg">
+                                <div className="flex justify-between items-center mb-2">
+                                    <h4 className="font-semibold text-sm">Ask a question about the revealed content</h4>
+                                    <Button variant="ghost" size="icon" onClick={() => setIsAiPanelOpen(false)}><XCircle className="h-5 w-5"/></Button>
+                                </div>
+                                {isAiLoading && <p className="text-sm text-muted-foreground animate-pulse mb-2">AI is thinking...</p>}
+                                {aiResponse && <div className="p-3 bg-muted rounded-md text-sm mb-2"><MathRenderer text={aiResponse} /></div>}
+                                <div className="flex gap-2">
+                                    <Input 
+                                        value={aiQuestion}
+                                        onChange={(e) => setAiQuestion(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleAskAi()}
+                                        placeholder="e.g., Can you explain why a(n) is used?"
+                                        disabled={isAiLoading}
+                                    />
+                                    <Button onClick={handleAskAi} disabled={isAiLoading} size="icon"><Send className="h-4 w-4" /></Button>
+                                </div>
+                            </Card>
+                        ) : (
+                             <Button variant="outline" onClick={() => setIsAiPanelOpen(true)}>
+                                <MessageSquare className="h-4 w-4 mr-2" />
+                                Ask AI a Question
+                            </Button>
+                        )}
+                    </div>
+                     <div className="flex flex-col gap-2">
+                        {revealedStepIndex < content.segments.length - 1 && (
                             <Button size="lg" onClick={handleContinue}>Continue</Button>
                         )}
                         {revealedStepIndex >= content.segments.length - 1 && (
-                            <Button size="lg" variant="default">Go to Practice Questions</Button>
+                            <Button size="lg" variant="default" asChild>
+                                <Link href={handlePracticeRedirect()}>Do Practice Questions</Link>
+                            </Button>
                         )}
                     </div>
-                )}
+                </div>
             </div>
         </footer>
     </div>
   );
 }
+
+    

@@ -1,3 +1,4 @@
+
 'use client';
 
 import 'katex/dist/katex.min.css';
@@ -6,10 +7,9 @@ import React, { useState, useEffect } from 'react';
 
 interface MathRendererProps {
   text: string;
-  inline?: boolean;
 }
 
-export function MathRenderer({ text, inline = true }: MathRendererProps) {
+export function MathRenderer({ text }: MathRendererProps) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -20,39 +20,42 @@ export function MathRenderer({ text, inline = true }: MathRendererProps) {
     return null;
   }
 
-  // A more robust regex to handle both $...$ and \(...\) for inline math
-  const inlineRegex = /(\\\(.*?\\\)|(?<!\\)\$.*?(?<!\\)\$)/g;
-  
-  // Regex for block math using $$...$$ or \[...\]
-  const blockRegex = /(\\\[.*?\\]|(?<!\\)\$\$.*?(?<!\\)\$\$)/g;
+  // Regex to handle both $...$ and \(...\) for inline math, and $$...$$ or \[...\] for block math
+  const mathRegex = /(\\\(.*?\\\)|(?<!\\)\$.*?(?<!\\)\$|\\\[.*?\\]|(?<!\\)\$\$.*?(?<!\\)\$\$)/g;
 
-  const renderMath = (mathString: string) => {
-    // Trim delimiters
+  const renderMath = (mathString: string, key: number) => {
     let cleanMath = mathString;
-    if (cleanMath.startsWith('$') && cleanMath.endsWith('$')) {
-        cleanMath = cleanMath.substring(1, cleanMath.length - 1);
-        if (cleanMath.startsWith('$') && cleanMath.endsWith('$')) {
-            cleanMath = cleanMath.substring(1, cleanMath.length - 1);
-            return <BlockMath math={cleanMath} errorColor={"#ef4444"} />;
-        }
-        return <InlineMath math={cleanMath} errorColor={"#ef4444"} />;
-    }
-    if (cleanMath.startsWith('\\(') && cleanMath.endsWith('\\)')) {
-      cleanMath = cleanMath.substring(2, cleanMath.length - 2);
-      return <InlineMath math={cleanMath} errorColor={"#ef4444"} />;
+    // Check for block math delimiters first
+    if (cleanMath.startsWith('$$') && cleanMath.endsWith('$$')) {
+      cleanMath = clean_math_string(cleanMath, 2);
+      return <BlockMath key={key} math={cleanMath} errorColor={"#ef4444"} />;
     }
     if (cleanMath.startsWith('\\[') && cleanMath.endsWith('\\]')) {
-      cleanMath = cleanMath.substring(2, cleanMath.length - 2);
-      return <BlockMath math={cleanMath} errorColor={"#ef4444"} />;
+      cleanMath = clean_math_string(cleanMath, 2);
+      return <BlockMath key={key} math={cleanMath} errorColor={"#ef4444"} />;
     }
-    return <InlineMath math={cleanMath} errorColor={"#ef4444"} />;
+    // Check for inline math delimiters
+    if (cleanMath.startsWith('$') && cleanMath.endsWith('$')) {
+      cleanMath = clean_math_string(cleanMath, 1);
+      return <InlineMath key={key} math={cleanMath} errorColor={"#ef4444"} />;
+    }
+    if (cleanMath.startsWith('\\(') && cleanMath.endsWith('\\)')) {
+      cleanMath = clean_math_string(cleanMath, 2);
+      return <InlineMath key={key} math={cleanMath} errorColor={"#ef4444"} />;
+    }
+    // Fallback for identified but improperly delimited strings
+    return <span key={key}>{mathString}</span>;
   };
-  
-  const regex = inline ? inlineRegex : blockRegex;
-  const parts = text.split(regex);
+
+  const clean_math_string = (str: string, len: number) => {
+    return str.substring(len, str.length - len);
+  }
+
+  const parts = text.split(mathRegex);
   
   if (!isClient) {
-    return <>{text.replace(/\$|\\\(|\\\)|\\\[|\\\]/g, '')}</>;
+    // Return a simplified version for SSR to avoid hydration errors
+    return <>{text.replace(/\$|\\\(|\\\)|\\\[|\\\]|\\cdot/g, '')}</>;
   }
 
   return (
@@ -60,7 +63,7 @@ export function MathRenderer({ text, inline = true }: MathRendererProps) {
       {parts.map((part, index) => {
         if (index % 2 === 1) { // Matched math content
           try {
-            return <span key={index}>{renderMath(part)}</span>;
+            return renderMath(part, index);
           } catch (e) {
             console.error("KaTeX parsing error:", e, "on part:", part);
             return <span key={index} className="text-red-500">{part}</span>;
@@ -71,3 +74,5 @@ export function MathRenderer({ text, inline = true }: MathRendererProps) {
     </>
   );
 }
+
+    
