@@ -6,7 +6,7 @@ export const week10Examples: Example[] = [
         title: 'Example 1: Sequences given by its general term',
         relatedPracticeProblemIds: ['SQ1', 'SQ2', 'SQ3'],
         segments: [
-            { type: 'heading', text: '1. Sequences' },
+            { type: 'subheading', text: '1. Sequences' },
             { type: 'paragraph', text: 'An infinite sequence is a function $a: \\mathbb{N} \\to \\mathbb{R}$. A finite sequence is a function $a: \\{1, 2, ..., n\\} \\to \\mathbb{R}$. Given $n \\in \\mathbb{N}$, the n-term of the sequence $a$ is $a(n)$. It is customary to write $a_n$ instead of $a(n)$ and we will adopt this notation.' },
             { type: 'paragraph', text: 'We will use $(a_k)^n_{k=1}$ to indicate that the sequence is finite of length $n$, i.e.,' },
             { type: 'math', text: 'a_1, a_2, a_3, ... , a_n' },
