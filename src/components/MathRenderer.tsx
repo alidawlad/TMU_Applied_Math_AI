@@ -2,82 +2,106 @@
 
 import 'katex/dist/katex.min.css';
 import katex from 'katex';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 interface MathRendererProps {
   text: string;
 }
 
-// This regex handles both $...$ and \(...\) for inline math,
-// and $$...$$ or \[...\] for block math. It avoids matching
-// an escaped dollar sign like \\$.
-const mathRegex = /(\\\(.*?\\\)|(?<!\\)\$.+?(?<!\\)\$|\\\[.+?\\]|(?<!\\)\$\$.+?(?<!\\)\$\$)/g;
+// Improved regex for better math parsing
+const MATH_PATTERNS = {
+  blockMath: /\$\$([^$]+)\$\$/g,
+  inlineMath: /\$([^$]+)\$/g,
+  blockBrackets: /\\\[([^\]]+)\\\]/g,
+  inlineBrackets: /\\\(([^\)]+)\\\)/g
+};
 
-const renderToString = (text: string) => {
+// Cache for rendered math expressions
+const mathCache = new Map<string, string>();
+
+const renderMathExpression = (expression: string, isBlock: boolean): string => {
+  const cacheKey = `${expression}-${isBlock}`;
+  
+  if (mathCache.has(cacheKey)) {
+    return mathCache.get(cacheKey)!;
+  }
+
   try {
-    const parts = text.split(mathRegex);
-
-    return parts
-      .map((part, index) => {
-        if (!part) return '';
-        // Every odd-indexed part is a math expression
-        if (index % 2 === 1) {
-          let isBlock = false;
-          let math = part;
-
-          // Determine if it's block or inline and remove delimiters
-          if (math.startsWith('$$') && math.endsWith('$$')) {
-            isBlock = true;
-            math = math.substring(2, math.length - 2);
-          } else if (math.startsWith('\\[') && math.endsWith('\\]')) {
-            isBlock = true;
-            math = math.substring(2, math.length - 2);
-          } else if (math.startsWith('$') && math.endsWith('$')) {
-            math = math.substring(1, math.length - 1);
-          } else if (math.startsWith('\\(') && math.endsWith('\\)')) {
-            math = math.substring(2, math.length - 2);
-          }
-
-          // Render with KaTeX
-          return katex.renderToString(math, {
-            throwOnError: false,
-            displayMode: isBlock,
-            output: 'html',
-          });
-        }
-        // It's a regular text part, un-escape any `\$` sequences
-        return part.replace(/\\\$/g, '$');
-      })
-      .join('');
-  } catch (e) {
-      console.error("KaTeX rendering error:", e);
-      // Fallback to show the original text with an error style
-      return `<span style="color: red;">${text}</span>`;
+    const rendered = katex.renderToString(expression, {
+      throwOnError: false,
+      displayMode: isBlock,
+      output: 'html',
+    });
+    
+    mathCache.set(cacheKey, rendered);
+    return rendered;
+  } catch (error) {
+    console.error('KaTeX rendering error:', error);
+    const fallback = `<span class="math-error" style="color: #dc2626; font-family: monospace;">${expression}</span>`;
+    mathCache.set(cacheKey, fallback);
+    return fallback;
   }
 };
 
-export function MathRenderer({ text }: MathRendererProps) {
-  const [isClient, setIsClient] = React.useState(false);
+const createPlaceholder = (expression: string, isBlock: boolean): string => {
+  const className = isBlock ? 'math-placeholder-block' : 'math-placeholder-inline';
+  return `<span class="${className}" style="font-family: monospace; opacity: 0.7;">${expression}</span>`;
+};
+
+const processText = (text: string, isClient: boolean): string => {
+  if (!text) return '';
+
+  let result = text;
   
-  React.useEffect(() => {
+  // Process block math first ($$...$$ and \[...\])
+  result = result.replace(MATH_PATTERNS.blockMath, (match, expression) => {
+    return isClient 
+      ? renderMathExpression(expression, true)
+      : createPlaceholder(expression, true);
+  });
+
+  result = result.replace(MATH_PATTERNS.blockBrackets, (match, expression) => {
+    return isClient 
+      ? renderMathExpression(expression, true)
+      : createPlaceholder(expression, true);
+  });
+
+  // Process inline math ($...$ and \(...\))
+  result = result.replace(MATH_PATTERNS.inlineMath, (match, expression) => {
+    return isClient 
+      ? renderMathExpression(expression, false)
+      : createPlaceholder(expression, false);
+  });
+
+  result = result.replace(MATH_PATTERNS.inlineBrackets, (match, expression) => {
+    return isClient 
+      ? renderMathExpression(expression, false)
+      : createPlaceholder(expression, false);
+  });
+
+  return result;
+};
+
+export function MathRenderer({ text }: MathRendererProps) {
+  const [isClient, setIsClient] = useState(false);
+  
+  useEffect(() => {
     setIsClient(true);
   }, []);
 
   const renderedHtml = useMemo(() => {
-    if (!isClient) {
-      // For server-side rendering and initial client render,
-      // return a simplified version to avoid hydration mismatch.
-      // A simple replace is safe here before client-side KaTeX takes over.
-      const simplifiedText = text.replace(/\$|\\\(|\\\)|\\\[|\\\]|\\cdot|\\mathbb|\\to|\\in|\\/g, '');
-      return { __html: simplifiedText };
-    }
-    // On the client, render the full KaTeX output
-    return { __html: renderToString(text) };
+    const processedText = processText(text, isClient);
+    return { __html: processedText };
   }, [text, isClient]);
 
   if (!text) {
     return null;
   }
   
-  return <span dangerouslySetInnerHTML={renderedHtml} />;
+  return (
+    <span 
+      dangerouslySetInnerHTML={renderedHtml} 
+      className="math-renderer"
+    />
+  );
 }

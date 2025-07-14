@@ -20,11 +20,13 @@ export type Problem = {
 };
 
 export type LectureContentSegment = {
-  type: 'heading' | 'subheading' | 'paragraph' | 'list' | 'numbered-list' | 'math' | 'image';
+  type: 'heading' | 'subheading' | 'paragraph' | 'list' | 'numbered-list' | 'math' | 'image' | 'callout' | 'step-by-step' | 'pattern-highlight' | 'summary-box' | 'connection';
   text?: string;
   items?: string[];
   imageUrl?: string;
   alt?: string;
+  emphasis?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+  icon?: string;
 };
 
 export type Example = {

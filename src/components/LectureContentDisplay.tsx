@@ -33,6 +33,20 @@ function renderSegment(segment: LectureContentSegment, index: number) {
              return <ol key={index} className="list-decimal list-inside space-y-3 my-6 pl-4 text-lg">{segment.items!.map((item, i) => <li key={i} className="pl-2"><MathRenderer text={item} /></li>)}</ol>
         case 'math':
             return <div key={index} className="flex justify-center my-6 p-4 bg-muted/50 rounded-lg text-lg md:text-xl"><MathRenderer text={`$$${segment.text}$$`} /></div>;
+        case 'callout':
+            const calloutColor = segment.emphasis === 'warning' ? 'bg-yellow-50 border-yellow-200 text-yellow-800' : 
+                                segment.emphasis === 'success' ? 'bg-green-50 border-green-200 text-green-800' :
+                                segment.emphasis === 'danger' ? 'bg-red-50 border-red-200 text-red-800' :
+                                'bg-blue-50 border-blue-200 text-blue-800';
+            return <div key={index} className={`my-6 p-4 border-l-4 rounded-r-lg ${calloutColor}`}><MathRenderer text={segment.text!} /></div>;
+        case 'step-by-step':
+            return <div key={index} className="my-6 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg"><div className="font-semibold text-primary mb-2">Step-by-Step:</div><MathRenderer text={segment.text!} /></div>;
+        case 'pattern-highlight':
+            return <div key={index} className="my-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg"><div className="font-semibold text-purple-800 mb-2">Pattern Recognition:</div><MathRenderer text={segment.text!} /></div>;
+        case 'summary-box':
+            return <div key={index} className="my-6 p-4 bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 rounded-lg"><div className="font-semibold text-green-800 mb-2">Key Takeaway:</div><MathRenderer text={segment.text!} /></div>;
+        case 'connection':
+            return <div key={index} className="my-6 p-4 bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-lg"><div className="font-semibold text-orange-800 mb-2">Connection:</div><MathRenderer text={segment.text!} /></div>;
         default:
             return null;
     }
