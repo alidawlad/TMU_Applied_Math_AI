@@ -1,4 +1,4 @@
-import { lectures } from "@/lib/data";
+import { lectures } from "@/lib/content";
 import {
   Card,
   CardContent,
@@ -19,7 +19,7 @@ import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { StudyPlanTabs } from "@/components/StudyPlanTabs";
-import type { Module, Problem } from "@/lib/types";
+import type { ModuleContent, Problem } from "@/lib/types";
 import { ArrowLeft } from "lucide-react";
 
 export type Topic = {
@@ -32,21 +32,6 @@ export type Topic = {
 
 function getTopicsFromLectures(): Topic[] {
     const topics: Record<string, Topic> = {};
-    const skillSetNames: Record<string, string[]> = {}
-
-    lectures.forEach(lecture => {
-        lecture.modules.forEach(module => {
-            if (!skillSetNames[module.name]) {
-                skillSetNames[module.name] = [];
-            }
-            module.problems.forEach(problem => {
-                const skill = problem.skill || 'General';
-                 if (!skillSetNames[module.name].includes(skill)) {
-                    skillSetNames[module.name].push(skill);
-                }
-            });
-        });
-    });
 
     lectures.forEach(lecture => {
         lecture.modules.forEach(module => {

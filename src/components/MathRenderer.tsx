@@ -1,78 +1,68 @@
-
 'use client';
 
 import 'katex/dist/katex.min.css';
-import { InlineMath, BlockMath } from 'react-katex';
-import React, { useState, useEffect } from 'react';
+import katex from 'katex';
+import React, { useMemo } from 'react';
 
 interface MathRendererProps {
   text: string;
 }
 
-export function MathRenderer({ text }: MathRendererProps) {
-  const [isClient, setIsClient] = useState(false);
+const cleanMathString = (str: string, len: number) => {
+  return str.substring(len, str.length - len);
+};
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+// This regex handles both $...$ and \(...\) for inline math,
+// and $$...$$ or \[...\] for block math. It avoids matching
+// escaped delimiters like \\$
+const mathRegex = /(\\\(.*?\\\)|(?<!\\)\$.+?(?<!\\)\$|\\\[.+?\\]|(?<!\\)\$\$.+?(?<!\\)\$\$)/g;
+
+const renderToString = (text: string) => {
+  const parts = text.split(mathRegex);
+
+  return parts
+    .map((part, index) => {
+      if (index % 2 === 1) { // It's a math part
+        let isBlock = false;
+        let math = part;
+
+        if ((math.startsWith('$$') && math.endsWith('$$')) || (math.startsWith('\\[') && math.endsWith('\\]'))) {
+          isBlock = true;
+          math = cleanMathString(math, 2);
+        } else if (math.startsWith('$') && math.endsWith('$')) {
+          math = cleanMathString(math, 1);
+        } else if (math.startsWith('\\(') && math.endsWith('\\)')) {
+          math = cleanMathString(math, 2);
+        }
+
+        try {
+          return katex.renderToString(math, {
+            throwOnError: false,
+            displayMode: isBlock,
+            output: 'html',
+          });
+        } catch (e) {
+          console.error("KaTeX parsing error:", e, "on part:", part);
+          return `<span class="text-red-500">${part}</span>`;
+        }
+      }
+      return part; // It's a regular text part
+    })
+    .join('');
+};
+
+export function MathRenderer({ text }: MathRendererProps) {
+  const renderedHtml = useMemo(() => {
+    if (typeof window === 'undefined') {
+      // SSR: Return a simplified version for SSR to avoid hydration errors
+      return { __html: text.replace(/\$|\\\(|\\\)|\\\[|\\\]|\\cdot/g, '') };
+    }
+    return { __html: renderToString(text) };
+  }, [text]);
 
   if (!text) {
     return null;
   }
-
-  // Regex to handle both $...$ and \(...\) for inline math, and $$...$$ or \[...\] for block math
-  const mathRegex = /(\\\(.*?\\\)|(?<!\\)\$.*?(?<!\\)\$|\\\[.*?\\]|(?<!\\)\$\$.*?(?<!\\)\$\$)/g;
-
-  const renderMath = (mathString: string, key: number) => {
-    let cleanMath = mathString;
-    // Check for block math delimiters first
-    if (cleanMath.startsWith('$$') && cleanMath.endsWith('$$')) {
-      cleanMath = clean_math_string(cleanMath, 2);
-      return <BlockMath key={key} math={cleanMath} errorColor={"#ef4444"} />;
-    }
-    if (cleanMath.startsWith('\\[') && cleanMath.endsWith('\\]')) {
-      cleanMath = clean_math_string(cleanMath, 2);
-      return <BlockMath key={key} math={cleanMath} errorColor={"#ef4444"} />;
-    }
-    // Check for inline math delimiters
-    if (cleanMath.startsWith('$') && cleanMath.endsWith('$')) {
-      cleanMath = clean_math_string(cleanMath, 1);
-      return <InlineMath key={key} math={cleanMath} errorColor={"#ef4444"} />;
-    }
-    if (cleanMath.startsWith('\\(') && cleanMath.endsWith('\\)')) {
-      cleanMath = clean_math_string(cleanMath, 2);
-      return <InlineMath key={key} math={cleanMath} errorColor={"#ef4444"} />;
-    }
-    // Fallback for identified but improperly delimited strings
-    return <span key={key}>{mathString}</span>;
-  };
-
-  const clean_math_string = (str: string, len: number) => {
-    return str.substring(len, str.length - len);
-  }
-
-  const parts = text.split(mathRegex);
   
-  if (!isClient) {
-    // Return a simplified version for SSR to avoid hydration errors
-    return <>{text.replace(/\$|\\\(|\\\)|\\\[|\\\]|\\cdot/g, '')}</>;
-  }
-
-  return (
-    <>
-      {parts.map((part, index) => {
-        if (index % 2 === 1) { // Matched math content
-          try {
-            return renderMath(part, index);
-          } catch (e) {
-            console.error("KaTeX parsing error:", e, "on part:", part);
-            return <span key={index} className="text-red-500">{part}</span>;
-          }
-        }
-        return <React.Fragment key={index}>{part}</React.Fragment>;
-      })}
-    </>
-  );
+  return <span dangerouslySetInnerHTML={renderedHtml} />;
 }
-
-    

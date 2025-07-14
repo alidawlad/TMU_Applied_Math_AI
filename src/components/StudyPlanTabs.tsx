@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import type { Lecture, Module, Problem } from "@/lib/types";
+import type { Lecture, ModuleContent, Problem } from "@/lib/types";
 import type { Topic } from "@/app/study-plan/page";
 import Link from "next/link";
 import { Button } from './ui/button';
@@ -121,6 +121,7 @@ export function StudyPlanTabs({ lectures, topics }: StudyPlanTabsProps) {
                                                     </TableHeader>
                                                     <TableBody>
                                                         {lecture.modules.map((module) => {
+                                                            const firstExampleId = module.examples.length > 0 ? module.examples[0].id : null;
                                                             return (
                                                                 <TableRow key={module.id}>
                                                                     <TableCell>
@@ -128,8 +129,8 @@ export function StudyPlanTabs({ lectures, topics }: StudyPlanTabsProps) {
                                                                         <div className="text-sm text-muted-foreground">{module.description}</div>
                                                                     </TableCell>
                                                                     <TableCell className="text-right">
-                                                                        {module.lectureContent && (
-                                                                            <Link href={`/study?module=${module.id}`} passHref>
+                                                                        {firstExampleId && (
+                                                                            <Link href={`/study?example=${firstExampleId}`} passHref>
                                                                                 <Button variant="outline" size="sm">
                                                                                     <BookOpen className="mr-2 h-4 w-4" />
                                                                                     Study Topic

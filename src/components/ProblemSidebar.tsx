@@ -1,7 +1,7 @@
 "use client";
 
-import { lectures } from "@/lib/data";
-import type { Lecture, Module, Problem } from "@/lib/types";
+import { lectures } from "@/lib/content";
+import type { Lecture, ModuleContent, Problem } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -36,9 +36,8 @@ export function ProblemSidebar({
   }
   
   const currentLecture = lectures.find(l => l.id === currentLectureId) as Lecture;
-  const currentModule = currentLecture.modules.find(m => m.id === currentModuleId) as Module;
+  const currentModule = currentLecture.modules.find(m => m.id === currentModuleId) as ModuleContent;
   
-  const leadExamples = currentModule.problems.filter(p => p.type === 'lead-example');
   const practiceProblems = currentModule.problems.filter(p => p.type === 'practice');
 
   return (
@@ -77,28 +76,8 @@ export function ProblemSidebar({
             onValueChange={(value) => onProblemChange(Number(value))}
             className="p-2"
           >
-          {leadExamples.length > 0 && (
-            <div className="px-2">
-              <h3 className="mb-2 mt-2 text-sm font-semibold text-muted-foreground tracking-wider uppercase">Lead Examples</h3>
-              {leadExamples.map((problem) => {
-                const index = currentModule.problems.findIndex(p => p.id === problem.id);
-                return (
-                  <Label 
-                    key={problem.id} 
-                    htmlFor={`problem-${index}`}
-                    className={`flex items-start gap-3 rounded-md p-3 text-sm font-medium cursor-pointer hover:bg-accent/50 transition-colors ${currentProblemIndex === index ? 'bg-accent text-accent-foreground' : ''}`}
-                  >
-                    <RadioGroupItem value={String(index)} id={`problem-${index}`} className="mt-0.5"/>
-                    <span className="flex-1"><MathRenderer text={problem.title} /></span>
-                  </Label>
-                )
-              })}
-            </div>
-          )}
-
           {practiceProblems.length > 0 && (
              <div className="mt-4 px-2">
-              <Separator className="mb-4" />
               <h3 className="mb-2 text-sm font-semibold text-muted-foreground tracking-wider uppercase">Practice Problems</h3>
                {practiceProblems.map((problem) => {
                  const index = currentModule.problems.findIndex(p => p.id === problem.id);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { lectures } from "@/lib/data";
+import { lectures } from "@/lib/content";
 import { AppHeader } from "./AppHeader";
 import { ProblemSidebar } from "./ProblemSidebar";
 import { ProblemDisplay } from "./ProblemDisplay";
@@ -48,7 +48,15 @@ export function FocusedMasteryApp() {
     };
   }, [problemIdFromUrl]);
 
-  if (lectures.length === 0) {
+  const lectureData = useMemo(() => {
+    const allProblems = lectures.flatMap(l => l.modules.flatMap(m => m.problems));
+    return {
+        lectures,
+        allProblems
+    };
+  }, []);
+
+  if (lectureData.allProblems.length === 0) {
     return (
       <div className="flex flex-col h-screen font-sans bg-muted/30">
         <header className="flex-shrink-0">
@@ -117,16 +125,6 @@ export function FocusedMasteryApp() {
     const lecture = lectures.find(l => l.id === currentLectureId)!;
     const module = lecture.modules.find(m => m.id === currentModuleId)!;
     
-    // If current problem is an example, find the first practice problem in the same skill set
-    if (currentProblem?.type === 'lead-example') {
-        const firstPracticeProblemIndex = module.problems.findIndex(p => p.type === 'practice' && p.skill === currentProblem.skill);
-        if(firstPracticeProblemIndex !== -1) {
-            handleProblemChange(firstPracticeProblemIndex);
-            return;
-        }
-    }
-    
-    // Otherwise, or if no specific practice problem found, go to the next problem in the list
     const nextProblemIndex = currentProblemIndex + 1;
     if (nextProblemIndex < module.problems.length) {
       handleProblemChange(nextProblemIndex);

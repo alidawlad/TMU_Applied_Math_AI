@@ -1,7 +1,7 @@
 "use client";
 
-import "katex/dist/katex.min.css";
-import { BlockMath } from "react-katex";
+import 'katex/dist/katex.min.css';
+import { MathRenderer } from "./MathRenderer";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -33,7 +33,7 @@ export function MathInput({
           <CardContent className="p-4">
             <p className="text-sm text-muted-foreground mb-2">Preview:</p>
             <div className="flex justify-center items-center min-h-[40px] text-xl">
-              <BlockMath math={value} errorColor={"#ef4444"} />
+              <MathRenderer text={`$$${value}$$`} />
             </div>
           </CardContent>
         </Card>

@@ -1,18 +1,17 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import type { Module, Problem, Step } from "@/lib/types";
+import type { ModuleContent, Problem, Step } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { MathInput } from "@/components/MathInput";
-import { checkAnswerAction, getFeedbackAction, explainExampleStepAction } from "@/lib/actions";
+import { checkAnswerAction, getFeedbackAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
-import { BrainCircuit, CheckCircle2, Lightbulb, MessageSquare, Send, XCircle } from "lucide-react";
+import { BrainCircuit, CheckCircle2, Lightbulb, XCircle } from "lucide-react";
 import { CalculatorCallout } from "./CalculatorCallout";
 import { MathRenderer } from "./MathRenderer";
 import { Separator } from "@/components/ui/separator";
-import { ViewExampleDialog } from "./ViewExampleDialog";
 import { Skeleton } from "./ui/skeleton";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
@@ -21,7 +20,7 @@ import { Input } from "./ui/input";
 type StepStatus = "unanswered" | "correct" | "incorrect";
 
 interface ProblemDisplayProps {
-  module: Module;
+  module: ModuleContent;
   problem: Problem;
   onNextProblem: () => void;
 }
@@ -38,13 +37,6 @@ export function ProblemDisplay({ module, problem, onNextProblem }: ProblemDispla
   const [isHydrated, setIsHydrated] = useState(false);
   const [attemptStarted, setAttemptStarted] = useState(false);
   
-  // State for example walkthrough
-  const [revealedStepIndex, setRevealedStepIndex] = useState(0);
-  const [isAiPanelOpen, setIsAiPanelOpen] = useState(false);
-  const [aiQuestion, setAiQuestion] = useState("");
-  const [aiResponse, setAiResponse] = useState("");
-  const [isAiLoading, setIsAiLoading] = useState(false);
-
 
   useEffect(() => {
     try {
@@ -61,17 +53,8 @@ export function ProblemDisplay({ module, problem, onNextProblem }: ProblemDispla
     } catch (error) {
       console.error("Failed to load state from localStorage", error);
     }
-    // Reset states for the new problem
-    setRevealedStepIndex(0);
-    setIsAiPanelOpen(false);
-    setAiQuestion("");
-    setAiResponse("");
-    setIsLoading({});
-    if (problem.type === 'lead-example') {
-        setAttemptStarted(true); // Examples don't need an attempt button
-    } else {
-        setAttemptStarted(Object.keys(JSON.parse(localStorage.getItem(`fm-stepStatuses-${problem.id}`) || '{}')).length > 0);
-    }
+    
+    setAttemptStarted(Object.keys(JSON.parse(localStorage.getItem(`fm-stepStatuses-${problem.id}`) || '{}')).length > 0);
 
     setIsHydrated(true);
   }, [problem.id, problem.type]);
@@ -104,30 +87,6 @@ export function ProblemDisplay({ module, problem, onNextProblem }: ProblemDispla
     setAttemptStarted(true);
     document.dispatchEvent(new CustomEvent('startTimer'));
   };
-
-  const handleAskAi = async () => {
-    if (!aiQuestion.trim()) return;
-    setIsAiLoading(true);
-    setAiResponse("");
-
-    const revealedContent = problem.steps
-        .slice(0, revealedStepIndex + 1)
-        .map(s => `Step ${s.id}: ${s.title}\n${s.description}\nSolution: ${s.solution}`)
-        .join('\n\n');
-
-    const result = await explainExampleStepAction({
-        exampleTitle: problem.title,
-        revealedSteps: revealedContent,
-        userQuestion: aiQuestion
-    });
-
-    if (result.explanation) {
-        setAiResponse(result.explanation);
-    } else {
-        setAiResponse("Sorry, I couldn't generate an explanation for that. Please try rephrasing your question.");
-    }
-    setIsAiLoading(false);
-  }
 
   const handleCheckAnswer = async (step: Step, index: number) => {
     const stepKey = `${problem.id}-${step.id}`;
@@ -206,106 +165,11 @@ export function ProblemDisplay({ module, problem, onNextProblem }: ProblemDispla
   }).length, [problem.id, problem.steps, stepStatuses]);
 
   const progress = (correctStepsCount / problem.steps.length) * 100;
-  const leadExample = useMemo(() => module.problems.find(p => p.type === 'lead-example' && p.skill === problem.skill), [module, problem.skill]);
-
+  
   const firstIncompleteStepIndex = useMemo(() => {
     const index = problem.steps.findIndex(step => stepStatuses[`${problem.id}-${step.id}`] !== 'correct');
     return index === -1 ? problem.steps.length : index;
   }, [problem.id, problem.steps, stepStatuses]);
-  
- const renderLeadExample = () => {
-    const practiceProblems = module.problems.filter(p => p.type === 'practice' && p.skill === problem.skill);
-    
-    return (
-    <div className="flex justify-center py-8">
-      <div className="w-full max-w-3xl">
-        <div className="mb-12">
-          <p className="text-sm font-semibold text-primary text-center uppercase tracking-wider">{module.name}</p>
-          <h1 className="font-headline text-3xl md:text-4xl font-bold text-center mt-2 leading-tight">
-            <MathRenderer text={problem.title} />
-          </h1>
-        </div>
-        
-        <div className="space-y-4">
-          {problem.steps.map((step, index) => (
-            <div
-              key={step.id}
-              className={`transition-opacity duration-700 ${index <= revealedStepIndex ? "opacity-100" : "opacity-20"}`}
-            >
-              <div className="flex items-start gap-4 md:gap-6">
-                <div className="flex-shrink-0 h-8 w-8 md:h-10 md:w-10 bg-primary/10 border border-primary/20 text-primary font-bold text-lg rounded-full flex items-center justify-center">
-                  {index + 1}
-                </div>
-                <div className="flex-1 space-y-4 pt-1">
-                  <h3 className="font-headline text-xl md:text-2xl font-semibold text-foreground/90">
-                    <MathRenderer text={step.title} />
-                  </h3>
-                  <div className="prose prose-lg max-w-none text-foreground/80">
-                    <MathRenderer text={step.description} />
-                  </div>
-                   {step.solution && (
-                     <Alert variant="success" className="bg-primary/5 border-primary/20">
-                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                        <AlertTitle className="text-primary/90 font-semibold">Solution</AlertTitle>
-                        <AlertDescription className="text-primary text-lg">
-                           <MathRenderer text={`$${step.solution}$`} />
-                        </AlertDescription>
-                    </Alert>
-                   )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        {revealedStepIndex < problem.steps.length - 1 && (
-            <div className="mt-12 text-center">
-                <Button size="lg" onClick={() => setRevealedStepIndex(i => i + 1)}>Continue</Button>
-            </div>
-        )}
-
-        {revealedStepIndex === problem.steps.length - 1 && practiceProblems.length > 0 && (
-            <div className="mt-16 text-center p-8 bg-background rounded-xl border">
-                 <h3 className="font-headline text-2xl font-bold mb-4">Ready to test your knowledge?</h3>
-                 <p className="text-muted-foreground mb-6">You've completed the example. Now, try a practice problem to solidify your understanding.</p>
-                 <Button size="lg" onClick={onNextProblem}>Try a Practice Question</Button>
-            </div>
-        )}
-
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t">
-          <div className="max-w-3xl mx-auto">
-            {isAiPanelOpen ? (
-                <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                        <h4 className="font-semibold">Ask a question</h4>
-                        <Button variant="ghost" size="icon" onClick={() => setIsAiPanelOpen(false)}><XCircle className="h-5 w-5"/></Button>
-                    </div>
-                    {isAiLoading && <p className="text-sm text-muted-foreground animate-pulse">AI is thinking...</p>}
-                    {aiResponse && <div className="p-4 bg-muted rounded-md text-sm"><MathRenderer text={aiResponse} /></div>}
-                    <div className="flex gap-2">
-                        <Input 
-                            value={aiQuestion}
-                            onChange={(e) => setAiQuestion(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleAskAi()}
-                            placeholder="e.g., Why do we substitute n=1 in the first step?"
-                            disabled={isAiLoading}
-                        />
-                        <Button onClick={handleAskAi} disabled={isAiLoading}><Send className="h-4 w-4" /></Button>
-                    </div>
-                </div>
-            ) : (
-                <Button variant="outline" className="w-full" onClick={() => setIsAiPanelOpen(true)}>
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Ask AI a Question
-                </Button>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-    );
- };
-
 
   const renderPracticeProblem = () => (
     <>
@@ -404,9 +268,6 @@ export function ProblemDisplay({ module, problem, onNextProblem }: ProblemDispla
                         <Button variant="outline" size="sm" onClick={() => handleGetHint(step)} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>
                             Get Hint
                         </Button>
-                        {leadExample && (
-                          <ViewExampleDialog exampleProblem={leadExample} />
-                        )}
                       </div>
                       <div className="flex gap-2">
                         <Button variant="ghost" size="sm" onClick={() => handleInputChange(stepKey, '')} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>Clear</Button>
@@ -460,7 +321,7 @@ export function ProblemDisplay({ module, problem, onNextProblem }: ProblemDispla
   
   return (
     <div className="flex-1 bg-background p-6 md:p-8 overflow-y-auto pb-24">
-      {problem.type === 'lead-example' ? renderLeadExample() : renderPracticeProblem()}
+      {renderPracticeProblem()}
     </div>
   );
 }

@@ -8,10 +8,10 @@ export type Step = {
 };
 
 export type Problem = {
-  id:string;
-  type: 'lead-example' | 'practice';
+  id: string;
+  type: 'practice'; // Removed 'lead-example'
   source: string;
-  skill?: string;
+  skill: string;
   title: string;
   description: string;
   fullQuestion?: string;
@@ -20,27 +20,30 @@ export type Problem = {
 };
 
 export type LectureContentSegment = {
-    type: 'heading' | 'subheading' | 'paragraph' | 'list' | 'numbered-list' | 'math';
-    text?: string;
-    items?: string[];
+  type: 'heading' | 'subheading' | 'paragraph' | 'list' | 'numbered-list' | 'math' | 'image';
+  text?: string;
+  items?: string[];
+  imageUrl?: string;
+  alt?: string;
+};
+
+export type Example = {
+  id: string;
+  title:string;
+  segments: LectureContentSegment[];
+  relatedPracticeProblemIds: string[];
 }
 
-export type LectureContent = {
-    id: string;
-    title: string;
-    segments: LectureContentSegment[];
-}
-
-export type Module = {
+export type ModuleContent = {
   id: string;
   name: string;
   description: string;
+  examples: Example[];
   problems: Problem[];
-  lectureContent?: LectureContent;
-};
+}
 
 export type Lecture = {
   id: string;
   title: string;
-  modules: Module[];
+  modules: ModuleContent[];
 };
