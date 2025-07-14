@@ -131,14 +131,12 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
             <Logo className="h-8 w-8 text-primary hidden md:block" />
             <h1 className="text-lg font-semibold font-headline">Applied Mathematics for Business</h1>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label="Toggle Sidebar">
-              {isSidebarOpen ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeftOpen className="h-5 w-5" />}
-            </Button>
-          </div>
         </div>
         <div className="bg-primary/90 text-primary-foreground px-4 h-16 flex items-center justify-between backdrop-blur-sm">
           <div className="flex items-center gap-4">
+             <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label="Toggle Sidebar" className="text-primary-foreground hover:bg-white/20">
+              {isSidebarOpen ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeftOpen className="h-5 w-5" />}
+            </Button>
             <div>
               <h2 className="text-xl font-bold font-headline">{lecture.title}</h2>
               <p className="text-xs text-primary-foreground/80">{module.name}</p>
@@ -159,7 +157,7 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
                 <Link key={ex.id} href={`/study?example=${ex.id}`} passHref>
                   <Button 
                     variant={example.id === ex.id ? 'secondary' : 'ghost'} 
-                    className="w-full justify-start text-left h-auto py-2"
+                    className="w-full justify-start text-left h-auto py-2 whitespace-normal"
                   >
                     {ex.title}
                   </Button>
