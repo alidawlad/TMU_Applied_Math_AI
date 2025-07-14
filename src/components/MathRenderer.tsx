@@ -8,93 +8,66 @@ interface MathRendererProps {
   text: string;
 }
 
-// Improved regex for better math parsing
-const MATH_PATTERNS = {
-  blockMath: /\$\$([^$]+)\$\$/g,
-  inlineMath: /\$(?!\d)([^$]+?)\$/g,
-  blockBrackets: /\\\[([^\]]+)\\\]/g,
-  inlineBrackets: /\\\(([^\)]+)\\\)/g
-};
-
-// Cache for rendered math expressions
+const combinedPattern = /(\$\$[^$]+\$\$|\\\[[^\]]+\\\]|\$[^$]+\$|\\\([^\)]+\\\)|\*\*([^*]+)\*\*)/g;
 const mathCache = new Map<string, string>();
 
 const renderMathExpression = (expression: string, isBlock: boolean): string => {
   const cacheKey = `${expression}-${isBlock}`;
-  
   if (mathCache.has(cacheKey)) {
     return mathCache.get(cacheKey)!;
   }
-
   try {
     const rendered = katex.renderToString(expression, {
       throwOnError: false,
       displayMode: isBlock,
       output: 'html',
     });
-    
     mathCache.set(cacheKey, rendered);
     return rendered;
   } catch (error) {
-    // Gracefully handle math rendering errors in production
+    console.error('KaTeX rendering error:', error);
+    // Add title for better UX
     const fallback = `<span class="math-error" style="color: #dc2626; font-family: monospace;" title="Math rendering error">${expression}</span>`;
     mathCache.set(cacheKey, fallback);
     return fallback;
   }
 };
 
-const createPlaceholder = (expression: string, isBlock: boolean): string => {
-  const className = isBlock ? 'math-placeholder-block' : 'math-placeholder-inline';
-  return `<span class="${className}" style="font-family: monospace; opacity: 0.7;">${expression}</span>`;
-};
-
-const processText = (text: string, isClient: boolean): string => {
+const processText = (text: string): string => {
   if (!text) return '';
-
-  let result = text;
-  
-  // Process block math first ($$...$$ and \[...\])
-  result = result.replace(MATH_PATTERNS.blockMath, (match, expression) => {
-    return isClient 
-      ? renderMathExpression(expression, true)
-      : createPlaceholder(expression, true);
-  });
-
-  result = result.replace(MATH_PATTERNS.blockBrackets, (match, expression) => {
-    return isClient 
-      ? renderMathExpression(expression, true)
-      : createPlaceholder(expression, true);
-  });
-
-  // Process inline math ($...$ and \(...\))
-  result = result.replace(MATH_PATTERNS.inlineMath, (match, expression) => {
-    return isClient 
-      ? renderMathExpression(expression, false)
-      : createPlaceholder(expression, false);
-  });
-
-  result = result.replace(MATH_PATTERNS.inlineBrackets, (match, expression) => {
-    return isClient 
-      ? renderMathExpression(expression, false)
-      : createPlaceholder(expression, false);
-  });
-
-  return result;
+  return text.split(combinedPattern).map((part) => {
+    if (!part) return '';
+    if (part.match(combinedPattern)) {
+      if ((part.startsWith('$$') && part.endsWith('$$')) || (part.startsWith('\\[') && part.endsWith('\\]'))) {
+        const expression = part.substring(2, part.length - 2);
+        return renderMathExpression(expression, true);
+      }
+      if ((part.startsWith('$') && part.endsWith('$')) || (part.startsWith('\\(') && part.endsWith('\\)'))) {
+        const expression = part.substring(part.startsWith('$') ? 1 : 2, part.length - (part.endsWith('$') ? 1 : 2));
+        return renderMathExpression(expression, false);
+      }
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return `<strong>${part.substring(2, part.length - 2)}</strong>`;
+      }
+    }
+    return part;
+  }).join('');
 };
 
 export function MathRenderer({ text }: MathRendererProps) {
   const [isClient, setIsClient] = useState(false);
-  
+
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   const renderedHtml = useMemo(() => {
-    const processedText = processText(text, isClient);
-    return { __html: processedText };
+    // Only process the text if we are on the client
+    return isClient ? { __html: processText(text) } : { __html: '' };
   }, [text, isClient]);
 
-  if (!text) {
+  if (!text || !isClient) {
+    // Render nothing on the server or during the initial client render
     return null;
   }
   
