@@ -22,6 +22,7 @@ const renderToString = (text: string) => {
 
   return parts
     .map((part, index) => {
+      if (!part) return '';
       if (index % 2 === 1) { // It's a math part
         let isBlock = false;
         let math = part;
@@ -46,19 +47,25 @@ const renderToString = (text: string) => {
           return `<span class="text-red-500">${part}</span>`;
         }
       }
-      return part; // It's a regular text part
+      return part.replace(/\\\$/g, '$'); // It's a regular text part, un-escape any escaped dollar signs
     })
     .join('');
 };
 
 export function MathRenderer({ text }: MathRendererProps) {
+  const [isClient, setIsClient] = React.useState(false);
+  
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const renderedHtml = useMemo(() => {
-    if (typeof window === 'undefined') {
-      // SSR: Return a simplified version for SSR to avoid hydration errors
+    if (!isClient) {
+      // Return a simplified, non-KaTeX version for SSR to prevent hydration mismatch
       return { __html: text.replace(/\$|\\\(|\\\)|\\\[|\\\]|\\cdot/g, '') };
     }
     return { __html: renderToString(text) };
-  }, [text]);
+  }, [text, isClient]);
 
   if (!text) {
     return null;
