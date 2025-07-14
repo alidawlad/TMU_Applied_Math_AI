@@ -25,7 +25,7 @@ export default function Home() {
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <Link href="/practice" legacyBehavior>
+              <Link href="/practice">
                 <Button size="lg">Start Practicing</Button>
               </Link>
             </CardContent>
@@ -43,7 +43,7 @@ export default function Home() {
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <Link href="/study-plan" legacyBehavior>
+              <Link href="/study-plan">
                 <Button size="lg" variant="outline">View Study Plan</Button>
               </Link>
             </CardContent>
