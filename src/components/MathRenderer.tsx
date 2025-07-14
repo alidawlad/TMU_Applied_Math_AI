@@ -8,48 +8,52 @@ interface MathRendererProps {
   text: string;
 }
 
-const cleanMathString = (str: string, len: number) => {
-  return str.substring(len, str.length - len);
-};
-
 // This regex handles both $...$ and \(...\) for inline math,
 // and $$...$$ or \[...\] for block math. It avoids matching
-// escaped delimiters like \\$
+// an escaped dollar sign like \\$.
 const mathRegex = /(\\\(.*?\\\)|(?<!\\)\$.+?(?<!\\)\$|\\\[.+?\\]|(?<!\\)\$\$.+?(?<!\\)\$\$)/g;
 
 const renderToString = (text: string) => {
-  const parts = text.split(mathRegex);
+  try {
+    const parts = text.split(mathRegex);
 
-  return parts
-    .map((part, index) => {
-      if (!part) return '';
-      if (index % 2 === 1) { // It's a math part
-        let isBlock = false;
-        let math = part;
+    return parts
+      .map((part, index) => {
+        if (!part) return '';
+        // Every odd-indexed part is a math expression
+        if (index % 2 === 1) {
+          let isBlock = false;
+          let math = part;
 
-        if ((math.startsWith('$$') && math.endsWith('$$')) || (math.startsWith('\\[') && math.endsWith('\\]'))) {
-          isBlock = true;
-          math = cleanMathString(math, 2);
-        } else if (math.startsWith('$') && math.endsWith('$')) {
-          math = cleanMathString(math, 1);
-        } else if (math.startsWith('\\(') && math.endsWith('\\)')) {
-          math = cleanMathString(math, 2);
-        }
+          // Determine if it's block or inline and remove delimiters
+          if (math.startsWith('$$') && math.endsWith('$$')) {
+            isBlock = true;
+            math = math.substring(2, math.length - 2);
+          } else if (math.startsWith('\\[') && math.endsWith('\\]')) {
+            isBlock = true;
+            math = math.substring(2, math.length - 2);
+          } else if (math.startsWith('$') && math.endsWith('$')) {
+            math = math.substring(1, math.length - 1);
+          } else if (math.startsWith('\\(') && math.endsWith('\\)')) {
+            math = math.substring(2, math.length - 2);
+          }
 
-        try {
+          // Render with KaTeX
           return katex.renderToString(math, {
             throwOnError: false,
             displayMode: isBlock,
             output: 'html',
           });
-        } catch (e) {
-          console.error("KaTeX parsing error:", e, "on part:", part);
-          return `<span class="text-red-500">${part}</span>`;
         }
-      }
-      return part.replace(/\\\$/g, '$'); // It's a regular text part, un-escape any escaped dollar signs
-    })
-    .join('');
+        // It's a regular text part, un-escape any `\$` sequences
+        return part.replace(/\\\$/g, '$');
+      })
+      .join('');
+  } catch (e) {
+      console.error("KaTeX rendering error:", e);
+      // Fallback to show the original text with an error style
+      return `<span style="color: red;">${text}</span>`;
+  }
 };
 
 export function MathRenderer({ text }: MathRendererProps) {
@@ -61,9 +65,13 @@ export function MathRenderer({ text }: MathRendererProps) {
 
   const renderedHtml = useMemo(() => {
     if (!isClient) {
-      // Return a simplified, non-KaTeX version for SSR to prevent hydration mismatch
-      return { __html: text.replace(/\$|\\\(|\\\)|\\\[|\\\]|\\cdot/g, '') };
+      // For server-side rendering and initial client render,
+      // return a simplified version to avoid hydration mismatch.
+      // A simple replace is safe here before client-side KaTeX takes over.
+      const simplifiedText = text.replace(/\$|\\\(|\\\)|\\\[|\\\]|\\cdot|\\mathbb|\\to|\\in|\\/g, '');
+      return { __html: simplifiedText };
     }
+    // On the client, render the full KaTeX output
     return { __html: renderToString(text) };
   }, [text, isClient]);
 
