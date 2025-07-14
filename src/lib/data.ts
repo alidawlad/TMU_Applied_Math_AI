@@ -636,7 +636,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Approximate e',
                         fullQuestion: 'Compute $(1 + 1/200)^{200}$ and compare it to the value of $e$. State the absolute error.',
-                        description: '',
                         idealTime: 240,
                         steps: [
                             {
@@ -660,7 +659,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Evaluate a limit involving e',
                         fullQuestion: 'Evaluate $\\lim_{n\\to\\infty}(1+\\frac{4}{n})^{n}$ correct to four decimal places.',
-                        description: '',
                         idealTime: 300,
                         steps: [
                             {
@@ -684,7 +682,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Solve for an exponent with base e',
                         fullQuestion: 'Find $k$ such that $e^{k}=5.2$. Give $k$ to three decimal places.',
-                        description: '',
                         idealTime: 120,
                         steps: [
                             {
@@ -708,7 +705,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Evaluate a function with base e',
                         fullQuestion: 'For $f(x)=3e^{0.7x}$ evaluate $f(0)$, $f(1)$ and state the y-intercept of its graph.',
-                        description: '',
                         idealTime: 180,
                         steps: [
                             {
@@ -738,7 +734,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Sketch y=e^x',
                         fullQuestion: 'Sketch $y=e^{x}$ and mark the points where $x = -1, 0, 1$. Label the horizontal asymptote.',
-                        description: '',
                         idealTime: 240,
                         steps: [
                              {
@@ -816,7 +811,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Simplify an exponential expression',
                         fullQuestion: 'Simplify $\\frac{2^{3x} \\cdot 4^{x-1}}{8^{2-x}}$ leaving the answer as a single power of 2.',
-                        description: '',
                         idealTime: 240,
                         steps: [
                              {
@@ -846,7 +840,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Solve with a common base',
                         fullQuestion: 'Solve for x: $7^{2x-3}=49^{x+1}$.',
-                        description: '',
                         idealTime: 300,
                         steps: [
                             {
@@ -876,7 +869,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Solve with logarithms',
                         fullQuestion: 'Solve for x: $3^{x+2}=5 \\cdot 3^{2-2x}$.',
-                        description: '',
                         idealTime: 360,
                         steps: [
                             {
@@ -906,7 +898,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Solve a quadratic-form exponential equation',
                         fullQuestion: 'Solve for x: $e^{2x}-5e^{x}+6=0$.',
-                        description: '',
                         idealTime: 300,
                         steps: [
                             {
@@ -936,7 +927,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Find growth factor from data points',
                         fullQuestion: 'A population obeys $A(t)=ab^{t}$. If $A(0)=15$ and $A(2)=60$, find the growth factor $b$.',
-                        description: '',
                         idealTime: 300,
                         steps: [
                              {
@@ -996,7 +986,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Calculate future value with compound interest',
                         fullQuestion: 'Find the future value of \\$2,500 invested at 6% compounded quarterly for 12 years.',
-                        description: '',
                         idealTime: 360,
                         steps: [
                             {
@@ -1020,7 +1009,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Calculate doubling time with continuous compounding',
                         fullQuestion: 'How long will it take \\$500 to double if it earns 4% interest compounded continuously?',
-                        description: '',
                         idealTime: 360,
                         steps: [
                             {
@@ -1044,7 +1032,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Calculate Effective Annual Rate (EAR)',
                         fullQuestion: 'Compute the effective annual rate (EAR) for 5% nominal interest compounded monthly.',
-                        description: '',
                         idealTime: 300,
                         steps: [
                             {
@@ -1068,7 +1055,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Calculate decay constant from half-life',
                         fullQuestion: 'Carbon-14 decays according to $Q(t)=Q_{0}e^{-kt}$. Given a half-life of 5,730 years, find $k$ to four decimals.',
-                        description: '',
                         idealTime: 420,
                         steps: [
                             {
@@ -1098,7 +1084,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Calculate nominal rate for a given growth',
                         fullQuestion: 'At what annual nominal rate $r$ (compounded monthly) will an investment triple in 9 years?',
-                        description: '',
                         idealTime: 480,
                         steps: [
                             {
@@ -1164,7 +1149,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Convert log to exponential form',
                         fullQuestion: 'Rewrite $\\log_{3}81=4$ in exponential form and verify the equality.',
-                        description: '',
                         idealTime: 120,
                         steps: [
                             {
@@ -1182,7 +1166,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Evaluate a log expression',
                         fullQuestion: 'Evaluate $\\log_{5}125-\\log_{5}25+\\log_{5}\\sqrt{5}$.',
-                        description: '',
                         idealTime: 180,
                         steps: [
                             {
@@ -1206,7 +1189,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Solve a logarithmic equation',
                         fullQuestion: 'Solve for x: $\\log_{2}(x-3)+\\log_{2}(x+1)=3$.',
-                        description: '',
                         idealTime: 360,
                         steps: [
                             {
@@ -1236,7 +1218,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Solve an exponential equation with logs',
                         fullQuestion: 'Solve for $x$ to three decimals: $5^{2x}=18$.',
-                        description: '',
                         idealTime: 240,
                         steps: [
                              {
@@ -1260,7 +1241,6 @@ export const lectures: Lecture[] = [
                         source: 'Week 8 Practice',
                         title: 'Find an inverse function with logs',
                         fullQuestion: 'Given $f(x)=-\\frac{1}{2} e^{x}$ (one-to-one on its domain), find $f^{-1}(x)$.',
-                        description: '',
                         idealTime: 360,
                         steps: [
                             {
@@ -1295,37 +1275,33 @@ export const lectures: Lecture[] = [
                 id: 'sequences',
                 name: 'Sequences',
                 description: 'An infinite sequence is a function $a: \\mathbb{N} \\to \\mathbb{R}$. A finite sequence is a function $a: \\{1, 2, . . . , n\\} \\to \\mathbb{R}$. Given $n \\in \\mathbb{N}$, the n-term of the sequence $a$ is $a(n)$. It is customary to write $a_n$ instead of $a(n)$ and we will adopt this notation.\n\nWe will use $(a_k)^n_{k=1}$ to indicate that the sequence is finite of length $n$, i.e., $a_1, a_2, a_3, . . . , a_n$. We will use $(a_k)^\\infty_{k=1}$ to indicate that the sequence is infinite, i.e., $a_1, a_2, a_3, . . . .$\n\nSequences can be given:\na) by specifying its general term, a formula for writing the n-th term of the sequence\nb) by listing the terms of the sequence\nc) by a recursive formula',
+                lectureContent: {
+                    id: 'LC-SEQ-1',
+                    title: '1. Sequences',
+                    segments: [
+                        { type: 'paragraph', text: 'An infinite sequence is a function $a: \\mathbb{N} \\to \\mathbb{R}$. A finite sequence is a function $a: \\{1, 2, ..., n\\} \\to \\mathbb{R}$. Given $n \\in \\mathbb{N}$, the n-term of the sequence $a$ is $a(n)$. It is customary to write $a_n$ instead of $a(n)$ and we will adopt this notation.' },
+                        { type: 'paragraph', text: 'We will use $(a_k)^n_{k=1}$ to indicate that the sequence is finite of length $n$, i.e.,' },
+                        { type: 'math', text: 'a_1, a_2, a_3, ... , a_n' },
+                        { type: 'paragraph', text: 'We will use $(a_k)^\\infty_{k=1}$ to indicate that the sequence is infinite, i.e.,' },
+                        { type: 'math', text: 'a_1, a_2, a_3, ...' },
+                        { type: 'paragraph', text: 'Sequences can be given:'},
+                        { type: 'numbered-list', items: ['by specifying its general term, a formula for writing the n-th term of the sequence', 'by listing the terms of the sequence', 'by a recursive formula']},
+                        { type: 'subheading', text: 'Example 1. Sequences given by its general term'},
+                        { type: 'paragraph', text: 'a) If the sequence $(a_n)^\\infty_{n=1}$ is given by $a_n = 2n$, then' },
+                        { type: 'math', text: 'a_1 = 2 \\cdot 1 = 2, a_2 = 2 \\cdot 2 = 4, a_3 = 2 \\cdot 3 = 6, ...' },
+                        { type: 'paragraph', text: 'are respectively the 1-st, 2-nd and 3-rd term of the sequence. We see that $a_n = 2n$ is the sequence of even numbers' },
+                        { type: 'math', text: '2, 4, 6, 8, 10, ...' },
+                        { type: 'paragraph', text: 'b) If the sequence $(a_n)^\\infty_{n=1}$ is given by $a_n = n^2$, then' },
+                        { type: 'math', text: 'a_1 = 1^2 = 1, a_2 = 2^2 = 4, a_3 = 3^2 = 9, ...' },
+                        { type: 'paragraph', text: 'are respectively the 1-st, 2-nd and 3-rd term of the sequence. We see that $a(n) = n^2$ is the sequence of squares of natural numbers' },
+                        { type: 'math', text: '1, 4, 9, 16, 25, ...' },
+                        { type: 'paragraph', text: 'c) If the sequence $(a_n)^\\infty_{n=1}$ is given by $a_n = \\frac{1}{2^n}$, then' },
+                        { type: 'math', text: 'a_1 = \\frac{1}{2^1} = \\frac{1}{2}, a_2 = \\frac{1}{2^2} = \\frac{1}{4}, a_5 = \\frac{1}{2^5} = \\frac{1}{32}' },
+                        { type: 'paragraph', text: 'are respectively the 1-st, 2-nd and 5-th term of the sequence.' },
+                    ]
+                },
                 problems: [
-                    {
-                        id: 'W10-SQ-LEAD',
-                        type: 'lead-example',
-                        skill: 'Sequences by General Term',
-                        source: 'Week 10 Example 1',
-                        title: 'Sequences given by its general term',
-                        description: 'If the sequence $(a_n)_{n=1}^\\infty$ is given by $a_n = 2n$, then $a_1 = 2 \\cdot 1 = 2$, $a_2 = 2 \\cdot 2 = 4$, $a_3 = 2 \\cdot 3 = 6$, . . . are respectively the 1-st, 2-nd and 3-rd term of the sequence. We see that $a_n = 2n$ is the sequence of even numbers 2, 4, 6, 8, 10, . . .',
-                        idealTime: 180,
-                        steps: [
-                            {
-                                id: '1',
-                                title: 'Example (a)',
-                                description: 'If the sequence $(a_n)_{n=1}^\\infty$ is given by $a_n = 2n$, then $a_1 = 2 \\cdot 1 = 2$, $a_2 = 2 \\cdot 2 = 4$, $a_3 = 2 \\cdot 3 = 6$, . . . are respectively the 1-st, 2-nd and 3-rd term of the sequence. We see that $a_n = 2n$ is the sequence of even numbers 2, 4, 6, 8, 10, . . .',
-                                solution: ''
-                            },
-                            {
-                                id: '2',
-                                title: 'Example (b)',
-                                description: 'If the sequence $(a_n)_{n=1}^\\infty$ is given by $a_n = n^2$, then $a_1 = 1^2 = 1$, $a_2 = 2^2 = 4$, $a_3 = 3^2 = 9$, . . . are respectively the 1-st, 2-nd and 3-rd term of the sequence. We see that $a(n) = n^2$ is the sequence of squares of natural numbers 1, 4, 9, 16, 25, . . .',
-                                solution: ''
-                            },
-                            {
-                                id: '3',
-                                title: 'Example (c)',
-                                description: 'If the sequence $(a_n)_{n=1}^\\infty$ is given by $a_n = \\frac{1}{2^n}$, then $a_1 = \\frac{1}{2^1} = \\frac{1}{2}, a_2 = \\frac{1}{2^2} = \\frac{1}{4}, a_5 = \\frac{1}{2^5} = \\frac{1}{32}$ are respectively the 1-st, 2-nd and 5-th term of the sequence.',
-                                solution: ''
-                            }
-                        ]
-                    },
-                    {
+                     {
                         id: 'SQ1',
                         type: 'practice',
                         skill: 'Sequences by General Term',

@@ -19,11 +19,24 @@ export type Problem = {
   idealTime?: number;
 };
 
+export type LectureContentSegment = {
+    type: 'heading' | 'subheading' | 'paragraph' | 'list' | 'numbered-list' | 'math';
+    text?: string;
+    items?: string[];
+}
+
+export type LectureContent = {
+    id: string;
+    title: string;
+    segments: LectureContentSegment[];
+}
+
 export type Module = {
   id: string;
   name: string;
   description: string;
   problems: Problem[];
+  lectureContent?: LectureContent;
 };
 
 export type Lecture = {

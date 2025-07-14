@@ -11,6 +11,7 @@ import type { Lecture, Module, Problem } from "@/lib/types";
 import type { Topic } from "@/app/study-plan/page";
 import Link from "next/link";
 import { Button } from './ui/button';
+import { BookOpen } from 'lucide-react';
 
 interface StudyPlanTabsProps {
     lectures: Lecture[];
@@ -115,12 +116,11 @@ export function StudyPlanTabs({ lectures, topics }: StudyPlanTabsProps) {
                                                     <TableHeader>
                                                         <TableRow>
                                                             <TableHead>Module / Skill Set</TableHead>
-                                                            <TableHead className="text-right">Progress</TableHead>
+                                                            <TableHead className="text-right">Actions</TableHead>
                                                         </TableRow>
                                                     </TableHeader>
                                                     <TableBody>
                                                         {lecture.modules.map((module) => {
-                                                            const moduleProgress = calculateProgress(module.problems);
                                                             return (
                                                                 <TableRow key={module.id}>
                                                                     <TableCell>
@@ -128,7 +128,14 @@ export function StudyPlanTabs({ lectures, topics }: StudyPlanTabsProps) {
                                                                         <div className="text-sm text-muted-foreground">{module.description}</div>
                                                                     </TableCell>
                                                                     <TableCell className="text-right">
-                                                                        <div className="font-semibold">{moduleProgress.completed}/{moduleProgress.total} MP</div>
+                                                                        {module.lectureContent && (
+                                                                            <Link href={`/study?module=${module.id}`} passHref>
+                                                                                <Button variant="outline" size="sm">
+                                                                                    <BookOpen className="mr-2 h-4 w-4" />
+                                                                                    Study Topic
+                                                                                </Button>
+                                                                            </Link>
+                                                                        )}
                                                                     </TableCell>
                                                                 </TableRow>
                                                             );
