@@ -26,7 +26,10 @@ const renderMathExpression = (expression: string, isBlock: boolean): string => {
     return rendered;
   } catch (error) {
     console.error('KaTeX rendering error:', error);
-    return `<span class="math-error" style="color: #dc2626; font-family: monospace;">${expression}</span>`;
+    // Add title for better UX
+    const fallback = `<span class="math-error" style="color: #dc2626; font-family: monospace;" title="Math rendering error">${expression}</span>`;
+    mathCache.set(cacheKey, fallback);
+    return fallback;
   }
 };
 

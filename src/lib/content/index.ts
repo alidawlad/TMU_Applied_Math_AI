@@ -1,5 +1,6 @@
 import type { Lecture, ModuleContent } from '@/lib/types';
 import { week10Examples } from './week10-examples';
+import { week10SeriesExamples } from './week10-examples-series';
 import { week10PracticeProblems } from './week10-practice';
 
 // Create modules by combining examples and practice problems
@@ -27,6 +28,31 @@ const fibonacciModule: ModuleContent = {
     problems: week10PracticeProblems.filter(p => p.skill === 'Fibonacci Sequence' || p.skill === 'Modified Fibonacci' || p.skill === 'Golden Ratio Application')
 };
 
+// New modules for summation notation and arithmetic sequences
+const summationNotationModule: ModuleContent = {
+    id: 'summation-notation',
+    name: 'Summation Notation',
+    description: 'Understanding and working with sigma notation for series.',
+    examples: week10SeriesExamples.filter(e => e.id === 'W10-E4' || e.id === 'W10-E5'),
+    problems: week10PracticeProblems.filter(p => p.skill === 'Summation Notation' || p.skill === 'Index Manipulation')
+};
+
+const arithmeticSequencesModule: ModuleContent = {
+    id: 'arithmetic-sequences',
+    name: 'Arithmetic Sequences',
+    description: 'Understanding arithmetic sequences and their properties.',
+    examples: week10SeriesExamples.filter(e => e.id === 'W10-E6' || e.id === 'W10-E7'),
+    problems: week10PracticeProblems.filter(p => p.skill === 'Arithmetic Sequences' || p.skill === 'Common Difference')
+};
+
+const arithmeticApplicationsModule: ModuleContent = {
+    id: 'arithmetic-applications',
+    name: 'Arithmetic Sequences & Series Applications',
+    description: 'Real-world applications of arithmetic sequences and series.',
+    examples: week10SeriesExamples.filter(e => e.id === 'W10-E8' || e.id === 'W10-E9'),
+    problems: week10PracticeProblems.filter(p => p.skill === 'Arithmetic Applications' || p.skill === 'Revenue Modeling')
+};
+
 // Assemble the lecture
 export const lectures: Lecture[] = [
     {
@@ -36,6 +62,9 @@ export const lectures: Lecture[] = [
             sequencesByGeneralTermModule,
             sequencesListingAndRecursiveModule,
             fibonacciModule,
+            summationNotationModule,
+            arithmeticSequencesModule,
+            arithmeticApplicationsModule,
         ]
     }
 ];
