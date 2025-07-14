@@ -8,13 +8,8 @@ interface MathRendererProps {
   text: string;
 }
 
-// Improved regex for better math parsing
-const MATH_PATTERNS = {
-  blockMath: /\$\$([^$]+)\$\$/g,
-  inlineMath: /\$([^$]+)\$/g,
-  blockBrackets: /\\\[([^\]]+)\\\]/g,
-  inlineBrackets: /\\\(([^\)]+)\\\)/g
-};
+// Regex to find math expressions or Markdown bold
+const combinedPattern = /(\$\$[^$]+\$\$|\\\[[^\]]+\\\]|\$[^$]+\$|\\\([^\)]+\\\)|\*\*([^*]+)\*\*)/g;
 
 // Cache for rendered math expressions
 const mathCache = new Map<string, string>();
@@ -43,43 +38,41 @@ const renderMathExpression = (expression: string, isBlock: boolean): string => {
   }
 };
 
-const createPlaceholder = (expression: string, isBlock: boolean): string => {
-  const className = isBlock ? 'math-placeholder-block' : 'math-placeholder-inline';
-  return `<span class="${className}" style="font-family: monospace; opacity: 0.7;">${expression}</span>`;
-};
-
-const processText = (text: string, isClient: boolean): string => {
+const processTextWithMarkdown = (text: string, isClient: boolean): string => {
   if (!text) return '';
 
-  let result = text;
+  const parts = text.split(combinedPattern);
   
-  // Process block math first ($$...$$ and \[...\])
-  result = result.replace(MATH_PATTERNS.blockMath, (match, expression) => {
-    return isClient 
-      ? renderMathExpression(expression, true)
-      : createPlaceholder(expression, true);
-  });
-
-  result = result.replace(MATH_PATTERNS.blockBrackets, (match, expression) => {
-    return isClient 
-      ? renderMathExpression(expression, true)
-      : createPlaceholder(expression, true);
-  });
-
-  // Process inline math ($...$ and \(...\))
-  result = result.replace(MATH_PATTERNS.inlineMath, (match, expression) => {
-    return isClient 
-      ? renderMathExpression(expression, false)
-      : createPlaceholder(expression, false);
-  });
-
-  result = result.replace(MATH_PATTERNS.inlineBrackets, (match, expression) => {
-    return isClient 
-      ? renderMathExpression(expression, false)
-      : createPlaceholder(expression, false);
-  });
-
-  return result;
+  return parts.map((part, index) => {
+    if (!part) return '';
+    
+    // Check if the part is a math or bold expression
+    if (part.match(combinedPattern)) {
+      if (part.startsWith('$$') && part.endsWith('$$')) {
+        const expression = part.substring(2, part.length - 2);
+        return isClient ? renderMathExpression(expression, true) : `<span class="math-placeholder-block">${expression}</span>`;
+      }
+      if (part.startsWith('\\[') && part.endsWith('\\]')) {
+        const expression = part.substring(2, part.length - 2);
+        return isClient ? renderMathExpression(expression, true) : `<span class="math-placeholder-block">${expression}</span>`;
+      }
+      if (part.startsWith('$') && part.endsWith('$')) {
+        const expression = part.substring(1, part.length - 1);
+        return isClient ? renderMathExpression(expression, false) : `<span class="math-placeholder-inline">${expression}</span>`;
+      }
+      if (part.startsWith('\\(') && part.endsWith('\\)')) {
+        const expression = part.substring(2, part.length - 2);
+        return isClient ? renderMathExpression(expression, false) : `<span class="math-placeholder-inline">${expression}</span>`;
+      }
+      if (part.startsWith('**') && part.endsWith('**')) {
+        const content = part.substring(2, part.length - 2);
+        return `<strong>${content}</strong>`;
+      }
+    }
+    
+    // It's a regular text part
+    return part;
+  }).join('');
 };
 
 export function MathRenderer({ text }: MathRendererProps) {
@@ -90,7 +83,7 @@ export function MathRenderer({ text }: MathRendererProps) {
   }, []);
 
   const renderedHtml = useMemo(() => {
-    const processedText = processText(text, isClient);
+    const processedText = processTextWithMarkdown(text, isClient);
     return { __html: processedText };
   }, [text, isClient]);
 
