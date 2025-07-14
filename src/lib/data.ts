@@ -13,6 +13,7 @@ export const lectures: Lecture[] = [
                     {
                         id: 'W8-CF-LEAD',
                         type: 'lead-example',
+                        skill: 'Composition Basics',
                         source: 'Week 8 Example',
                         title: 'Let f(x) = 3x + 2 and g(x) = x^2 + 1. Find formulas for (f ∘ g)(x) and (g ∘ f)(x), and then compute (g ∘ f)(2).',
                         description: 'Let f(x) = 3x + 2 and g(x) = x^2 + 1. Find formulas for (f ∘ g)(x) and (g ∘ f)(x), and then compute (g ∘ f)(2).',
@@ -41,8 +42,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'CF1',
                         type: 'practice',
+                        skill: 'Composition Basics',
                         source: 'Week 8 Practice',
-                        title: 'Let f(x) = x^2 - 6 and g(x) = 4x + 5.  Compute (g ∘ f)(-2) and (f ∘ f)(3).',
+                        title: 'Compute compositions',
+                        fullQuestion: 'Let f(x) = x^2 - 6 and g(x) = 4x + 5.  Compute (g ∘ f)(-2) and (f ∘ f)(3).',
                         description: 'Let f(x) = x^2 - 6 and g(x) = 4x + 5.  Compute (g ∘ f)(-2) and (f ∘ f)(3).',
                         idealTime: 240,
                         steps: [
@@ -64,8 +67,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'CF2',
                         type: 'practice',
+                        skill: 'Formulas for Compositions',
                         source: 'Week 8 Practice',
-                        title: 'Given f(x) = 2x - 5 and g(x) = 3x^2 + 1, find explicit formulas for (g ∘ f)(x) and (f ∘ g)(x).',
+                        title: 'Find formulas for compositions',
+                        fullQuestion: 'Given f(x) = 2x - 5 and g(x) = 3x^2 + 1, find explicit formulas for (g ∘ f)(x) and (f ∘ g)(x).',
                         description: 'Given f(x) = 2x - 5 and g(x) = 3x^2 + 1, find explicit formulas for (g ∘ f)(x) and (f ∘ g)(x).',
                         idealTime: 300,
                         steps: [
@@ -87,8 +92,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'CF3',
                         type: 'practice',
+                        skill: 'Multi-function Composition',
                         source: 'Week 8 Practice',
-                        title: 'For f(x) = 2x + 1, g(x) = x^2 - x + 1, and h(x) = √(x^2 + 3), determine (h ∘ g ∘ f)(x).',
+                        title: 'Determine a three-function composition',
+                        fullQuestion: 'For f(x) = 2x + 1, g(x) = x^2 - x + 1, and h(x) = √(x^2 + 3), determine (h ∘ g ∘ f)(x).',
                         description: 'For f(x) = 2x + 1, g(x) = x^2 - x + 1, and h(x) = √(x^2 + 3), determine (h ∘ g ∘ f)(x).',
                         idealTime: 360,
                         steps: [
@@ -110,8 +117,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'CF4',
                         type: 'practice',
+                        skill: 'Application of Composition',
                         source: 'Week 8 Practice',
-                        title: "A company's profit P (in dollars) is P = g(x), where x is units sold, and x = f(p), where p is the unit price (in dollars). Express profit directly as a function of price.",
+                        title: 'Express profit as a function of price',
+                        fullQuestion: "A company's profit P (in dollars) is P = g(x), where x is units sold, and x = f(p), where p is the unit price (in dollars). Express profit directly as a function of price.",
                         description: "A company's profit P (in dollars) is P = g(x), where x is units sold, and x = f(p), where p is the unit price (in dollars). Express profit directly as a function of price.",
                         idealTime: 180,
                         steps: [
@@ -133,8 +142,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'CF5',
                         type: 'practice',
+                        skill: 'Logarithmic and Exponential Composition',
                         source: 'Week 8 Practice',
-                        title: 'Let f(x) = ln x − ln (x + 1) and g(x) = e^x ⁄ (1 − e^x). Evaluate (f ∘ g)(x).',
+                        title: 'Evaluate a composition of log and exponential functions',
+                        fullQuestion: 'Let f(x) = ln x − ln (x + 1) and g(x) = e^x ⁄ (1 − e^x). Evaluate (f ∘ g)(x).',
                         description: 'Let f(x) = ln x − ln (x + 1) and g(x) = e^x ⁄ (1 − e^x). Evaluate (f ∘ g)(x).',
                         idealTime: 360,
                         steps: [
@@ -163,6 +174,7 @@ export const lectures: Lecture[] = [
                     {
                         id: 'W8-IF-LEAD',
                         type: 'lead-example',
+                        skill: 'Finding and Verifying Inverses',
                         source: 'Week 8 Example',
                         title: 'Find the inverse of f(x) = (2x + 1) / (x - 3) and verify your result.',
                         description: 'Find the inverse of f(x) = (2x + 1) / (x - 3) and verify your result.',
@@ -185,8 +197,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'IF1',
                         type: 'practice',
+                        skill: 'Finding and Verifying Inverses',
                         source: 'Week 8 Practice',
-                        title: 'Find f⁻¹(x) for f(x) = 4x + 9. State its domain and range, and verify that (f⁻¹ ∘ f)(x) = x.',
+                        title: 'Find inverse of a linear function',
+                        fullQuestion: 'Find f⁻¹(x) for f(x) = 4x + 9. State its domain and range, and verify that (f⁻¹ ∘ f)(x) = x.',
                         description: 'Find f⁻¹(x) for f(x) = 4x + 9. State its domain and range, and verify that (f⁻¹ ∘ f)(x) = x.',
                         idealTime: 300,
                         steps: [
@@ -214,8 +228,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'IF2',
                         type: 'practice',
+                        skill: 'Restricted Domain Inverses',
                         source: 'Week 8 Practice',
-                        title: 'The function g(x) = x^2 − 2 is not one-to-one on ℝ. Restrict its domain so that it becomes one-to-one, then find g⁻¹ and sketch both graphs on the same axes.',
+                        title: 'Find inverse of a quadratic function',
+                        fullQuestion: 'The function g(x) = x^2 − 2 is not one-to-one on ℝ. Restrict its domain so that it becomes one-to-one, then find g⁻¹ and sketch both graphs on the same axes.',
                         description: 'The function g(x) = x^2 − 2 is not one-to-one on ℝ. Restrict its domain so that it becomes one-to-one, then find g⁻¹ and sketch both graphs on the same axes.',
                         idealTime: 240,
                         steps: [
@@ -237,8 +253,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'IF3',
                         type: 'practice',
+                        skill: 'Exponential Inverses',
                         source: 'Week 8 Practice',
-                        title: 'For f(x) = 2^{−x}, determine f⁻¹(x) and sketch the graphs of f and f⁻¹ on a common set of axes.',
+                        title: 'Find inverse of an exponential function',
+                        fullQuestion: 'For f(x) = 2^{−x}, determine f⁻¹(x) and sketch the graphs of f and f⁻¹ on a common set of axes.',
                         description: 'For f(x) = 2^{−x}, determine f⁻¹(x) and sketch the graphs of f and f⁻¹ on a common set of axes.',
                         idealTime: 240,
                         steps: [
@@ -254,8 +272,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'IF4',
                         type: 'practice',
+                        skill: 'Logistic Function Inverses',
                         source: 'Week 8 Practice',
-                        title: 'Suppose f(t) = 25 / [1 + 4 e^{−2t}]. (a) Find f⁻¹(t). (b) Compute f(2).',
+                        title: 'Find inverse of a logistic function',
+                        fullQuestion: 'Suppose f(t) = 25 / [1 + 4 e^{−2t}]. (a) Find f⁻¹(t). (b) Compute f(2).',
                         description: 'Suppose f(t) = 25 / [1 + 4 e^{−2t}]. (a) Find f⁻¹(t). (b) Compute f(2).',
                         idealTime: 420,
                         steps: [
@@ -277,8 +297,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'IF5',
                         type: 'practice',
+                        skill: 'Finding and Verifying Inverses',
                         source: 'Week 8 Practice',
-                        title: 'Let h(x) = (1/5)x − 2. Find h⁻¹(x) and verify h∘h⁻¹(x) = x.',
+                        title: 'Find inverse and verify',
+                        fullQuestion: 'Let h(x) = (1/5)x − 2. Find h⁻¹(x) and verify h∘h⁻¹(x) = x.',
                         description: 'Let h(x) = (1/5)x − 2. Find h⁻¹(x) and verify h∘h⁻¹(x) = x.',
                         idealTime: 240,
                         steps: [
@@ -307,6 +329,7 @@ export const lectures: Lecture[] = [
                     {
                         id: 'W8-OO-LEAD',
                         type: 'lead-example',
+                        skill: 'Algebraic and Graphical Tests',
                         source: 'Week 8 Example',
                         title: 'Determine if f(x) = (x-1)^2 is one-to-one using both algebraic proof and the horizontal-line test.',
                         description: 'Determine if f(x) = (x-1)^2 is one-to-one using both algebraic proof and the horizontal-line test.',
@@ -329,8 +352,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'OO1',
                         type: 'practice',
+                        skill: 'Algebraic and Graphical Tests',
                         source: 'Week 8 Practice',
-                        title: 'Prove algebraically whether f(x) = 5x − 7 is one-to-one.',
+                        title: 'Prove if a linear function is one-to-one',
+                        fullQuestion: 'Prove algebraically whether f(x) = 5x − 7 is one-to-one.',
                         description: 'Prove algebraically whether f(x) = 5x − 7 is one-to-one.',
                         idealTime: 120,
                         steps: [
@@ -346,8 +371,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'OO2',
                         type: 'practice',
+                        skill: 'Algebraic and Graphical Tests',
                         source: 'Week 8 Practice',
-                        title: 'Is g(x) = √(x + 3) one-to-one? Justify your answer.',
+                        title: 'Prove if a square root function is one-to-one',
+                        fullQuestion: 'Is g(x) = √(x + 3) one-to-one? Justify your answer.',
                         description: 'Is g(x) = √(x + 3) one-to-one? Justify your answer.',
                         idealTime: 120,
                         steps: [
@@ -363,8 +390,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'OO3',
                         type: 'practice',
+                        skill: 'Algebraic and Graphical Tests',
                         source: 'Week 8 Practice',
-                        title: 'Determine if h(x) = |x − 2| is one-to-one and explain your reasoning.',
+                        title: 'Prove if an absolute value function is one-to-one',
+                        fullQuestion: 'Determine if h(x) = |x − 2| is one-to-one and explain your reasoning.',
                         description: 'Determine if h(x) = |x − 2| is one-to-one and explain your reasoning.',
                         idealTime: 120,
                         steps: [
@@ -380,8 +409,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'OO4',
                         type: 'practice',
+                        skill: 'Horizontal Line Test',
                         source: 'Week 8 Practice',
-                        title: 'Use the horizontal-line test to decide whether k(x) = x^3 − 2x is one-to-one. Explain briefly.',
+                        title: 'Use HLT on a cubic function',
+                        fullQuestion: 'Use the horizontal-line test to decide whether k(x) = x^3 − 2x is one-to-one. Explain briefly.',
                         description: 'Use the horizontal-line test to decide whether k(x) = x^3 − 2x is one-to-one. Explain briefly.',
                         idealTime: 180,
                         steps: [
@@ -397,8 +428,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'OO5',
                         type: 'practice',
+                        skill: 'Horizontal Line Test',
                         source: 'Week 8 Practice',
-                        title: 'For the piece-wise function m(x) = { x + 2 if x ≤ 0 ; x^2 if x > 0 }, determine whether m is one-to-one.',
+                        title: 'Use HLT on a piecewise function',
+                        fullQuestion: 'For the piece-wise function m(x) = { x + 2 if x ≤ 0 ; x^2 if x > 0 }, determine whether m is one-to-one.',
                         description: 'For the piece-wise function m(x) = { x + 2 if x ≤ 0 ; x^2 if x > 0 }, determine whether m is one-to-one.',
                         idealTime: 240,
                         steps: [
@@ -421,6 +454,7 @@ export const lectures: Lecture[] = [
                     {
                         id: 'W8-EX-LEAD',
                         type: 'lead-example',
+                        skill: 'Solving Exponential Equations',
                         source: 'Week 8 Example',
                         title: 'An investment of $1000 grows according to the formula A(t) = 1000 * (1.05)^t. When will the investment reach $1500?',
                         description: 'An investment of $1000 grows according to the formula A(t) = 1000 * (1.05)^t. When will the investment reach $1500?',
@@ -449,8 +483,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'EX1',
                         type: 'practice',
+                        skill: 'Identifying Exponential Functions',
                         source: 'Week 8 Practice',
-                        title: 'Which of the following are exponential functions of the form y = ab^x? (a) y = −4^x (b) y = (1/2)^{-3x} (c) y = (√7)^{-x} (d) y = (−3)^x',
+                        title: 'Identify exponential functions',
+                        fullQuestion: 'Which of the following are exponential functions of the form y = ab^x? (a) y = −4^x (b) y = (1/2)^{-3x} (c) y = (√7)^{-x} (d) y = (−3)^x',
                         description: 'Which of the following are exponential functions of the form y = ab^x? (a) y = −4^x (b) y = (1/2)^{-3x} (c) y = (√7)^{-x} (d) y = (−3)^x',
                         idealTime: 180,
                         steps: [
@@ -466,8 +502,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'EX2',
                         type: 'practice',
+                        skill: 'Graphing Exponential Functions',
                         source: 'Week 8 Practice',
-                        title: 'Sketch f(x) = (1/4)·3^x and g(x) = 3^x for −3 ≤ x ≤ 3, clearly labeling any intercepts and asymptotes.',
+                        title: 'Sketch exponential functions',
+                        fullQuestion: 'Sketch f(x) = (1/4)·3^x and g(x) = 3^x for −3 ≤ x ≤ 3, clearly labeling any intercepts and asymptotes.',
                         description: 'Sketch f(x) = (1/4)·3^x and g(x) = 3^x for −3 ≤ x ≤ 3, clearly labeling any intercepts and asymptotes.',
                         idealTime: 240,
                         steps: [
@@ -489,8 +527,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'EX3',
                         type: 'practice',
+                        skill: 'Solving Exponential Equations',
                         source: 'Week 8 Practice',
-                        title: 'Solve for x: 5^{2x − 1} = 125.',
+                        title: 'Solve with common base',
+                        fullQuestion: 'Solve for x: 5^{2x − 1} = 125.',
                         description: 'Solve for x: 5^{2x − 1} = 125.',
                         idealTime: 120,
                         steps: [
@@ -512,8 +552,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'EX4',
                         type: 'practice',
+                        skill: 'Solving Exponential Equations',
                         source: 'Week 8 Practice',
-                        title: 'Solve for x: e^{3x − 2} = 7.',
+                        title: 'Solve with logarithms',
+                        fullQuestion: 'Solve for x: e^{3x − 2} = 7.',
                         description: 'Solve for x: e^{3x − 2} = 7.',
                         idealTime: 120,
                         steps: [
@@ -535,8 +577,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'EX5',
                         type: 'practice',
+                        skill: 'Analyzing Exponential Functions',
                         source: 'Week 8 Practice',
-                        title: 'For each function, state whether its graph is increasing or decreasing and give the y-intercept: (i) f(x) = (1/3)^x (ii) g(x) = 2^{x − 1}.',
+                        title: 'Analyze exponential functions',
+                        fullQuestion: 'For each function, state whether its graph is increasing or decreasing and give the y-intercept: (i) f(x) = (1/3)^x (ii) g(x) = 2^{x − 1}.',
                         description: 'For each function, state whether its graph is increasing or decreasing and give the y-intercept: (i) f(x) = (1/3)^x (ii) g(x) = 2^{x − 1}.',
                         idealTime: 240,
                         steps: [
@@ -565,6 +609,7 @@ export const lectures: Lecture[] = [
                     {
                         id: 'W8-EU-LEAD',
                         type: 'lead-example',
+                        skill: 'Definition of e',
                         source: 'Week 8 Example',
                         title: 'Compute $(1 + 1/1000)^{1000}$ and compare it to the value of e.',
                         description: 'Compute $(1 + 1/1000)^{1000}$ and compare it to the value of e.',
@@ -587,8 +632,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'EU1',
                         type: 'practice',
+                        skill: 'Definition of e',
                         source: 'Week 8 Practice',
-                        title: 'Compute $(1 + 1/200)^{200}$ and compare it to the value of e. State the absolute error.',
+                        title: 'Approximate e',
+                        fullQuestion: 'Compute $(1 + 1/200)^{200}$ and compare it to the value of e. State the absolute error.',
                         description: 'Compute $(1 + 1/200)^{200}$ and compare it to the value of e. State the absolute error.',
                         idealTime: 240,
                         steps: [
@@ -609,8 +656,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'EU2',
                         type: 'practice',
+                        skill: 'Limits involving e',
                         source: 'Week 8 Practice',
-                        title: 'Evaluate $\\lim_{n\\to\\infty}(1+\\frac{4}{n})^{n}$ correct to four decimal places.',
+                        title: 'Evaluate a limit involving e',
+                        fullQuestion: 'Evaluate $\\lim_{n\\to\\infty}(1+\\frac{4}{n})^{n}$ correct to four decimal places.',
                         description: 'Evaluate $\\lim_{n\\to\\infty}(1+\\frac{4}{n})^{n}$ correct to four decimal places.',
                         idealTime: 300,
                         steps: [
@@ -631,8 +680,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'EU3',
                         type: 'practice',
+                        skill: 'Solving with e',
                         source: 'Week 8 Practice',
-                        title: 'Find k such that $e^{k}=5.2$. Give k to three decimal places.',
+                        title: 'Solve for an exponent with base e',
+                        fullQuestion: 'Find k such that $e^{k}=5.2$. Give k to three decimal places.',
                         description: 'Find k such that $e^{k}=5.2$. Give k to three decimal places.',
                         idealTime: 120,
                         steps: [
@@ -653,8 +704,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'EU4',
                         type: 'practice',
+                        skill: 'Evaluating functions with e',
                         source: 'Week 8 Practice',
-                        title: 'For $f(x)=3e^{0.7x}$ evaluate f(0), f(1) and state the y-intercept of its graph.',
+                        title: 'Evaluate a function with base e',
+                        fullQuestion: 'For $f(x)=3e^{0.7x}$ evaluate f(0), f(1) and state the y-intercept of its graph.',
                         description: 'For $f(x)=3e^{0.7x}$ evaluate f(0), f(1) and state the y-intercept of its graph.',
                         idealTime: 180,
                         steps: [
@@ -681,8 +734,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'EU5',
                         type: 'practice',
+                        skill: 'Graphing functions with e',
                         source: 'Week 8 Practice',
-                        title: 'Sketch $y=e^{x}$ and mark the points where x = −1, 0, 1. Label the horizontal asymptote.',
+                        title: 'Sketch y=e^x',
+                        fullQuestion: 'Sketch $y=e^{x}$ and mark the points where x = −1, 0, 1. Label the horizontal asymptote.',
                         description: 'Sketch $y=e^{x}$ and mark the points where x = −1, 0, 1. Label the horizontal asymptote.',
                         idealTime: 240,
                         steps: [
@@ -722,6 +777,7 @@ export const lectures: Lecture[] = [
                     {
                         id: 'W8-LX-LEAD',
                         type: 'lead-example',
+                        skill: 'Simplifying Exponential Expressions',
                         source: 'Week 8 Example',
                         title: 'Simplify $\\frac{3^{2x} \\cdot 9^x}{27^x}$ leaving the answer as a single power of 3.',
                         description: 'Simplify $\\frac{3^{2x} \\cdot 9^x}{27^x}$ leaving the answer as a single power of 3.',
@@ -756,8 +812,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'LX1',
                         type: 'practice',
+                        skill: 'Simplifying Exponential Expressions',
                         source: 'Week 8 Practice',
-                        title: 'Simplify $\\frac{2^{3x} \\cdot 4^{x-1}}{8^{2-x}}$ leaving the answer as a single power of 2.',
+                        title: 'Simplify an exponential expression',
+                        fullQuestion: 'Simplify $\\frac{2^{3x} \\cdot 4^{x-1}}{8^{2-x}}$ leaving the answer as a single power of 2.',
                         description: 'Simplify $\\frac{2^{3x} \\cdot 4^{x-1}}{8^{2-x}}$ leaving the answer as a single power of 2.',
                         idealTime: 240,
                         steps: [
@@ -784,8 +842,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'LX2',
                         type: 'practice',
+                        skill: 'Solving Exponential Equations',
                         source: 'Week 8 Practice',
-                        title: 'Solve for x: $7^{2x-3}=49^{x+1}$.',
+                        title: 'Solve with a common base',
+                        fullQuestion: 'Solve for x: $7^{2x-3}=49^{x+1}$.',
                         description: 'Solve for x: $7^{2x-3}=49^{x+1}$.',
                         idealTime: 300,
                         steps: [
@@ -812,8 +872,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'LX3',
                         type: 'practice',
+                        skill: 'Solving Exponential Equations',
                         source: 'Week 8 Practice',
-                        title: 'Solve for x: $3^{x+2}=5 \\cdot 3^{2-2x}$.',
+                        title: 'Solve with logarithms',
+                        fullQuestion: 'Solve for x: $3^{x+2}=5 \\cdot 3^{2-2x}$.',
                         description: 'Solve for x: $3^{x+2}=5 \\cdot 3^{2-2x}$.',
                         idealTime: 360,
                         steps: [
@@ -840,8 +902,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'LX4',
                         type: 'practice',
+                        skill: 'Solving Quadratic-Form Equations',
                         source: 'Week 8 Practice',
-                        title: 'Solve for x: $e^{2x}-5e^{x}+6=0$.',
+                        title: 'Solve a quadratic-form exponential equation',
+                        fullQuestion: 'Solve for x: $e^{2x}-5e^{x}+6=0$.',
                         description: 'Solve for x: $e^{2x}-5e^{x}+6=0$.',
                         idealTime: 300,
                         steps: [
@@ -868,8 +932,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'LX5',
                         type: 'practice',
+                        skill: 'Modeling with Exponential Functions',
                         source: 'Week 8 Practice',
-                        title: 'A population obeys $A(t)=ab^{t}$. If A(0)=15 and A(2)=60, find the growth factor b.',
+                        title: 'Find growth factor from data points',
+                        fullQuestion: 'A population obeys $A(t)=ab^{t}$. If A(0)=15 and A(2)=60, find the growth factor b.',
                         description: 'A population obeys $A(t)=ab^{t}$. If A(0)=15 and A(2)=60, find the growth factor b.',
                         idealTime: 300,
                         steps: [
@@ -903,6 +969,7 @@ export const lectures: Lecture[] = [
                     {
                         id: 'W8-CI-LEAD',
                         type: 'lead-example',
+                        skill: 'Compound Interest',
                         source: 'Week 8 Example',
                         title: 'Find the future value of $1,000 invested at 5% compounded semi-annually for 10 years.',
                         description: 'Find the future value of $1,000 invested at 5% compounded semi-annually for 10 years.',
@@ -925,8 +992,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'CI1',
                         type: 'practice',
+                        skill: 'Compound Interest',
                         source: 'Week 8 Practice',
-                        title: 'Find the future value of $2,500 invested at 6% compounded quarterly for 12 years.',
+                        title: 'Calculate future value with compound interest',
+                        fullQuestion: 'Find the future value of $2,500 invested at 6% compounded quarterly for 12 years.',
                         description: 'Find the future value of $2,500 invested at 6% compounded quarterly for 12 years.',
                         idealTime: 360,
                         steps: [
@@ -947,8 +1016,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'CI2',
                         type: 'practice',
+                        skill: 'Continuous Growth',
                         source: 'Week 8 Practice',
-                        title: 'How long will it take $500 to double if it earns 4% interest compounded continuously?',
+                        title: 'Calculate doubling time with continuous compounding',
+                        fullQuestion: 'How long will it take $500 to double if it earns 4% interest compounded continuously?',
                         description: 'How long will it take $500 to double if it earns 4% interest compounded continuously?',
                         idealTime: 360,
                         steps: [
@@ -969,8 +1040,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'CI3',
                         type: 'practice',
+                        skill: 'Effective Annual Rate (EAR)',
                         source: 'Week 8 Practice',
-                        title: 'Compute the effective annual rate (EAR) for 5% nominal interest compounded monthly.',
+                        title: 'Calculate Effective Annual Rate (EAR)',
+                        fullQuestion: 'Compute the effective annual rate (EAR) for 5% nominal interest compounded monthly.',
                         description: 'Compute the effective annual rate (EAR) for 5% nominal interest compounded monthly.',
                         idealTime: 300,
                         steps: [
@@ -991,8 +1064,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'CI4',
                         type: 'practice',
+                        skill: 'Natural Decay Models',
                         source: 'Week 8 Practice',
-                        title: 'Carbon-14 decays according to $Q(t)=Q_{0}e^{-kt}$. Given a half-life of 5,730 years, find k to four decimals.',
+                        title: 'Calculate decay constant from half-life',
+                        fullQuestion: 'Carbon-14 decays according to $Q(t)=Q_{0}e^{-kt}$. Given a half-life of 5,730 years, find k to four decimals.',
                         description: 'Carbon-14 decays according to $Q(t)=Q_{0}e^{-kt}$. Given a half-life of 5,730 years, find k to four decimals.',
                         idealTime: 420,
                         steps: [
@@ -1019,8 +1094,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'CI5',
                         type: 'practice',
+                        skill: 'Solving for Rates',
                         source: 'Week 8 Practice',
-                        title: 'At what annual nominal rate r (compounded monthly) will an investment triple in 9 years?',
+                        title: 'Calculate nominal rate for a given growth',
+                        fullQuestion: 'At what annual nominal rate r (compounded monthly) will an investment triple in 9 years?',
                         description: 'At what annual nominal rate r (compounded monthly) will an investment triple in 9 years?',
                         idealTime: 480,
                         steps: [
@@ -1054,6 +1131,7 @@ export const lectures: Lecture[] = [
                     {
                         id: 'W8-LG-LEAD',
                         type: 'lead-example',
+                        skill: 'Evaluating Logarithms',
                         source: 'Week 8 Example',
                         title: 'Evaluate $\\log_2(16) + \\log_2(0.5)$.',
                         description: 'Evaluate $\\log_2(16) + \\log_2(0.5)$.',
@@ -1082,8 +1160,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'LG1',
                         type: 'practice',
+                        skill: 'Logarithmic and Exponential Forms',
                         source: 'Week 8 Practice',
-                        title: 'Rewrite $\\log_{3}81=4$ in exponential form and verify the equality.',
+                        title: 'Convert log to exponential form',
+                        fullQuestion: 'Rewrite $\\log_{3}81=4$ in exponential form and verify the equality.',
                         description: 'Rewrite $\\log_{3}81=4$ in exponential form and verify the equality.',
                         idealTime: 120,
                         steps: [
@@ -1098,8 +1178,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'LG2',
                         type: 'practice',
+                        skill: 'Evaluating Logarithms',
                         source: 'Week 8 Practice',
-                        title: 'Evaluate $\\log_{5}125-\\log_{5}25+\\log_{5}\\sqrt{5}$.',
+                        title: 'Evaluate a log expression',
+                        fullQuestion: 'Evaluate $\\log_{5}125-\\log_{5}25+\\log_{5}\\sqrt{5}$.',
                         description: 'Evaluate $\\log_{5}125-\\log_{5}25+\\log_{5}\\sqrt{5}$.',
                         idealTime: 180,
                         steps: [
@@ -1120,8 +1202,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'LG3',
                         type: 'practice',
+                        skill: 'Solving Logarithmic Equations',
                         source: 'Week 8 Practice',
-                        title: 'Solve for x: $\\log_{2}(x-3)+\\log_{2}(x+1)=3$.',
+                        title: 'Solve a logarithmic equation',
+                        fullQuestion: 'Solve for x: $\\log_{2}(x-3)+\\log_{2}(x+1)=3$.',
                         description: 'Solve for x: $\\log_{2}(x-3)+\\log_{2}(x+1)=3$.',
                         idealTime: 360,
                         steps: [
@@ -1148,8 +1232,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'LG4',
                         type: 'practice',
+                        skill: 'Solving Exponential Equations with Logs',
                         source: 'Week 8 Practice',
-                        title: 'Solve for x to three decimals: $5^{2x}=18$.',
+                        title: 'Solve an exponential equation with logs',
+                        fullQuestion: 'Solve for x to three decimals: $5^{2x}=18$.',
                         description: 'Solve for x to three decimals: $5^{2x}=18$.',
                         idealTime: 240,
                         steps: [
@@ -1170,8 +1256,10 @@ export const lectures: Lecture[] = [
                     {
                         id: 'LG5',
                         type: 'practice',
+                        skill: 'Finding Inverse Functions with Logs',
                         source: 'Week 8 Practice',
-                        title: 'Given $f(x)=-\\frac{1}{2} e^{x}$ (one-to-one on its domain), find $f^{-1}(x)$.',
+                        title: 'Find an inverse function with logs',
+                        fullQuestion: 'Given $f(x)=-\\frac{1}{2} e^{x}$ (one-to-one on its domain), find $f^{-1}(x)$.',
                         description: 'Given $f(x)=-\\frac{1}{2} e^{x}$ (one-to-one on its domain), find $f^{-1}(x)$.',
                         idealTime: 360,
                         steps: [

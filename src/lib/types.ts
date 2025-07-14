@@ -11,6 +11,7 @@ export type Problem = {
   id:string;
   type: 'lead-example' | 'practice';
   source: string;
+  skill?: string;
   title: string;
   description: string;
   fullQuestion?: string;

@@ -9,13 +9,40 @@ import { Skeleton } from "./ui/skeleton";
 import { DrawingCanvas } from "./DrawingCanvas";
 import { DrawingToolbar } from "./DrawingToolbar";
 import { Logo } from "@/components/icons";
+import { useSearchParams } from 'next/navigation'
+
 
 export function FocusedMasteryApp() {
   const [isClient, setIsClient] = useState(false);
+  const searchParams = useSearchParams()
+  const problemIdFromUrl = searchParams.get('problem');
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const { initialLectureId, initialModuleId, initialProblemIndex } = useMemo(() => {
+    if (problemIdFromUrl) {
+      for (const lecture of lectures) {
+        for (const module of lecture.modules) {
+          const problemIndex = module.problems.findIndex(p => p.id === problemIdFromUrl);
+          if (problemIndex !== -1) {
+            return {
+              initialLectureId: lecture.id,
+              initialModuleId: module.id,
+              initialProblemIndex: problemIndex
+            };
+          }
+        }
+      }
+    }
+    // Default to the first problem of the first module of the first lecture
+    return {
+      initialLectureId: lectures.length > 0 ? lectures[0].id : '',
+      initialModuleId: lectures.length > 0 && lectures[0].modules.length > 0 ? lectures[0].modules[0].id : '',
+      initialProblemIndex: 0
+    };
+  }, [problemIdFromUrl]);
 
   if (lectures.length === 0) {
     return (
@@ -41,10 +68,18 @@ export function FocusedMasteryApp() {
   }
 
   // State management
-  const [currentLectureId, setCurrentLectureId] = useState(lectures[0].id);
-  const [currentModuleId, setCurrentModuleId] = useState(lectures[0].modules[0].id);
-  const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
+  const [currentLectureId, setCurrentLectureId] = useState(initialLectureId);
+  const [currentModuleId, setCurrentModuleId] = useState(initialModuleId);
+  const [currentProblemIndex, setCurrentProblemIndex] = useState(initialProblemIndex);
   const [isDrawingModeActive, setIsDrawingModeActive] = useState(false);
+
+  // Effect to handle direct navigation
+  useEffect(() => {
+    setCurrentLectureId(initialLectureId);
+    setCurrentModuleId(initialModuleId);
+    setCurrentProblemIndex(initialProblemIndex);
+  }, [initialLectureId, initialModuleId, initialProblemIndex]);
+
 
   // State change handlers
   const handleLectureChange = (lectureId: string) => {
@@ -69,8 +104,8 @@ export function FocusedMasteryApp() {
 
   // Memoized derived state
   const currentLecture = useMemo(() => lectures.find(l => l.id === currentLectureId)!, [currentLectureId]);
-  const currentModule = useMemo(() => currentLecture.modules.find(m => m.id === currentModuleId)!, [currentLecture, currentModuleId]);
-  const currentProblem = useMemo(() => currentModule.problems[currentProblemIndex], [currentModule, currentProblemIndex]);
+  const currentModule = useMemo(() => currentLecture?.modules.find(m => m.id === currentModuleId), [currentLecture, currentModuleId]);
+  const currentProblem = useMemo(() => currentModule?.problems[currentProblemIndex], [currentModule, currentProblemIndex]);
 
   if (!isClient || !currentLecture || !currentModule || !currentProblem) {
     return (
