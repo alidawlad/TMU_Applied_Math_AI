@@ -36,37 +36,42 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
 
   useEffect(() => {
     try {
-      const savedInputs = localStorage.getItem('fm-stepInputs');
-      const savedStatuses = localStorage.getItem('fm-stepStatuses');
+      const savedInputs = localStorage.getItem(`fm-stepInputs-${problem.id}`);
+      const savedStatuses = localStorage.getItem(`fm-stepStatuses-${problem.id}`);
       if (savedInputs) setStepInputs(JSON.parse(savedInputs));
-      if (savedStatuses) setStepStatuses(JSON.parse(savedStatuses));
+      if (savedStatuses) {
+        const statuses = JSON.parse(savedStatuses);
+        setStepStatuses(statuses);
+        // If any step is answered, the attempt has started
+        if (Object.keys(statuses).length > 0) {
+            setAttemptStarted(true);
+        }
+      }
     } catch (error) {
       console.error("Failed to load state from localStorage", error);
     }
-    // Reset attempt status for each new problem
-    setAttemptStarted(false);
     setIsHydrated(true);
   }, [problem.id]);
 
   useEffect(() => {
     if (isHydrated) {
       try {
-        localStorage.setItem('fm-stepInputs', JSON.stringify(stepInputs));
+        localStorage.setItem(`fm-stepInputs-${problem.id}`, JSON.stringify(stepInputs));
       } catch (error) {
         console.error("Failed to save inputs to localStorage", error);
       }
     }
-  }, [stepInputs, isHydrated]);
+  }, [stepInputs, isHydrated, problem.id]);
 
   useEffect(() => {
     if (isHydrated) {
       try {
-        localStorage.setItem('fm-stepStatuses', JSON.stringify(stepStatuses));
+        localStorage.setItem(`fm-stepStatuses-${problem.id}`, JSON.stringify(stepStatuses));
       } catch (error) {
         console.error("Failed to save statuses to localStorage", error);
       }
     }
-  }, [stepStatuses, isHydrated]);
+  }, [stepStatuses, isHydrated, problem.id]);
 
   const handleInputChange = (key: string, value: string) => {
     setStepInputs((prev) => ({ ...prev, [key]: value }));
