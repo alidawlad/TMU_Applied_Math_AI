@@ -40,19 +40,30 @@ export function useProgressTracking() {
         const parsed = JSON.parse(savedData);
         // Convert date strings back to Date objects
         if (parsed.lastStudyDate) {
-          parsed.lastStudyDate = new Date(parsed.lastStudyDate);
+          const date = new Date(parsed.lastStudyDate);
+          parsed.lastStudyDate = isNaN(date.getTime()) ? new Date() : date;
         }
         Object.values(parsed.examples || {}).forEach((example: any) => {
           if (example.completedAt) {
-            example.completedAt = new Date(example.completedAt);
+            const completedDate = new Date(example.completedAt);
+            example.completedAt = isNaN(completedDate.getTime()) ? undefined : completedDate;
           }
           if (example.lastAccessedAt) {
-            example.lastAccessedAt = new Date(example.lastAccessedAt);
+            const accessedDate = new Date(example.lastAccessedAt);
+            example.lastAccessedAt = isNaN(accessedDate.getTime()) ? new Date() : accessedDate;
           }
         });
         setMasteryData(parsed);
       } catch (error) {
         console.error('Failed to load progress data:', error);
+        // Reset to default state on parsing failure
+        setMasteryData({
+          examples: {},
+          overallCompletion: 0,
+          streakDays: 0,
+          totalTimeSpent: 0,
+          lastStudyDate: new Date()
+        });
       }
     }
     setIsLoaded(true);
@@ -97,10 +108,15 @@ export function useProgressTracking() {
       // Calculate total time spent
       const totalTimeSpent = Object.values(newExamples).reduce((sum, ex) => sum + ex.timeSpent, 0);
 
-      // Update streak days
+      // Update streak days - use calendar dates to avoid timezone issues
       const today = new Date();
       const lastStudy = prev.lastStudyDate;
-      const daysDiff = Math.floor((today.getTime() - lastStudy.getTime()) / (1000 * 60 * 60 * 24));
+      
+      // Normalize to local date only (ignore time)
+      const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const lastStudyDate = new Date(lastStudy.getFullYear(), lastStudy.getMonth(), lastStudy.getDate());
+      
+      const daysDiff = Math.floor((todayDate.getTime() - lastStudyDate.getTime()) / (1000 * 60 * 60 * 24));
       
       let streakDays = prev.streakDays;
       if (daysDiff === 0) {

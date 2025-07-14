@@ -17,18 +17,17 @@ export function FloatingContinueButton({
   className,
   show = true 
 }: FloatingContinueButtonProps) {
-  if (!show) return null;
-
   return (
     <div className={cn(
       "fixed bottom-6 right-6 z-50 transition-all duration-300 ease-in-out",
-      show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
+      show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none",
       className
     )}>
       <Button
         onClick={onContinue}
         disabled={isComplete}
         size="lg"
+        aria-label={isComplete ? "Example completed" : "Continue to next step"}
         className={cn(
           "rounded-full shadow-lg hover:shadow-xl transition-all duration-200",
           "min-w-[120px] h-12 text-base font-medium",

@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 interface AiPanelProps {
   onQuestionSubmit: (question: string) => Promise<string>;
   className?: string;
-  position?: 'top' | 'bottom' | 'modal';
   isOpen: boolean;
   onToggle: (open: boolean) => void;
   context?: string;
@@ -20,7 +19,6 @@ interface AiPanelProps {
 export function AiPanel({ 
   onQuestionSubmit, 
   className,
-  position = 'top',
   isOpen,
   onToggle,
   context 
@@ -96,7 +94,11 @@ export function AiPanel({
           )}
           
           {response && (
-            <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-md border border-blue-200 max-h-32 overflow-y-auto">
+            <div 
+              className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-md border border-blue-200 max-h-32 overflow-y-auto"
+              role="region"
+              aria-label="AI response"
+            >
               <div className="text-sm text-gray-800">
                 <MathRenderer text={response} />
               </div>

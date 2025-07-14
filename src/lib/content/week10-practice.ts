@@ -846,15 +846,15 @@ export const week10PracticeProblems: Problem[] = [
         skill: 'Revenue Modeling',
         source: 'Week 10 Example 9 Practice',
         title: 'Find number of terms given sum and sequence parameters.',
-        fullQuestion: 'A gym membership costs $60 the first month, then increases by $5 each month. If the total cost for several months is $1,020, how many months did the person pay?',
+        fullQuestion: 'A gym membership costs $60 the first month, then increases by $5 each month. If the total cost for several months is $1,050, how many months did the person pay?',
         description: 'Use the sum formula to solve for the number of terms when the total is given.',
         idealTime: 280,
         steps: [
             {
                 id: '1',
                 title: 'Step 1: Set up the known information',
-                description: 'Monthly cost: $a_1 = 60$, monthly increase: $d = 5$, total cost: $S_n = 1020$',
-                solution: '$a_1 = 60$, $d = 5$, $S_n = 1020$',
+                description: 'Monthly cost: $a_1 = 60$, monthly increase: $d = 5$, total cost: $S_n = 1050$',
+                solution: '$a_1 = 60$, $d = 5$, $S_n = 1050$',
                 hint: 'We know the sequence parameters and the sum, need to find $n$.'
             },
             {
@@ -867,16 +867,16 @@ export const week10PracticeProblems: Problem[] = [
             {
                 id: '3',
                 title: 'Step 3: Solve for n',
-                description: 'Set equal to 1020: $\\frac{n}{2}(115 + 5n) = 1020$, so $n(115 + 5n) = 2040$, giving $5n^2 + 115n - 2040 = 0$',
-                solution: '$n^2 + 23n - 408 = 0$',
+                description: 'Set equal to 1050: $\\frac{n}{2}(115 + 5n) = 1050$, so $n(115 + 5n) = 2100$, giving $5n^2 + 115n - 2100 = 0$',
+                solution: '$n^2 + 23n - 420 = 0$',
                 hint: 'This becomes a quadratic equation in $n$.'
             },
             {
                 id: '4',
                 title: 'Step 4: Solve the quadratic',
-                description: 'Using the quadratic formula or factoring: $(n + 40.5)(n - 10) \\approx 0$, so $n = 12$ (taking the positive solution)',
-                solution: '12 months',
-                hint: 'The person paid for 12 months (verify: $S_{12} = 6(60 + 115) = 1050$ - close due to rounding).'
+                description: 'Factoring the quadratic equation gives $(n+35)(n-12)=0$. We take the positive solution for the number of months.',
+                solution: 'n = 12 months',
+                hint: 'The person paid for 12 months. The negative solution $n=-35$ is not applicable in this context.'
             }
         ]
     }
