@@ -36,8 +36,8 @@ const renderMathExpression = (expression: string, isBlock: boolean): string => {
     mathCache.set(cacheKey, rendered);
     return rendered;
   } catch (error) {
-    console.error('KaTeX rendering error:', error);
-    const fallback = `<span class="math-error" style="color: #dc2626; font-family: monospace;">${expression}</span>`;
+    // Gracefully handle math rendering errors in production
+    const fallback = `<span class="math-error" style="color: #dc2626; font-family: monospace;" title="Math rendering error">${expression}</span>`;
     mathCache.set(cacheKey, fallback);
     return fallback;
   }
