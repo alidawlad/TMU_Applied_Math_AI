@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "./ui/scroll-area";
 import { MathRenderer } from "./MathRenderer";
+import { Separator } from "./ui/separator";
 
 interface ProblemSidebarProps {
   currentLectureId: string;
@@ -37,6 +38,9 @@ export function ProblemSidebar({
   const currentLecture = lectures.find(l => l.id === currentLectureId) as Lecture;
   const currentModule = currentLecture.modules.find(m => m.id === currentModuleId) as Module;
   
+  const leadExamples = currentModule.problems.filter(p => p.type === 'lead-example');
+  const practiceProblems = currentModule.problems.filter(p => p.type === 'practice');
+
   return (
     <div className="w-64 flex-shrink-0 border-r bg-background flex flex-col">
       <div className="p-4 space-y-4 border-b">
@@ -68,25 +72,51 @@ export function ProblemSidebar({
         </div>
       </div>
       <ScrollArea className="flex-1">
-        <div className="p-4">
-          <h3 className="mb-4 text-sm font-medium text-muted-foreground">Question List</h3>
-          <RadioGroup 
+        <RadioGroup 
             value={String(currentProblemIndex)} 
             onValueChange={(value) => onProblemChange(Number(value))}
-            className="space-y-1"
+            className="space-y-1 p-4"
           >
-            {currentModule.problems.map((problem, index) => (
-              <Label 
-                key={problem.id} 
-                htmlFor={`problem-${index}`}
-                className={`flex items-center gap-3 rounded-md p-2 -ml-2 text-sm font-normal cursor-pointer hover:bg-accent/50 transition-colors ${currentProblemIndex === index ? 'bg-accent text-accent-foreground' : ''}`}
-              >
-                <RadioGroupItem value={String(index)} id={`problem-${index}`} />
-                <span>Question {index + 1}</span>
-              </Label>
-            ))}
-          </RadioGroup>
-        </div>
+          {leadExamples.length > 0 && (
+            <div>
+              <h3 className="mb-2 text-sm font-medium text-muted-foreground">Lead Examples</h3>
+              {leadExamples.map((problem) => {
+                const index = currentModule.problems.findIndex(p => p.id === problem.id);
+                return (
+                  <Label 
+                    key={problem.id} 
+                    htmlFor={`problem-${index}`}
+                    className={`flex items-start gap-3 rounded-md p-2 -ml-2 text-sm font-normal cursor-pointer hover:bg-accent/50 transition-colors ${currentProblemIndex === index ? 'bg-accent text-accent-foreground' : ''}`}
+                  >
+                    <RadioGroupItem value={String(index)} id={`problem-${index}`} className="mt-1"/>
+                    <span className="flex-1"><MathRenderer text={problem.title} /></span>
+                  </Label>
+                )
+              })}
+            </div>
+          )}
+
+          {practiceProblems.length > 0 && (
+             <div className="mt-4">
+              <Separator className="mb-4" />
+              <h3 className="mb-2 text-sm font-medium text-muted-foreground">Practice Problems</h3>
+               {practiceProblems.map((problem) => {
+                 const index = currentModule.problems.findIndex(p => p.id === problem.id);
+                 return (
+                  <Label 
+                    key={problem.id} 
+                    htmlFor={`problem-${index}`}
+                    className={`flex items-start gap-3 rounded-md p-2 -ml-2 text-sm font-normal cursor-pointer hover:bg-accent/50 transition-colors ${currentProblemIndex === index ? 'bg-accent text-accent-foreground' : ''}`}
+                  >
+                    <RadioGroupItem value={String(index)} id={`problem-${index}`} className="mt-1" />
+                    <span className="flex-1"><MathRenderer text={problem.title} /></span>
+                  </Label>
+                 )
+               })}
+             </div>
+          )}
+
+        </RadioGroup>
       </ScrollArea>
     </div>
   );

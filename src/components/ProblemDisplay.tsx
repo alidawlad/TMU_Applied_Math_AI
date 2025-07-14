@@ -35,6 +35,7 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
   const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
   const [isHydrated, setIsHydrated] = useState(false);
   const [attemptStarted, setAttemptStarted] = useState(false);
+  const [exampleStep, setExampleStep] = useState(0);
 
   useEffect(() => {
     try {
@@ -44,7 +45,6 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
       if (savedStatuses) {
         const statuses = JSON.parse(savedStatuses);
         setStepStatuses(statuses);
-        // If any step is answered, the attempt has started
         if (Object.keys(statuses).length > 0) {
             setAttemptStarted(true);
         }
@@ -52,20 +52,15 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
     } catch (error) {
       console.error("Failed to load state from localStorage", error);
     }
+    setExampleStep(0);
     setIsHydrated(true);
   }, [problem.id]);
 
   useEffect(() => {
-    // This effect ensures that the decision to show steps is only made client-side
-    // after initial hydration, preventing a mismatch with the server render.
     if(isHydrated && Object.keys(stepStatuses).length > 0) {
       setAttemptStarted(true);
-      // If the timer was running for this problem, we might need to restart it.
-      // This part depends on how timer state is persisted. For now, we assume
-      // a fresh start on reload.
     }
   }, [isHydrated, stepStatuses]);
-
 
   useEffect(() => {
     if (isHydrated) {
@@ -173,12 +168,189 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
   }).length, [problem.id, problem.steps, stepStatuses]);
 
   const progress = (correctStepsCount / problem.steps.length) * 100;
-  const leadExample = useMemo(() => module.problems.find(p => p.type === 'lead-example'), [module]);
+  const leadExample = useMemo(() => module.problems.find(p => p.type === 'lead-example' && p.skill === problem.skill), [module, problem.skill]);
 
   const firstIncompleteStepIndex = useMemo(() => {
     const index = problem.steps.findIndex(step => stepStatuses[`${problem.id}-${step.id}`] !== 'correct');
     return index === -1 ? problem.steps.length : index;
   }, [problem.id, problem.steps, stepStatuses]);
+  
+  const renderLeadExample = () => (
+    <div className="space-y-6">
+      <div className="problem-description space-y-4">
+        <h1 className="font-headline text-2xl font-semibold leading-snug"><MathRenderer text={problem.title} /></h1>
+        <div className="text-foreground/90 text-base md:text-lg leading-relaxed whitespace-pre-wrap prose prose-sm md:prose-base max-w-none">
+          <MathRenderer text={problem.description} />
+        </div>
+      </div>
+      <Separator />
+      {problem.steps.map((step, index) => (
+        <div key={step.id} className={index > exampleStep ? 'hidden' : 'block'}>
+          <div className="space-y-4 py-2">
+            <h3 className="font-headline text-xl font-semibold"><MathRenderer text={step.title} /></h3>
+            <div className="text-muted-foreground"><MathRenderer text={step.description}/></div>
+            <Alert variant="success" className="bg-primary/5 border-primary/20">
+              <CheckCircle2 className="h-4 w-4 text-primary" />
+              <AlertTitle className="text-primary/90 font-semibold">Solution</AlertTitle>
+              <AlertDescription className="text-primary text-lg">
+                <MathRenderer text={`$${step.solution}$`} />
+              </AlertDescription>
+            </Alert>
+          </div>
+        </div>
+      ))}
+      {exampleStep < problem.steps.length -1 ? (
+        <div className="flex justify-end">
+            <Button onClick={() => setExampleStep(s => s + 1)}>Continue</Button>
+        </div>
+      ) : (
+        <div className="mt-8 border-t pt-8">
+            <h3 className="font-headline text-xl font-semibold mb-4">Related Practice Problems</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+                {module.problems.filter(p => p.type === 'practice' && p.skill === problem.skill).map(p => (
+                    <Link key={p.id} href={`/practice?problem=${p.id}`} className="block">
+                        <Card className="h-full hover:border-primary transition-colors">
+                            <CardHeader>
+                                <CardTitle className="text-lg font-semibold"><MathRenderer text={p.title}/></CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground line-clamp-2"><MathRenderer text={p.description}/></p>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                ))}
+            </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderPracticeProblem = () => (
+    <>
+      <div className="problem-description space-y-4 mb-8">
+          <h1 className="font-headline text-2xl font-semibold leading-snug"><MathRenderer text={problem.fullQuestion || problem.title} /></h1>
+          {problem.description && problem.description !== problem.fullQuestion &&
+            <div className="text-foreground/90 text-base md:text-lg leading-relaxed whitespace-pre-wrap prose prose-sm md:prose-base max-w-none">
+              <MathRenderer text={problem.description} />
+            </div>
+          }
+           <div className="pt-4">
+            <Progress value={progress} className="w-full" />
+            <p className="text-sm text-muted-foreground mt-2 text-center">{correctStepsCount} of {problem.steps.length} steps completed</p>
+          </div>
+      </div>
+
+      {!attemptStarted ? (
+        <div className="text-center py-8 border-t">
+           <Button size="lg" onClick={handleStartAttempt}>Start Attempt</Button>
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {problem.steps.map((step, index) => {
+            if (index > firstIncompleteStepIndex) return null;
+            
+            const stepKey = `${problem.id}-${step.id}`;
+            const currentStatus = stepStatuses[stepKey] || "unanswered";
+            const isStepUnlocked = index === 0 || stepStatuses[`${problem.id}-${problem.steps[index - 1].id}`] === 'correct';
+            const isStepLoading = isLoading[stepKey] || false;
+
+            return (
+              <div key={stepKey}>
+                <Separator />
+                <div className="space-y-4 pt-6">
+                  <div className="step-description space-y-2">
+                    <h3 className="font-headline text-xl font-semibold">
+                      <MathRenderer text={step.title} />
+                    </h3>
+                    <p className="text-muted-foreground">
+                      <MathRenderer text={step.description} />
+                    </p>
+                  </div>
+
+                  <MathInput
+                      value={stepInputs[stepKey] || ""}
+                      onChange={(value) => handleInputChange(stepKey, value)}
+                      placeholder="Enter your step here..."
+                      disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
+                    />
+                  
+                  {step.calculator_tip && (
+                    <CalculatorCallout 
+                      title="Calculator Tip"
+                      description={step.calculator_tip}
+                    />
+                  )}
+
+                  {isStepLoading && (
+                    <Alert>
+                      <BrainCircuit className="h-4 w-4 animate-pulse" />
+                      <AlertTitle>Thinking...</AlertTitle>
+                      <AlertDescription>The AI is generating a response.</AlertDescription>
+                    </Alert>
+                  )}
+
+                  {currentStatus === 'correct' && (
+                    <Alert variant="success">
+                      <CheckCircle2 className="h-4 w-4" />
+                      <AlertTitle>
+                        {stepCorrectiveFeedback[stepKey] ? "Mathematically Correct!" : "Correct!"}
+                      </AlertTitle>
+                      <AlertDescription>
+                        {stepCorrectiveFeedback[stepKey] || "Excellent work! You can now proceed to the next step."}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  
+                  {currentStatus === 'incorrect' && stepFeedback[stepKey] && (
+                    <Alert variant="destructive">
+                      <XCircle className="h-4 w-4" />
+                      <AlertTitle>Not quite...</AlertTitle>
+                      <AlertDescription>{stepFeedback[stepKey]}</AlertDescription>
+                    </Alert>
+                  )}
+
+                  {stepHints[stepKey] && (
+                    <Alert variant="default" className="bg-accent/20 border-accent/50">
+                      <Lightbulb className="h-4 w-4" />
+                      <AlertTitle>Hint</AlertTitle>
+                      <AlertDescription>{stepHints[stepKey]}</AlertDescription>
+                    </Alert>
+                  )}
+                  
+                  <div className="flex justify-between items-center flex-wrap gap-2 mt-4">
+                      <div className="flex gap-4">
+                        <Button variant="outline" size="sm" onClick={() => handleGetHint(step)} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>
+                            Get Hint
+                        </Button>
+                        {leadExample && (
+                          <ViewExampleDialog exampleProblem={leadExample} />
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="sm" onClick={() => handleInputChange(stepKey, '')} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>Clear</Button>
+                        <Button onClick={() => handleCheckAnswer(step, index)} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>
+                            Check Answer
+                        </Button>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            );
+          })}
+
+          {progress === 100 && (
+            <div className="text-center py-8 border-t">
+              <h3 className="font-headline text-xl font-semibold mb-4">You mastered it! Ready for more?</h3>
+              <div className="flex justify-center gap-4">
+                 <Button size="lg">Next Problem</Button>
+                 <Button size="lg" variant="outline" asChild><Link href="/study-plan">Back to Study Plan</Link></Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </>
+  );
 
   if (!isHydrated) {
     return (
@@ -203,165 +375,10 @@ export function ProblemDisplay({ module, problem }: ProblemDisplayProps) {
       </div>
     );
   }
-
-  const problemTitle = problem.fullQuestion ? '' : problem.title;
-  const problemDesc = problem.fullQuestion || problem.description;
-
+  
   return (
     <div className="flex-1 bg-white p-6 md:p-8 overflow-y-auto">
-        <div className="problem-description space-y-4 mb-8">
-            <h1 className="font-headline text-2xl font-semibold leading-snug"><MathRenderer text={problemTitle} /></h1>
-            <div className="text-foreground/90 text-base md:text-lg leading-relaxed whitespace-pre-wrap prose prose-sm md:prose-base max-w-none"><MathRenderer text={problemDesc} /></div>
-             <div className="pt-4">
-              <Progress value={progress} className="w-full" />
-              <p className="text-sm text-muted-foreground mt-2 text-center">{correctStepsCount} of {problem.steps.length} steps completed</p>
-            </div>
-        </div>
-
-        {!attemptStarted && problem.type === 'practice' ? (
-          <div className="text-center py-8 border-t">
-             <Button size="lg" onClick={handleStartAttempt}>Start Attempt</Button>
-          </div>
-        ) : (
-          <div className="space-y-8">
-            {problem.steps.map((step, index) => {
-              if (index > firstIncompleteStepIndex && problem.type === 'practice') {
-                return null;
-              }
-
-              const stepKey = `${problem.id}-${step.id}`;
-              const currentStatus = stepStatuses[stepKey] || "unanswered";
-              const isStepUnlocked = index === 0 || stepStatuses[`${problem.id}-${problem.steps[index - 1].id}`] === 'correct' || problem.type === 'lead-example';
-              const isStepLoading = isLoading[stepKey] || false;
-              const isExample = problem.type === 'lead-example';
-
-              return (
-                <div key={stepKey}>
-                  <Separator />
-                  <div className="space-y-4 pt-6">
-                    <div className="step-description space-y-2">
-                      <h3 className="font-headline text-xl font-semibold">
-                        <MathRenderer text={step.title} />
-                      </h3>
-                      <p className="text-muted-foreground">
-                        <MathRenderer text={step.description} />
-                      </p>
-                    </div>
-
-                    {isExample ? (
-                      <Alert variant="success">
-                        <CheckCircle2 className="h-4 w-4" />
-                        <AlertTitle>Solution</AlertTitle>
-                        <AlertDescription>
-                          <MathRenderer text={`$${step.solution}$`} />
-                        </AlertDescription>
-                      </Alert>
-                    ) : (
-                       <MathInput
-                        value={stepInputs[stepKey] || ""}
-                        onChange={(value) => handleInputChange(stepKey, value)}
-                        placeholder="Enter your step here..."
-                        disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
-                      />
-                    )}
-                    
-                    {step.calculator_tip && !isExample && (
-                      <CalculatorCallout 
-                        title="Calculator Tip"
-                        description={step.calculator_tip}
-                      />
-                    )}
-
-                    {isStepLoading && (
-                      <Alert>
-                        <BrainCircuit className="h-4 w-4 animate-pulse" />
-                        <AlertTitle>Thinking...</AlertTitle>
-                        <AlertDescription>The AI is generating a response.</AlertDescription>
-                      </Alert>
-                    )}
-
-                    {!isExample && !isStepLoading && currentStatus === 'correct' && (
-                      <Alert variant="success">
-                        <CheckCircle2 className="h-4 w-4" />
-                        <AlertTitle>
-                          {stepCorrectiveFeedback[stepKey] ? "Mathematically Correct!" : "Correct!"}
-                        </AlertTitle>
-                        <AlertDescription>
-                          {stepCorrectiveFeedback[stepKey] || "Excellent work! You can now proceed to the next step."}
-                        </AlertDescription>
-                      </Alert>
-                    )}
-                    
-                    {!isExample && !isStepLoading && currentStatus === 'incorrect' && stepFeedback[stepKey] && (
-                      <Alert variant="destructive">
-                        <XCircle className="h-4 w-4" />
-                        <AlertTitle>Not quite...</AlertTitle>
-                        <AlertDescription>{stepFeedback[stepKey]}</AlertDescription>
-                      </Alert>
-                    )}
-
-                    {!isExample && !isStepLoading && stepHints[stepKey] && (
-                      <Alert variant="default" className="bg-accent/20 border-accent/50">
-                        <Lightbulb className="h-4 w-4" />
-                        <AlertTitle>Hint</AlertTitle>
-                        <AlertDescription>{stepHints[stepKey]}</AlertDescription>
-                      </Alert>
-                    )}
-                    
-                    {!isExample && (
-                        <div className="flex justify-between items-center flex-wrap gap-2 mt-4">
-                            <div className="flex gap-4">
-                              <Button variant="outline" size="sm" onClick={() => handleGetHint(step)} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>
-                                  Get Hint
-                              </Button>
-                              {problem.type === 'practice' && leadExample && (
-                                <ViewExampleDialog exampleProblem={leadExample} />
-                              )}
-                            </div>
-                            <div className="flex gap-2">
-                              <Button variant="ghost" size="sm" onClick={() => handleInputChange(stepKey, '')} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>Clear</Button>
-                              <Button onClick={() => handleCheckAnswer(step, index)} disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}>
-                                  Check Answer
-                              </Button>
-                            </div>
-                          </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-
-            {progress === 100 && problem.type === 'practice' && (
-              <div className="text-center py-8 border-t">
-                <h3 className="font-headline text-xl font-semibold mb-4">You mastered it! Ready for more?</h3>
-                <div className="flex justify-center gap-4">
-                  {/* Here you could link to the next problem or back to the study plan */}
-                   <Button size="lg">Next Problem</Button>
-                   <Button size="lg" variant="outline">Back to Study Plan</Button>
-                </div>
-              </div>
-            )}
-             {problem.type === 'lead-example' && (
-                <div className="mt-8 border-t pt-8">
-                    <h3 className="font-headline text-xl font-semibold mb-4">Related Practice Problems</h3>
-                    <div className="grid md:grid-cols-2 gap-4">
-                        {module.problems.filter(p => p.type === 'practice' && p.skill === problem.skill).map(p => (
-                            <Link key={p.id} href={`/practice?problem=${p.id}`} className="block">
-                                <Card className="h-full hover:border-primary transition-colors">
-                                    <CardHeader>
-                                        <CardTitle className="text-lg font-semibold"><MathRenderer text={p.title}/></CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p className="text-sm text-muted-foreground line-clamp-2"><MathRenderer text={p.description}/></p>
-                                    </CardContent>
-                                </Card>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-             )}
-          </div>
-        )}
+      {problem.type === 'lead-example' ? renderLeadExample() : renderPracticeProblem()}
     </div>
   );
 }
