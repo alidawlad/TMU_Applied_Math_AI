@@ -26,6 +26,7 @@ export interface Step {
   description: string;
   solution: string;
   hint?: string;
+  calculator_tip?: string;
 }
 
 export interface LectureContentSegment {

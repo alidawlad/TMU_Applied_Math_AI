@@ -71,7 +71,7 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
 
   // Track content access and load progress
   useEffect(() => {
-    trackContentAccess(example.id, 'example');
+    trackContentAccess(example.id);
     
     // Load from both old and new progress systems
     const savedProgress = getExampleProgress(example.id);

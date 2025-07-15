@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLearningContext } from '@/lib/contexts/LearningContext';
 
 // Unified progress data structure
@@ -106,11 +106,19 @@ export function useUnifiedProgress() {
   });
 
   const [isLoaded, setIsLoaded] = useState(false);
+  const [migrationComplete, setMigrationComplete] = useState(false);
 
-  // Migration function to consolidate old localStorage data
-  const migrateOldProgress = useCallback(() => {
-    if (localStorage.getItem(MIGRATION_KEY)) return;
+  // Initialize once - load or migrate data
+  useEffect(() => {
+    if (migrationComplete) return;
+    
+    // Check if migration was already done
+    if (localStorage.getItem(MIGRATION_KEY)) {
+      setMigrationComplete(true);
+      return;
+    }
 
+    // Run migration
     const migrations = {
       // Migrate old mastery data
       oldMastery: localStorage.getItem('fm-mastery-data'),
@@ -202,27 +210,25 @@ export function useUnifiedProgress() {
 
     // Save migrated data
     if (Object.keys(migratedProgress).length > 0) {
-      const newProgressData = {
-        ...progressData, // Use existing default state as a base
+      setProgressData(prev => ({
+        ...prev,
         contentProgress: migratedProgress,
         overallStats: {
-          ...progressData.overallStats,
+          ...prev.overallStats,
           totalTimeSpent: Object.values(migratedProgress).reduce((sum, p) => sum + p.timeSpent, 0),
           completedContent: Object.values(migratedProgress).filter(p => p.isCompleted).length,
           totalContent: Object.keys(migratedProgress).length,
         },
-      };
-      
-      setProgressData(newProgressData);
+      }));
     }
 
     localStorage.setItem(MIGRATION_KEY, 'true');
-  }, [findContentById, progressData]);
+    setMigrationComplete(true);
+  }, [findContentById, migrationComplete]);
 
-  // Load progress data
+  // Load progress data after migration
   useEffect(() => {
-    // Run migration only once on mount
-    migrateOldProgress();
+    if (!migrationComplete) return;
     
     const savedData = localStorage.getItem(STORAGE_KEY);
     if (savedData) {
@@ -251,7 +257,7 @@ export function useUnifiedProgress() {
     }
     
     setIsLoaded(true);
-  }, []);
+  }, [migrationComplete]);
 
   // Save progress data
   useEffect(() => {

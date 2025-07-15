@@ -17,7 +17,7 @@ export interface UserProfile {
     completedContent: number;
     totalContent: number;
     streakDays: number;
-    lastStudyDate: string;
+    lastStudyDate: Date;
     completionPercentage: number;
     averageSessionTime: number;
     totalSessions: number;

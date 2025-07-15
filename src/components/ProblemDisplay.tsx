@@ -47,7 +47,7 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem }: Prob
 
   // Track content access and preserve context
   useEffect(() => {
-    trackContentAccess(problem.id);
+    trackContentAccess(problem.id, 'problem');
     
     preserveContext({
       previousContent: {
