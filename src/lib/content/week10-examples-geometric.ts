@@ -20,7 +20,7 @@ export const week10GeometricExamples: Example[] = [
             
             { type: 'connection', text: 'and basically tells us to start with a number $a_1$ and get the next term by multiplying it by $r$. So, we have' },
             
-            { type: 'math', text: '\\begin{align} &a_1 \\\\ &a_2 = ra_1 \\\\ &a_3 = ra_2 \\\\ &a_4 = ra_3 \\\\ &\\cdots \\end{align}' },
+            { type: 'math', text: '\\begin{align*} &a_1 \\\\ &a_2 = ra_1 \\\\ &a_3 = ra_2 \\\\ &a_4 = ra_3 \\\\ &\\cdots \\end{align*}' },
             
             { type: 'summary-box', text: 'If we know the first term $a_1$ and the common ratio $r$, we can list a finite number of terms of the sequence.' },
             

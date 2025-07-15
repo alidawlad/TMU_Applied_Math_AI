@@ -99,7 +99,7 @@ export const week10SeriesExamples: Example[] = [
             
             { type: 'paragraph', text: '**Solution:** Using the defining property of an arithmetic sequence we have' },
             
-            { type: 'math', text: '\\begin{align} a_1 &= 5 \\\\ a_2 &= -6 + 5 = -1 \\\\ a_3 &= -6 + (-1) = -7 \\\\ a_4 &= -6 + (-7) = -13 \\\\ a_5 &= -6 + (-13) = -19 \\end{align}' },
+            { type: 'math', text: '\\begin{align*} a_1 &= 5 \\\\ a_2 &= -6 + 5 = -1 \\\\ a_3 &= -6 + (-1) = -7 \\\\ a_4 &= -6 + (-7) = -13 \\\\ a_5 &= -6 + (-13) = -19 \\end{align*}' },
             
             { type: 'pattern-highlight', text: 'So, the first five terms of this arithmetic sequence are: $5, -1, -7, -13, -19$' },
             
