@@ -170,9 +170,9 @@ export function UnifiedNavigation({
 
       {/* Subtitle and progress */}
       {(subtitle || showProgress) && (
-        <div className="px-4 py-3 bg-primary/5">
+        <div className="px-4 py-3 bg-muted/30 border-t">
           {subtitle && (
-            <p className="text-sm text-muted-foreground mb-2">{subtitle}</p>
+            <p className="text-sm text-primary/80 font-medium mb-2">{subtitle}</p>
           )}
           
           {showProgress && progressData.overallStats.totalContent > 0 && (
