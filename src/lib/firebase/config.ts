@@ -54,5 +54,29 @@ if (isFirebaseConfigured &&
   }
 }
 
+// Helper function for safe Firebase operations
+export const withFirebaseErrorHandling = async <T>(
+  operation: () => Promise<T>,
+  fallback: T,
+  operationName: string = 'Firebase operation'
+): Promise<T> => {
+  if (!isFirebaseConfigured || !db) {
+    console.warn(`${operationName} skipped - Firebase not configured`);
+    return fallback;
+  }
+
+  try {
+    return await operation();
+  } catch (error) {
+    console.error(`${operationName} failed:`, error);
+    return fallback;
+  }
+};
+
+// Helper to check if Firebase is available and ready
+export const isFirebaseReady = (): boolean => {
+  return isFirebaseConfigured && db !== null;
+};
+
 export { db, isFirebaseConfigured };
 export default app;

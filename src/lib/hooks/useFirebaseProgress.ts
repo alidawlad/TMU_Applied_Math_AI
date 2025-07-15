@@ -1,5 +1,5 @@
 // Firebase-based progress tracking hook for anonymous users
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   collection, 
   doc, 
@@ -11,7 +11,7 @@ import {
   orderBy,
   writeBatch
 } from 'firebase/firestore';
-import { db, isFirebaseConfigured } from '../firebase/config';
+import { db, isFirebaseConfigured, withFirebaseErrorHandling, isFirebaseReady } from '../firebase/config';
 import { COLLECTIONS, ContentProgress, UserProfile } from '../firebase/types';
 import { useUnifiedProgress, UnifiedProgressData } from './useUnifiedProgress';
 import { getOrCreateAnonymousUserId } from '../utils/userIdGenerator';
@@ -22,20 +22,35 @@ export function useFirebaseProgress() {
   const [isFirebaseEnabled, setIsFirebaseEnabled] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
-
-  // Initialize anonymous user ID and Firebase status
+  const [isInitialized, setIsInitialized] = useState(false);
+  
+  // Use refs to prevent stale closures and infinite loops
+  const localProgressRef = useRef(localProgress);
+  const hasSyncedRef = useRef(false);
+  
+  // Update ref when localProgress changes
   useEffect(() => {
-    setIsFirebaseEnabled(isFirebaseConfigured);
+    localProgressRef.current = localProgress;
+  }, [localProgress]);
+
+  // Initialize anonymous user ID and Firebase status (only once)
+  useEffect(() => {
+    if (isInitialized) return;
     
-    // Generate or retrieve anonymous user ID
-    const userId = getOrCreateAnonymousUserId();
-    setAnonymousUserId(userId);
-    
-    // Auto-sync data when Firebase is available and user ID is ready
-    if (isFirebaseConfigured && userId && localProgress.progressData) {
-      loadFromFirebase();
+    try {
+      setIsFirebaseEnabled(isFirebaseReady());
+      
+      // Generate or retrieve anonymous user ID
+      const userId = getOrCreateAnonymousUserId();
+      setAnonymousUserId(userId);
+      
+      setIsInitialized(true);
+    } catch (error) {
+      console.error('Error initializing Firebase progress:', error);
+      setIsFirebaseEnabled(false);
+      setIsInitialized(true);
     }
-  }, []);
+  }, [isInitialized]);
 
   // Sync progress data to Firebase
   const syncToFirebase = useCallback(async (progressData: UnifiedProgressData) => {
@@ -141,11 +156,11 @@ export function useFirebaseProgress() {
     }
   }, [isFirebaseEnabled, anonymousUserId]);
 
-  // Load progress data from Firebase
+  // Load progress data from Firebase - defensive and stable
   const loadFromFirebase = useCallback(async () => {
-    if (!isFirebaseEnabled || !anonymousUserId || !db) return null;
+    return withFirebaseErrorHandling(async () => {
+      if (!anonymousUserId || !db) return null;
 
-    try {
       // Load user profile
       const userProfileRef = doc(db, COLLECTIONS.USER_PROFILES, anonymousUserId);
       const profileDoc = await getDoc(userProfileRef);
@@ -170,64 +185,83 @@ export function useFirebaseProgress() {
         };
       });
 
+      // Use current local progress data from ref to avoid stale closures
+      const currentLocalProgress = localProgressRef.current.progressData;
       const firebaseData: UnifiedProgressData = {
         contentProgress,
-        overallStats: profileDoc.exists() ? profileDoc.data().overallStats : localProgress.progressData.overallStats,
-        userPreferences: profileDoc.exists() ? profileDoc.data().learningPreferences : localProgress.progressData.userPreferences,
-        sessionData: localProgress.progressData.sessionData, // Keep local session data
+        overallStats: profileDoc.exists() ? profileDoc.data().overallStats : currentLocalProgress?.overallStats || {},
+        userPreferences: profileDoc.exists() ? profileDoc.data().learningPreferences : currentLocalProgress?.userPreferences || {},
+        sessionData: currentLocalProgress?.sessionData || {}, // Keep local session data
       };
 
       return firebaseData;
-    } catch (error) {
-      console.error('Error loading from Firebase:', error);
-      return null;
-    }
-  }, [isFirebaseEnabled, anonymousUserId, localProgress.progressData]);
+    }, null, 'Load from Firebase');
+  }, [anonymousUserId]);
 
-  // Merge Firebase data with local data
+  // Merge Firebase data with local data - defensive and debounced
   const mergeWithLocal = useCallback(async () => {
-    if (!anonymousUserId || !isFirebaseEnabled || !db) return;
+    if (!anonymousUserId || !isFirebaseEnabled || !db || hasSyncedRef.current) return;
 
     try {
+      hasSyncedRef.current = true; // Prevent multiple simultaneous syncs
       const firebaseData = await loadFromFirebase();
       if (firebaseData) {
-        // Merge the data, preferring more recent updates
-        localProgress.mergeProgressData(firebaseData);
-        setLastSyncTime(new Date());
+        // Use the ref to get stable access to merge function
+        const currentLocalProgress = localProgressRef.current;
+        if (currentLocalProgress.mergeProgressData) {
+          currentLocalProgress.mergeProgressData(firebaseData);
+          setLastSyncTime(new Date());
+        }
       }
     } catch (error) {
       console.error('Error merging with local data:', error);
+    } finally {
+      // Reset after a delay to allow for future syncs
+      setTimeout(() => {
+        hasSyncedRef.current = false;
+      }, 5000);
     }
-  }, [anonymousUserId, isFirebaseEnabled, loadFromFirebase, localProgress.mergeProgressData]);
+  }, [anonymousUserId, isFirebaseEnabled, loadFromFirebase]);
 
-  // Auto-sync when anonymous user ID is ready
+  // Initial sync when everything is ready (only once)
   useEffect(() => {
-    if (anonymousUserId && isFirebaseEnabled && localProgress.progressData) {
-      mergeWithLocal();
+    if (isInitialized && anonymousUserId && isFirebaseEnabled && !hasSyncedRef.current) {
+      // Small delay to ensure local progress is fully initialized
+      const timeoutId = setTimeout(() => {
+        mergeWithLocal();
+      }, 100);
+      
+      return () => clearTimeout(timeoutId);
     }
-  }, [anonymousUserId, isFirebaseEnabled]);
+  }, [isInitialized, anonymousUserId, isFirebaseEnabled, mergeWithLocal]);
 
-  // Auto-sync periodically when user is active
+  // Auto-sync periodically when user is active - but only if Firebase is stable
   useEffect(() => {
-    if (!anonymousUserId || !isFirebaseEnabled) return;
+    if (!anonymousUserId || !isFirebaseEnabled || !isInitialized) return;
 
     const interval = setInterval(() => {
       // Get latest progress data at sync time to avoid stale closure
-      const currentProgressData = localProgress.progressData;
-      if (currentProgressData) {
+      const currentProgressData = localProgressRef.current?.progressData;
+      if (currentProgressData && !isSyncing) {
         syncToFirebase(currentProgressData);
       }
     }, 30000); // Sync every 30 seconds
 
     return () => clearInterval(interval);
-  }, [anonymousUserId, isFirebaseEnabled, syncToFirebase]);
+  }, [anonymousUserId, isFirebaseEnabled, isInitialized, syncToFirebase, isSyncing]);
 
   return {
     anonymousUserId,
     isFirebaseEnabled,
     isSyncing,
     lastSyncTime,
-    syncToFirebase: () => syncToFirebase(localProgress.progressData),
+    syncToFirebase: () => {
+      const currentProgressData = localProgressRef.current?.progressData;
+      if (currentProgressData && !isSyncing) {
+        return syncToFirebase(currentProgressData);
+      }
+      return Promise.resolve(false);
+    },
     loadFromFirebase,
     mergeWithLocal,
     // Re-export local progress methods

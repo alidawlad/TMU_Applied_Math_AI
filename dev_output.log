@@ -1,0 +1,13 @@
+
+> nextn@0.1.0 dev
+> next dev --turbopack -p 9002
+
+ ⚠ Attempted to load @next/swc-darwin-arm64, but an error occurred: dlopen(/Users/alihoussein/TMU_Applied_Math_Mastery_AI/node_modules/@next/swc-darwin-arm64/next-swc.darwin-arm64.node, 0x0001): tried: '/Users/alihoussein/TMU_Applied_Math_Mastery_AI/node_modules/@next/swc-darwin-arm64/next-swc.darwin-arm64.node' (segment '__TEXT' load command content extends beyond end of file), '/System/Volumes/Preboot/Cryptexes/OS/Users/alihoussein/TMU_Applied_Math_Mastery_AI/node_modules/@next/swc-darwin-arm64/next-swc.darwin-arm64.node' (no such file), '/Users/alihoussein/TMU_Applied_Math_Mastery_AI/node_modules/@next/swc-darwin-arm64/next-swc.darwin-arm64.node' (segment '__TEXT' load command content extends beyond end of file)
+ ⚠ Attempted to load @next/swc-darwin-arm64, but an error occurred: dlopen(/Users/alihoussein/TMU_Applied_Math_Mastery_AI/node_modules/@next/swc-darwin-arm64/next-swc.darwin-arm64.node, 0x0001): tried: '/Users/alihoussein/TMU_Applied_Math_Mastery_AI/node_modules/@next/swc-darwin-arm64/next-swc.darwin-arm64.node' (segment '__TEXT' load command content extends beyond end of file), '/System/Volumes/Preboot/Cryptexes/OS/Users/alihoussein/TMU_Applied_Math_Mastery_AI/node_modules/@next/swc-darwin-arm64/next-swc.darwin-arm64.node' (no such file), '/Users/alihoussein/TMU_Applied_Math_Mastery_AI/node_modules/@next/swc-darwin-arm64/next-swc.darwin-arm64.node' (segment '__TEXT' load command content extends beyond end of file)
+   ▲ Next.js 15.3.3 (Turbopack)
+   - Local:        http://localhost:9002
+   - Network:      http://192.168.1.106:9002
+
+ ✓ Starting...
+[Error: `turbo.createProject` is not supported by the wasm bindings.]
+[?25h
