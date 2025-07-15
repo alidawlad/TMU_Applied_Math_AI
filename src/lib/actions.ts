@@ -25,8 +25,19 @@ export async function getHintAction({
     });
     return { hint: hint.hint };
   } catch (error) {
-    console.error(error);
-    return { error: "Failed to generate hint." };
+    console.error('AI hint generation error:', error);
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('GOOGLE_AI_API_KEY')) {
+        return { error: "AI service configuration error. Please check that GOOGLE_AI_API_KEY is set in environment variables." };
+      }
+      if (error.message.includes('Could not establish connection')) {
+        return { error: "Unable to connect to AI service. Please check your internet connection and API key configuration." };
+      }
+    }
+    
+    return { error: "Failed to generate hint. Please try again." };
   }
 }
 
@@ -57,8 +68,19 @@ export async function getFeedbackAction({
 
     return { feedback: feedback.feedback };
   } catch (error) {
-    console.error(error);
-    return { error: "Failed to generate feedback." };
+    console.error('AI feedback generation error:', error);
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('GOOGLE_AI_API_KEY')) {
+        return { error: "AI service configuration error. Please check that GOOGLE_AI_API_KEY is set in environment variables." };
+      }
+      if (error.message.includes('Could not establish connection')) {
+        return { error: "Unable to connect to AI service. Please check your internet connection and API key configuration." };
+      }
+    }
+    
+    return { error: "Failed to generate feedback. Please try again." };
   }
 }
 
@@ -82,8 +104,27 @@ export async function checkAnswerAction({
       error: null,
     };
   } catch (error) {
-    console.error(error);
-    return { isEquivalent: false, feedback: null, error: "Failed to evaluate answer." };
+    console.error('AI math evaluation error:', error);
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('GOOGLE_AI_API_KEY')) {
+        return { 
+          isEquivalent: false, 
+          feedback: null, 
+          error: "AI service configuration error. Please check that GOOGLE_AI_API_KEY is set in environment variables." 
+        };
+      }
+      if (error.message.includes('Could not establish connection')) {
+        return { 
+          isEquivalent: false, 
+          feedback: null, 
+          error: "Unable to connect to AI service. Please check your internet connection and API key configuration." 
+        };
+      }
+    }
+    
+    return { isEquivalent: false, feedback: null, error: "Failed to evaluate answer. Please try again." };
   }
 }
 
@@ -98,7 +139,24 @@ export async function explainExampleStepAction(args: ExplainExampleStepArgs) {
         const result = await explainExampleStep(args);
         return { explanation: result.explanation, error: null };
     } catch (error) {
-        console.error(error);
-        return { explanation: null, error: "Failed to get explanation from AI." };
+        console.error('AI explanation generation error:', error);
+        
+        // Provide more specific error messages
+        if (error instanceof Error) {
+            if (error.message.includes('GOOGLE_AI_API_KEY')) {
+                return { 
+                    explanation: null, 
+                    error: "AI service configuration error. Please check that GOOGLE_AI_API_KEY is set in environment variables." 
+                };
+            }
+            if (error.message.includes('Could not establish connection')) {
+                return { 
+                    explanation: null, 
+                    error: "Unable to connect to AI service. Please check your internet connection and API key configuration." 
+                };
+            }
+        }
+        
+        return { explanation: null, error: "Failed to get explanation from AI. Please try again." };
     }
 }
