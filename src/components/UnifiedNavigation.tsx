@@ -220,7 +220,7 @@ export function NavigationModeSwitch({
     <div className="flex gap-2">
       {currentContentType === 'example' && relatedContent.length > 0 && (
         <Link href={`/practice?problem=${relatedContent[0].id}&from=example&exampleId=${currentContentId}`}>
-          <Button variant="outline" size="sm">
+          <Button variant="secondary" size="sm">
             <PenTool className="h-4 w-4 mr-1" />
             Practice This
           </Button>
@@ -229,7 +229,7 @@ export function NavigationModeSwitch({
       
       {currentContentType === 'problem' && relatedContent.length > 0 && (
         <Link href={`/study?example=${relatedContent[0].id}&from=practice&problemId=${currentContentId}`}>
-          <Button variant="outline" size="sm">
+          <Button variant="secondary" size="sm">
             <BookOpen className="h-4 w-4 mr-1" />
             Review Concept
           </Button>
