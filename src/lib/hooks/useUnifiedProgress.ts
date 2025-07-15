@@ -202,31 +202,26 @@ export function useUnifiedProgress() {
 
     // Save migrated data
     if (Object.keys(migratedProgress).length > 0) {
-      const newProgressData: UnifiedProgressData = {
+      const newProgressData = {
+        ...progressData, // Use existing default state as a base
         contentProgress: migratedProgress,
         overallStats: {
+          ...progressData.overallStats,
           totalTimeSpent: Object.values(migratedProgress).reduce((sum, p) => sum + p.timeSpent, 0),
           completedContent: Object.values(migratedProgress).filter(p => p.isCompleted).length,
           totalContent: Object.keys(migratedProgress).length,
-          streakDays: 0,
-          lastStudyDate: new Date(),
-          completionPercentage: 0
         },
-        sessionData: {
-          currentSessionContent: [],
-          dailyGoalProgress: 0
-        }
       };
       
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newProgressData));
       setProgressData(newProgressData);
     }
 
     localStorage.setItem(MIGRATION_KEY, 'true');
-  }, [findContentById]);
+  }, [findContentById, progressData]);
 
   // Load progress data
   useEffect(() => {
+    // Run migration only once on mount
     migrateOldProgress();
     
     const savedData = localStorage.getItem(STORAGE_KEY);
@@ -256,7 +251,7 @@ export function useUnifiedProgress() {
     }
     
     setIsLoaded(true);
-  }, [migrateOldProgress]);
+  }, []);
 
   // Save progress data
   useEffect(() => {
