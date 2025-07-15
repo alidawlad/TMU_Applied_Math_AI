@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export interface ExampleProgress {
   exampleId: string;
@@ -31,6 +31,14 @@ export function useProgressTracking() {
   });
 
   const [isLoaded, setIsLoaded] = useState(false);
+  
+  // Use ref for stable access to mastery data
+  const masteryDataRef = useRef(masteryData);
+  
+  // Update ref when masteryData changes
+  useEffect(() => {
+    masteryDataRef.current = masteryData;
+  }, [masteryData]);
 
   // Load progress from localStorage on mount
   useEffect(() => {
@@ -141,8 +149,8 @@ export function useProgressTracking() {
   }, []);
 
   const getExampleProgress = useCallback((exampleId: string): ExampleProgress | null => {
-    return masteryData.examples[exampleId] || null;
-  }, [masteryData.examples]);
+    return masteryDataRef.current.examples[exampleId] || null;
+  }, []);
 
   const markExampleComplete = useCallback((exampleId: string, totalSteps: number) => {
     updateExampleProgress(exampleId, {
@@ -152,22 +160,22 @@ export function useProgressTracking() {
   }, [updateExampleProgress]);
 
   const incrementQuestionCount = useCallback((exampleId: string) => {
-    const current = masteryData.examples[exampleId];
+    const current = masteryDataRef.current.examples[exampleId];
     if (current) {
       updateExampleProgress(exampleId, {
         questionsAsked: current.questionsAsked + 1
       });
     }
-  }, [masteryData.examples, updateExampleProgress]);
+  }, [updateExampleProgress]);
 
   const updateTimeSpent = useCallback((exampleId: string, additionalTime: number) => {
-    const current = masteryData.examples[exampleId];
+    const current = masteryDataRef.current.examples[exampleId];
     if (current) {
       updateExampleProgress(exampleId, {
         timeSpent: current.timeSpent + additionalTime
       });
     }
-  }, [masteryData.examples, updateExampleProgress]);
+  }, [updateExampleProgress]);
 
   const resetProgress = useCallback(() => {
     setMasteryData({

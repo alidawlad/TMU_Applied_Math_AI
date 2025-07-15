@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, Suspense } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Lecture, ModuleContent, Example, Problem } from '@/lib/types';
 import { lectures } from '@/lib/content';
@@ -222,7 +222,7 @@ function LearningProviderInner({ children }: { children: ReactNode }) {
   };
 
   // Context preservation
-  const preserveContext = (context: Partial<NavigationContext>) => {
+  const preserveContext = useCallback((context: Partial<NavigationContext>) => {
     setSession(prev => {
       if (!prev) return prev;
       return {
@@ -233,11 +233,11 @@ function LearningProviderInner({ children }: { children: ReactNode }) {
         }
       };
     });
-  };
+  }, []);
 
-  const restoreContext = (): NavigationContext | null => {
+  const restoreContext = useCallback((): NavigationContext | null => {
     return session?.navigationContext || null;
-  };
+  }, [session]);
 
   const contextValue: LearningContextType = {
     session,

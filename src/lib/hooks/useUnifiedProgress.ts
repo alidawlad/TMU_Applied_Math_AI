@@ -107,6 +107,14 @@ export function useUnifiedProgress() {
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [migrationComplete, setMigrationComplete] = useState(false);
+  
+  // Use ref for stable access to progress data
+  const progressDataRef = useRef(progressData);
+  
+  // Update ref when progressData changes
+  useEffect(() => {
+    progressDataRef.current = progressData;
+  }, [progressData]);
 
   // Initialize once - load or migrate data
   useEffect(() => {
@@ -316,10 +324,10 @@ export function useUnifiedProgress() {
     });
   }, [findContentById]);
 
-  // Get content progress
+  // Get content progress - using ref for stable access
   const getContentProgress = useCallback((contentId: string): ContentProgress | null => {
-    return progressData.contentProgress[contentId] || null;
-  }, [progressData.contentProgress]);
+    return progressDataRef.current.contentProgress[contentId] || null;
+  }, []);
 
   // Mark content complete
   const markContentComplete = useCallback((contentId: string, contentType: 'example' | 'problem') => {
