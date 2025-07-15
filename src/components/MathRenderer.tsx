@@ -76,12 +76,24 @@ export const MathRenderer = React.memo(function MathRenderer({ text }: MathRende
   }, []);
 
   const renderedHtml = useMemo(() => {
-    // Only process the text if we are on the client
-    return isClient ? { __html: processText(text) } : { __html: '' };
+    // Always process the text to prevent hydration mismatch
+    // On server/initial render, show processed text without KaTeX rendering
+    if (!isClient) {
+      // For server-side rendering, return the text with basic HTML processing
+      // This prevents hydration mismatch while showing readable content
+      return { 
+        __html: text
+          .replace(/\$\$([^$]+)\$\$/g, '<em>$1</em>')
+          .replace(/\\\[([^\]]+)\\\]/g, '<em>$1</em>')
+          .replace(/\$([^$]+)\$/g, '<em>$1</em>')
+          .replace(/\\\(([^\)]+)\\\)/g, '<em>$1</em>')
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      };
+    }
+    return { __html: processText(text) };
   }, [text, isClient]);
 
-  if (!text || !isClient) {
-    // Render nothing on the server or during the initial client render
+  if (!text) {
     return null;
   }
   
