@@ -8,7 +8,8 @@ interface MathRendererProps {
   text: string;
 }
 
-const combinedPattern = /(\$\$[^$]+\$\$|\\\[[^\]]+\\\]|(?<!\w)\$[^$\d][^$]*\$(?!\w)|\\\([^\)]+\\\)|\*\*([^*]+)\*\*)/g;
+const combinedPattern = /(\$\$[^$]+\$\$|\\\[[^\]]+\\\]|\$[^$]+\$|\\\([^\)]+\\\)|\*\*([^*]+)\*\*)/g;
+
 // Enhanced caching with LRU-like behavior
 const MAX_CACHE_SIZE = 1000;
 const mathCache = new Map<string, string>();
@@ -48,8 +49,22 @@ const renderMathExpression = (expression: string, isBlock: boolean): string => {
 
 const processText = (text: string): string => {
   if (!text) return '';
-  return text.split(combinedPattern).map((part) => {
+  const parts = text.split(combinedPattern);
+  
+  return parts.map((part, index) => {
     if (!part) return '';
+    
+    // The captured groups are also included in the split array.
+    // The full match will be at an odd index.
+    // The content of the bold tag will be at the next index.
+    // We can check if the current `part` is the content of a bold tag
+    // by looking at the previous part in the array.
+    if (index > 0 && parts[index-1] && parts[index-1].startsWith('**')) {
+      // This is the content inside `**...**`, which is already handled by the next case.
+      // So we return nothing to avoid duplication.
+      return '';
+    }
+
     if (part.match(combinedPattern)) {
       if ((part.startsWith('$$') && part.endsWith('$$')) || (part.startsWith('\\[') && part.endsWith('\\]'))) {
         const expression = part.substring(2, part.length - 2);
@@ -63,9 +78,10 @@ const processText = (text: string): string => {
         return `<strong>${part.substring(2, part.length - 2)}</strong>`;
       }
     }
-    return part;
+    return part; // This is a regular text part
   }).join('');
 };
+
 
 // Memoized component to prevent unnecessary re-renders
 export const MathRenderer = React.memo(function MathRenderer({ text }: MathRendererProps) {
@@ -80,8 +96,8 @@ export const MathRenderer = React.memo(function MathRenderer({ text }: MathRende
     return isClient ? { __html: processText(text) } : { __html: '' };
   }, [text, isClient]);
 
-  if (!text || !isClient) {
-    // Render nothing on the server or during the initial client render
+  if (!isClient) {
+    // Render a placeholder or nothing on the server and during initial client render
     return null;
   }
   
