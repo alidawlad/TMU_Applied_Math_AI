@@ -56,7 +56,7 @@ export const week10Examples: Example[] = [
         title: 'Example 2: Sequences given by listing the terms',
         relatedPracticeProblemIds: ['SQ4', 'SQ5', 'SQ6'],
         segments: [
-            { type: 'heading', text: '2. Sequences given by listing the terms' },
+            { type: 'subheading', text: 'Example 2. Sequences given by listing the terms' },
             
             { type: 'callout', text: 'Sometimes we get just a list of numbers and need to find the pattern!', emphasis: 'primary' },
             
@@ -82,10 +82,15 @@ export const week10Examples: Example[] = [
             { type: 'math', text: '5^2 = 25 \\neq 49 = 5^4 - 10 \\cdot 5^3 + 36 \\cdot 5^2 - 50 \\cdot 5 + 24' },
             
             { type: 'summary-box', text: 'Key lesson: An infinite sequence **cannot be determined** by finitely many values alone!' },
-            
-            { type: 'paragraph', text: 'A sequence that is defined in terms of itself evaluated at smaller values, and some explicitly given smaller values is said to be **recursively defined**.' },
-            
+        ]
+    },
+    {
+        id: 'W10-E3',
+        title: 'Example 3: Recursively defined sequences',
+        relatedPracticeProblemIds: ['SQ7', 'SQ8', 'SQ9'],
+        segments: [
             { type: 'subheading', text: 'Example 3. Recursively defined sequences' },
+            { type: 'paragraph', text: 'A sequence that is defined in terms of itself evaluated at smaller values, and some explicitly given smaller values is said to be **recursively defined**.' },
             
             { type: 'step-by-step', text: '**Part a)** Suppose that the sequence $(a_n)^\\infty_{n=1}$ is defined by:' },
             { type: 'math', text: 'a_1 = 1, \\quad \\text{and for every } k \\geq 1, \\quad a_{k+1} = (k + 1)a_k' },
@@ -97,13 +102,6 @@ export const week10Examples: Example[] = [
             { type: 'math', text: 'a_3 = (3)a_2 = (3)2 = 6' },
             
             { type: 'pattern-highlight', text: 'Do you see the pattern? We\'re building factorials! $a_1 = 1!$, $a_2 = 2!$, $a_3 = 3!$' },
-        ]
-    },
-    {
-        id: 'W10-E3',
-        title: 'Example 3: Fibonacci Sequence',
-        relatedPracticeProblemIds: ['SQ7', 'SQ8', 'SQ9'],
-        segments: [
             { type: 'step-by-step', text: '**Part b)** Suppose that the sequence $(F_n)^\\infty_{n=1}$ is defined by:' },
             { type: 'math', text: 'F_1 = 1, \\quad F_2 = 1, \\quad \\text{and for every } k \\geq 1, \\quad F_{k+2} = F_{k+1} + F_k' },
             
@@ -125,7 +123,7 @@ export const week10Examples: Example[] = [
             
             { type: 'paragraph', text: 'In case of the Fibonacci sequence such a formula exist but it is not easy to derive. One can show that:' },
             
-            { type: 'math', text: 'F_n = \\frac{1}{\\sqrt{5}} \\left( \\frac{1 + \\sqrt{5}}{2} \\right)^n - \\frac{1}{\\sqrt{5}} \\left( \\frac{1 - \\sqrt{5}}{2} \\right)^n' },
+            { type: 'math', text: 'F_n = \\frac{1}{\\sqrt{5}} \\left( \\left( \\frac{1 + \\sqrt{5}}{2} \\right)^n - \\left( \\frac{1 - \\sqrt{5}}{2} \\right)^n \\right)' },
             
             { type: 'callout', text: 'This is called **Binet\'s formula** - it gives us any Fibonacci number directly!', emphasis: 'primary' },
             
