@@ -10,6 +10,7 @@ interface MathRendererProps {
 
 // Simplified and reliable regex pattern for math detection
 const combinedPattern = /(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\$[^$\n]+\$|\\\([^)]*\\\)|\*\*[^*]+\*\*)/g;
+
 // Enhanced caching with LRU-like behavior
 const MAX_CACHE_SIZE = 1000;
 const mathCache = new Map<string, string>();

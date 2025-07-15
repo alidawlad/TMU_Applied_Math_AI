@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { LearningProvider } from "@/lib/contexts/LearningContext"
+import "katex/dist/katex.min.css";
 
 export const metadata: Metadata = {
   title: 'Focused Mastery',

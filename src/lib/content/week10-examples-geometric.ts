@@ -80,7 +80,7 @@ export const week10GeometricExamples: Example[] = [
             { type: 'paragraph', text: 'We will now derive the formula for the general term of a geometric sequence. Let us look closely at the following pattern' },
             
             { type: 'pattern-highlight', text: 'Visual Pattern for Geometric Sequence Terms:' },
-            { type: 'math', text: '\\begin{array}{lll} a_1 & & \\\\ a_2 \\cdot r & a_1 \\cdot r & \\\\ a_3 \\cdot r & a_2 \\cdot r & a_1 \\cdot r^2 \\\\ a_4 \\cdot r & a_3 \\cdot r & a_1 \\cdot r^3 \\\\ a_5 \\cdot r & a_4 \\cdot r & a_1 \\cdot r^4 \\end{array}' },
+            { type: 'math', text: '\\begin{array}{lll} a_1 & & \\\\ a_2 & = a_1 \\cdot r & \\\\ a_3 & = a_2 \\cdot r = (a_1 \\cdot r) \\cdot r & = a_1 \\cdot r^2 \\\\ a_4 & = a_3 \\cdot r = (a_1 \\cdot r^2) \\cdot r & = a_1 \\cdot r^3 \\\\ a_5 & = a_4 \\cdot r = (a_1 \\cdot r^3) \\cdot r & = a_1 \\cdot r^4 \\end{array}' },
             
             { type: 'connection', text: 'The first term, $a_1$, is not multiplied by any $r$. In the second term, the $a_1$ is multiplied by $r$. In the third term, the $a_1$ is multiplied by $r$ two times ($r \\cdot r$ or $r^2$). In the fourth term, the $a_1$ is multiplied by $r$ three times ($r \\cdot r \\cdot r$ or $r^3$) and in the fifth term, the $a_1$ is multiplied by $r$ four times. In each term, the number of times $a_1$ is multiplied by $r$ is one less than the number of the term. This leads us to the following conclusion:' },
             
@@ -91,11 +91,11 @@ export const week10GeometricExamples: Example[] = [
             
             { type: 'subheading', text: 'Example 13. (Savings account application)' },
             
-            { type: 'step-by-step', text: 'A savings account, which earns interest at a rate of 5% compounded annually, contains \$125.00 and is forgotten. It is remembered 9 years later. How much does it then contain?' },
+            { type: 'step-by-step', text: 'A savings account, which earns interest at a rate of 5% compounded annually, contains \\$125.00 and is forgotten. It is remembered 9 years later. How much does it then contain?' },
             
-            { type: 'paragraph', text: '**Solution:** The sequence that determines the amount on this savings account is clearly increasing. We start with \$125.00. The 5% interest compounded annually means that we will multiply the previous year\'s amount by 1.05.' },
+            { type: 'paragraph', text: '**Solution:** The sequence that determines the amount on this savings account is clearly increasing. We start with \\$125.00. The 5% interest compounded annually means that we will multiply the previous year\'s amount by 1.05.' },
             
-            { type: 'connection', text: 'This means that after one year the amount on the savings account will be \$125 \\cdot (1.05), after two years the amount on the savings account will be \$125 \\cdot (1.05)^2, etc. So, we can express the amount on the savings account after $n$ years as a geometric sequence' },
+            { type: 'connection', text: 'This means that after one year the amount on the savings account will be \\$125 \\cdot (1.05), after two years the amount on the savings account will be \\$125 \\cdot (1.05)^2, etc. So, we can express the amount on the savings account after $n$ years as a geometric sequence' },
             
             { type: 'math', text: 'a_n = 125 \\cdot (1.05)^n' },
             
@@ -103,7 +103,7 @@ export const week10GeometricExamples: Example[] = [
             
             { type: 'math', text: 'a_9 = 125 \\cdot (1.05)^9 = 193.92' },
             
-            { type: 'pattern-highlight', text: 'i.e., the amount on the savings account after 9 years is \$193.92.' },
+            { type: 'pattern-highlight', text: 'i.e., the amount on the savings account after 9 years is \\$193.92.' },
         ]
     },
     {

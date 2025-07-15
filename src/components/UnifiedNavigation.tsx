@@ -170,9 +170,9 @@ export function UnifiedNavigation({
 
       {/* Subtitle and progress */}
       {(subtitle || showProgress) && (
-        <div className="px-4 py-3 bg-primary/5">
+        <div className="px-4 py-3 bg-muted/30 border-t">
           {subtitle && (
-            <p className="text-sm text-muted-foreground mb-2">{subtitle}</p>
+            <p className="text-sm text-primary/80 font-medium mb-2">{subtitle}</p>
           )}
           
           {showProgress && progressData.overallStats.totalContent > 0 && (
@@ -220,7 +220,7 @@ export function NavigationModeSwitch({
     <div className="flex gap-2">
       {currentContentType === 'example' && relatedContent.length > 0 && (
         <Link href={`/practice?problem=${relatedContent[0].id}&from=example&exampleId=${currentContentId}`}>
-          <Button variant="outline" size="sm">
+          <Button variant="secondary" size="sm">
             <PenTool className="h-4 w-4 mr-1" />
             Practice This
           </Button>
@@ -229,7 +229,7 @@ export function NavigationModeSwitch({
       
       {currentContentType === 'problem' && relatedContent.length > 0 && (
         <Link href={`/study?example=${relatedContent[0].id}&from=practice&problemId=${currentContentId}`}>
-          <Button variant="outline" size="sm">
+          <Button variant="secondary" size="sm">
             <BookOpen className="h-4 w-4 mr-1" />
             Review Concept
           </Button>

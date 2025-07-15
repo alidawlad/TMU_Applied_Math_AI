@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -56,7 +57,7 @@ export function AiPanel({
           variant="outline" 
           size="sm" 
           onClick={() => onToggle(true)}
-          className="bg-white/80 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-all duration-200"
+          className="bg-white/80 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-all duration-200 rounded-xl"
         >
           <Sparkles className="h-4 w-4 mr-2 text-primary" />
           Ask AI
@@ -67,7 +68,7 @@ export function AiPanel({
 
   return (
     <div className={cn("w-full max-w-2xl", className)}>
-      <Card className="shadow-lg border-primary/20 bg-white/95 backdrop-blur-sm">
+      <Card className="shadow-lg border-primary/20 bg-white/95 backdrop-blur-sm rounded-xl">
         <CardContent className="p-4">
           <div className="flex justify-between items-center mb-3">
             <div className="flex items-center gap-2">
