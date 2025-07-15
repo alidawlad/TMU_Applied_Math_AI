@@ -89,7 +89,7 @@ export const week10SeriesExamples: Example[] = [
             
             { type: 'connection', text: 'This basically tells us to start with a number $a_1$ and get the next term by adding $d$. So, we have:' },
             
-            { type: 'math', text: '\\begin{align} a_1 \\\\ a_2 &= d + a_1 \\\\ a_3 &= d + a_2 \\\\ a_4 &= d + a_3 \\\\ &\\vdots \\end{align}' },
+            { type: 'math', text: '\\begin{align*} a_1 \\\\ a_2 &= d + a_1 \\\\ a_3 &= d + a_2 \\\\ a_4 &= d + a_3 \\\\ &\\vdots \\end{align*}' },
             
             { type: 'summary-box', text: 'If we know the first term $a_1$ and the common difference $d$, we can list a finite number of terms of the sequence.' },
             
