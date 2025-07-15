@@ -3,8 +3,8 @@
 export interface Example {
   id: string;
   title: string;
-  relatedPracticeProblemIds?: string[];
-  segments: Segment[];
+  relatedPracticeProblemIds: string[];
+  segments: LectureContentSegment[];
 }
 
 export interface Problem {
@@ -22,30 +22,22 @@ export interface Problem {
 
 export interface Step {
   id: string;
-  title?: string;
-  explanation?: string;
-  description?: string;
-  question?: string;
-  answer?: string;
-  solution?: string;
+  title: string;
+  description: string;
+  solution: string;
   hint?: string;
-  hints?: string[];
-  calculator_tip?: string;
 }
 
-export interface Segment {
-  type: 'heading' | 'paragraph' | 'math' | 'callout' | 'connection' | 'summary-box' | 'numbered-list' | 'bullet-list' | 'divider' | 'link';
-  text?: string;
-  items?: string[];
-  emphasis?: 'primary' | 'secondary' | 'accent';
-  href?: string;
-  linkText?: string;
+export interface LectureContentSegment {
+    type: 'heading' | 'subheading' | 'paragraph' | 'math' | 'list' | 'numbered-list' | 'callout' | 'connection' | 'summary-box' | 'pattern-highlight' | 'step-by-step';
+    text?: string;
+    items?: string[];
+    emphasis?: 'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'danger';
 }
 
 export interface ModuleContent {
   id: string;
-  name?: string; // Legacy property
-  title: string;
+  name: string;
   description: string;
   examples: Example[];
   problems: Problem[];
@@ -54,10 +46,5 @@ export interface ModuleContent {
 export interface Lecture {
   id: string;
   title: string;
-  week: number;
-  description: string;
   modules: ModuleContent[];
 }
-
-// Legacy segment type for compatibility
-export interface LectureContentSegment extends Segment {}

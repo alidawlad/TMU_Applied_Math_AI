@@ -71,7 +71,7 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
 
   // Track content access and load progress
   useEffect(() => {
-    trackContentAccess(example.id);
+    trackContentAccess(example.id, 'example');
     
     // Load from both old and new progress systems
     const savedProgress = getExampleProgress(example.id);
@@ -130,7 +130,7 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
     const revealedContent = example.segments
       .slice(0, revealedStepIndex + 1)
       .map(s => s.text || (s.items ? s.items.join(' ') : ''))
-      .join('\n\n');
+      .join('\\n\\n');
 
     const result = await explainExampleStepAction({
       exampleTitle: example.title,
@@ -214,13 +214,13 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
 
         <div className="flex-1 flex flex-col bg-background">
           {/* AI Panel positioned at top of content area */}
-          <div className="border-b bg-background/95 backdrop-blur-sm p-4">
+          <div className="border-b bg-background/95 backdrop-blur-sm -mx-px">
             <AiPanel
               onQuestionSubmit={handleAskAi}
               isOpen={isAiPanelOpen}
               onToggle={setIsAiPanelOpen}
               context={`Steps 1-${revealedStepIndex + 1} of ${example.title}`}
-              className="mx-auto max-w-4xl"
+              className="mx-auto max-w-4xl px-4 py-4"
             />
           </div>
 
