@@ -47,19 +47,19 @@ export function DrawingCanvas() {
     }
   }, []);
 
-  const getEventCoordinates = (event: MouseEvent | TouchEvent) => {
+  const getEventCoordinates = (event: React.MouseEvent | React.TouchEvent) => {
     const canvas = canvasRef.current;
     if(!canvas) return { x: 0, y: 0 };
     // The canvas is fixed to the viewport, so clientX/Y are the correct coordinates
-    if (event instanceof TouchEvent) {
+    if ('touches' in event) {
       return { x: event.touches[0].clientX, y: event.touches[0].clientY };
     }
     return { x: event.clientX, y: event.clientY };
   };
 
-  const startDrawing = (event: MouseEvent | TouchEvent) => {
+  const startDrawing = (event: React.MouseEvent | React.TouchEvent) => {
     // Check for primary button on mouse events
-    if (event instanceof MouseEvent && event.button !== 0) return;
+    if ('button' in event && event.button !== 0) return;
     event.preventDefault();
     const { x, y } = getEventCoordinates(event);
     contextRef.current?.beginPath();
@@ -72,7 +72,7 @@ export function DrawingCanvas() {
     setIsDrawing(false);
   };
 
-  const draw = (event: MouseEvent | TouchEvent) => {
+  const draw = (event: React.MouseEvent | React.TouchEvent) => {
     if (!isDrawing) return;
     event.preventDefault();
     const { x, y } = getEventCoordinates(event);

@@ -13,6 +13,9 @@ import Link from 'next/link';
 import { AiPanel } from './AiPanel';
 import { FloatingContinueButton } from './FloatingContinueButton';
 import { useProgressTracking } from '@/lib/hooks/useProgressTracking';
+import { useLearningContext } from '@/lib/contexts/LearningContext';
+import { useUnifiedProgress } from '@/lib/hooks/useUnifiedProgress';
+import { UnifiedNavigation, NavigationModeSwitch } from './UnifiedNavigation';
 
 interface LectureContentDisplayProps {
   lecture: Lecture;
@@ -63,19 +66,43 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
   const lastRevealedRef = useRef<HTMLDivElement>(null);
   
   const { updateExampleProgress, getExampleProgress, markExampleComplete, incrementQuestionCount } = useProgressTracking();
+  const { navigateToContent, preserveContext } = useLearningContext();
+  const { updateContentProgress, getContentProgress, trackContentAccess } = useUnifiedProgress();
 
-  // Load saved progress
+  // Track content access and load progress
   useEffect(() => {
+    trackContentAccess(example.id);
+    
+    // Load from both old and new progress systems
     const savedProgress = getExampleProgress(example.id);
-    if (savedProgress) {
+    const unifiedProgress = getContentProgress(example.id);
+    
+    if (unifiedProgress?.revealedStepIndex !== undefined) {
+      setRevealedStepIndex(unifiedProgress.revealedStepIndex);
+    } else if (savedProgress) {
       setRevealedStepIndex(savedProgress.revealedStepIndex);
     }
-  }, [example.id, getExampleProgress]);
+    
+    // Preserve navigation context
+    preserveContext({
+      previousContent: {
+        type: 'example',
+        id: example.id,
+        moduleId: module.id,
+        lectureId: lecture.id
+      }
+    });
+  }, [example.id, module.id, lecture.id, getExampleProgress, getContentProgress, trackContentAccess, preserveContext]);
 
   // Save progress when step index changes
   useEffect(() => {
+    // Update both old and new progress systems for now (migration period)
     updateExampleProgress(example.id, { revealedStepIndex });
-  }, [revealedStepIndex, example.id, updateExampleProgress]);
+    updateContentProgress(example.id, 'example', { 
+      revealedStepIndex,
+      timeSpent: 1000 // Add 1 second per step reveal
+    });
+  }, [revealedStepIndex, example.id, updateExampleProgress, updateContentProgress]);
 
   // Auto-scroll to newly revealed content
   useEffect(() => {
@@ -120,61 +147,68 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
 
   return (
     <div className="flex flex-col h-screen font-sans bg-muted/30">
-      <header className="flex-shrink-0">
-        <div className="bg-background border-b px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/study-plan" passHref>
-              <Button variant="ghost" size="icon" aria-label="Back to Study Plan">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-            </Link>
-            <Logo className="h-8 w-8 text-primary hidden md:block" />
-            <h1 className="text-lg font-semibold font-headline">Applied Mathematics for Business</h1>
+      {/* Unified Navigation Header */}
+      <UnifiedNavigation
+        currentMode="study"
+        title="Applied Mathematics for Business"
+        subtitle={`${module.name} • Step ${revealedStepIndex + 1} of ${example.segments.length}`}
+        showProgress={true}
+      />
+      
+      {/* Secondary header with sidebar toggle and mode switch */}
+      <div className="bg-primary/90 text-primary-foreground px-4 py-3 flex items-center justify-between backdrop-blur-sm">
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+            aria-label="Toggle Sidebar" 
+            className="text-primary-foreground hover:bg-white/20"
+          >
+            {isSidebarOpen ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeftOpen className="h-5 w-5" />}
+          </Button>
+          <div>
+            <h2 className="text-lg font-bold font-headline">{example.title}</h2>
           </div>
         </div>
-        <div className="bg-primary/90 text-primary-foreground px-4 h-16 flex items-center justify-between backdrop-blur-sm">
-          <div className="flex items-center gap-4">
-             <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label="Toggle Sidebar" className="text-primary-foreground hover:bg-white/20">
-              {isSidebarOpen ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeftOpen className="h-5 w-5" />}
-            </Button>
-            <div>
-              <h2 className="text-xl font-bold font-headline">{lecture.title}</h2>
-              <p className="text-xs text-primary-foreground/80">{module.name}</p>
-            </div>
-          </div>
-          <div className="text-xs text-primary-foreground/80">
-            Step {revealedStepIndex + 1} of {example.segments.length}
-          </div>
-        </div>
-      </header>
+        <NavigationModeSwitch 
+          currentContentId={example.id} 
+          currentContentType="example" 
+        />
+      </div>
 
       <main className="flex-1 flex overflow-hidden">
         {isSidebarOpen && (
-          <div className="w-72 flex-shrink-0 border-r bg-background/50 p-4 transition-all duration-300 ease-in-out">
-            <h3 className="font-headline font-semibold text-lg mb-4">Examples in {module.name}</h3>
-            <div className="space-y-2">
-              {module.examples.map(ex => (
-                <Link key={ex.id} href={`/study?example=${ex.id}`} passHref>
-                  <Button 
-                    variant={example.id === ex.id ? 'secondary' : 'ghost'} 
-                    className="w-full justify-start text-left h-auto py-2 whitespace-normal"
-                  >
-                    {ex.title}
-                  </Button>
-                </Link>
-              ))}
-            </div>
-            
-            {currentProgress && (
-              <div className="mt-6 p-3 bg-background rounded-lg border">
-                <h4 className="font-semibold text-sm mb-2">Progress</h4>
-                <div className="space-y-1 text-xs text-muted-foreground">
-                  <div>Completed: {currentProgress.completedAt ? 'Yes' : 'No'}</div>
-                  <div>Questions Asked: {currentProgress.questionsAsked}</div>
-                  <div>Time Spent: {Math.round(currentProgress.timeSpent / 60)}min</div>
-                </div>
+          <div className="w-72 lg:w-80 flex-shrink-0 border-r bg-background/50 overflow-hidden transition-all duration-300 ease-in-out">
+            <div className="p-4 h-full overflow-y-auto">
+              <h3 className="font-headline font-semibold text-lg mb-4 text-wrap">
+                Examples in {module.name}
+              </h3>
+              <div className="space-y-2">
+                {module.examples.map(ex => (
+                  <Link key={ex.id} href={`/study?example=${ex.id}`} passHref>
+                    <Button 
+                      variant={example.id === ex.id ? 'secondary' : 'ghost'} 
+                      className="w-full justify-start text-left h-auto py-3 px-3 whitespace-normal break-words leading-relaxed"
+                      title={ex.title} // Tooltip for full text
+                    >
+                      <MathRenderer text={ex.title} />
+                    </Button>
+                  </Link>
+                ))}
               </div>
-            )}
+              
+              {currentProgress && (
+                <div className="mt-6 p-3 bg-background rounded-lg border">
+                  <h4 className="font-semibold text-sm mb-2">Progress</h4>
+                  <div className="space-y-1 text-xs text-muted-foreground">
+                    <div>Completed: {currentProgress.completedAt ? 'Yes' : 'No'}</div>
+                    <div>Questions Asked: {currentProgress.questionsAsked}</div>
+                    <div>Time Spent: {Math.round(currentProgress.timeSpent / 60)}min</div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -223,14 +257,24 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
                     </p>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {relatedPracticeProblems.map(p => (
-                        <Link key={p.id} href={`/practice?problem=${p.id}`} passHref>
-                          <Button variant="outline" className="w-full h-full text-left flex flex-col items-start p-4 justify-start">
-                            <span className="font-semibold">
-                              <MathRenderer text={p.title} />
-                            </span>
-                            <span className="text-xs text-muted-foreground mt-1">{p.id}</span>
-                          </Button>
-                        </Link>
+                        <Button 
+                          key={p.id}
+                          variant="outline" 
+                          className="w-full h-full text-left flex flex-col items-start p-4 justify-start hover:bg-accent"
+                          onClick={() => navigateToContent(p.id, 'problem', {
+                            previousContent: {
+                              type: 'example',
+                              id: example.id,
+                              moduleId: module.id,
+                              lectureId: lecture.id
+                            }
+                          })}
+                        >
+                          <span className="font-semibold break-words">
+                            <MathRenderer text={p.title} />
+                          </span>
+                          <span className="text-xs text-muted-foreground mt-1">{p.id}</span>
+                        </Button>
                       ))}
                     </div>
                   </CardContent>

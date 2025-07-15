@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { lectures } from "@/lib/content";
 import { AppHeader } from "./AppHeader";
 import { ProblemSidebar } from "./ProblemSidebar";
@@ -48,13 +48,16 @@ export function FocusedMasteryApp() {
     };
   }, [problemIdFromUrl]);
 
-  const lectureData = useMemo(() => {
-    const allProblems = lectures.flatMap(l => l.modules.flatMap(m => m.problems));
-    return {
-        lectures,
-        allProblems
-    };
-  }, []);
+  // Memoize expensive computations separately
+  const allProblems = useMemo(() => 
+    lectures.flatMap(l => l.modules.flatMap(m => m.problems)), 
+    []
+  );
+  
+  const lectureData = useMemo(() => ({
+    lectures,
+    allProblems
+  }), [allProblems]);
 
   if (lectureData.allProblems.length === 0) {
     return (
@@ -93,8 +96,8 @@ export function FocusedMasteryApp() {
   }, [initialLectureId, initialModuleId, initialProblemIndex]);
 
 
-  // State change handlers
-  const handleLectureChange = (lectureId: string) => {
+  // Memoized state change handlers to prevent unnecessary re-renders
+  const handleLectureChange = useCallback((lectureId: string) => {
     const newLecture = lectures.find(l => l.id === lectureId)!;
     const newModule = newLecture.modules[0];
     const newProblem = newModule.problems[0];
@@ -102,26 +105,26 @@ export function FocusedMasteryApp() {
     setCurrentModuleId(newModule.id);
     setCurrentProblemIndex(0);
     router.push(`/practice?problem=${newProblem.id}`, { scroll: false });
-  };
+  }, [router]);
 
-  const handleModuleChange = (moduleId: string) => {
+  const handleModuleChange = useCallback((moduleId: string) => {
     const lecture = lectures.find(l => l.id === currentLectureId)!;
     const newModule = lecture.modules.find(m => m.id === moduleId)!;
     const newProblem = newModule.problems[0];
     setCurrentModuleId(moduleId);
     setCurrentProblemIndex(0);
     router.push(`/practice?problem=${newProblem.id}`, { scroll: false });
-  };
+  }, [currentLectureId, router]);
 
-  const handleProblemChange = (problemIndex: number) => {
+  const handleProblemChange = useCallback((problemIndex: number) => {
     const lecture = lectures.find(l => l.id === currentLectureId)!;
     const module = lecture.modules.find(m => m.id === currentModuleId)!;
     const newProblem = module.problems[problemIndex];
     setCurrentProblemIndex(problemIndex);
     router.push(`/practice?problem=${newProblem.id}`, { scroll: false });
-  };
+  }, [currentLectureId, currentModuleId, router]);
   
-  const handleNextProblem = () => {
+  const handleNextProblem = useCallback(() => {
     const lecture = lectures.find(l => l.id === currentLectureId)!;
     const module = lecture.modules.find(m => m.id === currentModuleId)!;
     
@@ -132,12 +135,11 @@ export function FocusedMasteryApp() {
       // Handle case where it's the last problem of the module
       // Maybe go to next module or show a completion message. For now, just stay.
     }
-  };
+  }, [currentLectureId, currentModuleId, currentProblemIndex, handleProblemChange]);
 
-
-  const toggleDrawingMode = () => {
+  const toggleDrawingMode = useCallback(() => {
     setIsDrawingModeActive(prev => !prev);
-  }
+  }, []);
 
   // Memoized derived state
   const currentLecture = useMemo(() => lectures.find(l => l.id === currentLectureId), [currentLectureId]);
@@ -190,6 +192,7 @@ export function FocusedMasteryApp() {
         />
         <ProblemDisplay 
             key={currentProblem.id}
+            lecture={currentLecture}
             module={currentModule}
             problem={currentProblem}
             onNextProblem={handleNextProblem}

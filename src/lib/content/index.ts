@@ -1,6 +1,10 @@
 import type { Lecture, ModuleContent } from '@/lib/types';
 import { week10Examples } from './week10-examples';
 import { week10SeriesExamples } from './week10-examples-series';
+import { week10ArithmeticAdvancedExamples } from './week10-examples-arithmetic-advanced';
+import { week10GeometricExamples } from './week10-examples-geometric';
+import { week10GeometricSeriesExamples } from './week10-examples-geometric-series';
+import { week10InfiniteSeriesExamples } from './week10-examples-infinite-series';
 import { week10PracticeProblems } from './week10-practice';
 
 // Create modules by combining examples and practice problems
@@ -53,6 +57,47 @@ const arithmeticApplicationsModule: ModuleContent = {
     problems: week10PracticeProblems.filter(p => p.skill === 'Arithmetic Applications' || p.skill === 'Revenue Modeling')
 };
 
+// New modules for advanced topics (Examples 10-19)
+const arithmeticAdvancedModule: ModuleContent = {
+    id: 'arithmetic-advanced',
+    name: 'Advanced Arithmetic Sequences',
+    description: 'Solving systems to find arithmetic sequence parameters.',
+    examples: week10ArithmeticAdvancedExamples.filter(e => e.id === 'W10-E10'),
+    problems: week10PracticeProblems.filter(p => p.skill === 'Arithmetic Systems')
+};
+
+const geometricFundamentalsModule: ModuleContent = {
+    id: 'geometric-fundamentals',
+    name: 'Geometric Sequences Fundamentals',
+    description: 'Introduction to geometric sequences and identification.',
+    examples: week10GeometricExamples.filter(e => e.id === 'W10-E11' || e.id === 'W10-E12'),
+    problems: week10PracticeProblems.filter(p => p.skill === 'Geometric Sequences' || p.skill === 'Geometric Identification')
+};
+
+const geometricApplicationsModule: ModuleContent = {
+    id: 'geometric-applications',
+    name: 'Geometric Sequences Applications',
+    description: 'Real-world applications and advanced geometric sequence problems.',
+    examples: week10GeometricExamples.filter(e => e.id === 'W10-E13' || e.id === 'W10-E14'),
+    problems: week10PracticeProblems.filter(p => p.skill === 'Compound Interest Applications' || p.skill === 'Geometric Systems')
+};
+
+const finiteGeometricSeriesModule: ModuleContent = {
+    id: 'finite-geometric-series',
+    name: 'Finite Geometric Series',
+    description: 'Calculating sums of finite geometric series and future value applications.',
+    examples: week10GeometricSeriesExamples.filter(e => e.id === 'W10-E15' || e.id === 'W10-E16'),
+    problems: week10PracticeProblems.filter(p => p.skill === 'Finite Geometric Series' || p.skill === 'Future Value Applications')
+};
+
+const infiniteSeriesApplicationsModule: ModuleContent = {
+    id: 'infinite-series-applications',
+    name: 'Infinite Series & Applications',
+    description: 'Convergent infinite series, economic multipliers, and perpetuity calculations.',
+    examples: week10InfiniteSeriesExamples.filter(e => e.id === 'W10-E17' || e.id === 'W10-E18' || e.id === 'W10-E19'),
+    problems: week10PracticeProblems.filter(p => p.skill === 'Infinite Geometric Series' || p.skill === 'Economic Multiplier' || p.skill === 'Perpetuity Applications')
+};
+
 // Assemble the lecture
 export const lectures: Lecture[] = [
     {
@@ -65,6 +110,11 @@ export const lectures: Lecture[] = [
             summationNotationModule,
             arithmeticSequencesModule,
             arithmeticApplicationsModule,
+            arithmeticAdvancedModule,
+            geometricFundamentalsModule,
+            geometricApplicationsModule,
+            finiteGeometricSeriesModule,
+            infiniteSeriesApplicationsModule,
         ]
     }
 ];

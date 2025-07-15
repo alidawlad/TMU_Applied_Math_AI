@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import type { ModuleContent, Problem, Step } from "@/lib/types";
+import type { Lecture, ModuleContent, Problem, Step } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -16,16 +16,20 @@ import { Skeleton } from "./ui/skeleton";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
+import { useLearningContext } from '@/lib/contexts/LearningContext';
+import { useFirebaseProgress } from '@/lib/hooks/useFirebaseProgress';
+import { UnifiedNavigation, NavigationModeSwitch } from './UnifiedNavigation';
 
 type StepStatus = "unanswered" | "correct" | "incorrect";
 
 interface ProblemDisplayProps {
+  lecture: Lecture;
   module: ModuleContent;
   problem: Problem;
   onNextProblem: () => void;
 }
 
-export function ProblemDisplay({ module, problem, onNextProblem }: ProblemDisplayProps) {
+export function ProblemDisplay({ lecture, module, problem, onNextProblem }: ProblemDisplayProps) {
   const { toast } = useToast();
 
   const [stepInputs, setStepInputs] = useState<Record<string, string>>({});
@@ -37,13 +41,44 @@ export function ProblemDisplay({ module, problem, onNextProblem }: ProblemDispla
   const [isHydrated, setIsHydrated] = useState(false);
   const [attemptStarted, setAttemptStarted] = useState(false);
   
+  // Enhanced progress tracking
+  const { preserveContext, trackContentAccess } = useLearningContext();
+  const { updateContentProgress, getContentProgress } = useFirebaseProgress();
+
+  // Track content access and preserve context
+  useEffect(() => {
+    trackContentAccess(problem.id);
+    
+    preserveContext({
+      previousContent: {
+        type: 'problem',
+        id: problem.id,
+        moduleId: module.id,
+        lectureId: lecture.id
+      }
+    });
+  }, [problem.id, module.id, lecture.id, trackContentAccess, preserveContext]);
 
   useEffect(() => {
     try {
+      // Load from both localStorage and unified progress
       const savedInputs = localStorage.getItem(`fm-stepInputs-${problem.id}`);
       const savedStatuses = localStorage.getItem(`fm-stepStatuses-${problem.id}`);
-      if (savedInputs) setStepInputs(JSON.parse(savedInputs));
-      if (savedStatuses) {
+      const unifiedProgress = getContentProgress(problem.id);
+      
+      // Prioritize unified progress system
+      if (unifiedProgress?.stepInputs) {
+        setStepInputs(unifiedProgress.stepInputs);
+      } else if (savedInputs) {
+        setStepInputs(JSON.parse(savedInputs));
+      }
+      
+      if (unifiedProgress?.stepStatuses) {
+        setStepStatuses(unifiedProgress.stepStatuses);
+        if (problem.type === 'practice' && Object.values(unifiedProgress.stepStatuses).some(s => s !== 'unanswered')) {
+          setAttemptStarted(true);
+        }
+      } else if (savedStatuses) {
         const statuses = JSON.parse(savedStatuses);
         setStepStatuses(statuses);
         if (problem.type === 'practice' && Object.values(statuses).some(s => s !== 'unanswered')) {
@@ -63,21 +98,40 @@ export function ProblemDisplay({ module, problem, onNextProblem }: ProblemDispla
     if (isHydrated) {
       try {
         localStorage.setItem(`fm-stepInputs-${problem.id}`, JSON.stringify(stepInputs));
+        // Update unified progress system
+        updateContentProgress(problem.id, 'problem', { 
+          stepInputs,
+          timeSpent: 1000 // Add 1 second for each input change
+        });
       } catch (error) {
         console.error("Failed to save inputs to localStorage", error);
       }
     }
-  }, [stepInputs, isHydrated, problem.id]);
+  }, [stepInputs, isHydrated, problem.id, updateContentProgress]);
 
   useEffect(() => {
     if (isHydrated) {
       try {
         localStorage.setItem(`fm-stepStatuses-${problem.id}`, JSON.stringify(stepStatuses));
+        
+        // Calculate completion status
+        const correctSteps = Object.values(stepStatuses).filter(s => s === 'correct').length;
+        const totalSteps = problem.steps.length;
+        const isCompleted = correctSteps === totalSteps;
+        
+        // Update unified progress system
+        updateContentProgress(problem.id, 'problem', { 
+          stepStatuses,
+          correctStepsCount: correctSteps,
+          totalSteps,
+          isCompleted,
+          timeSpent: 2000 // Add 2 seconds for each status change
+        });
       } catch (error) {
         console.error("Failed to save statuses to localStorage", error);
       }
     }
-  }, [stepStatuses, isHydrated, problem.id]);
+  }, [stepStatuses, isHydrated, problem.id, problem.steps.length, updateContentProgress]);
 
   const handleInputChange = (key: string, value: string) => {
     setStepInputs((prev) => ({ ...prev, [key]: value }));

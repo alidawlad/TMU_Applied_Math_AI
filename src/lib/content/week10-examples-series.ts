@@ -210,7 +210,7 @@ export const week10SeriesExamples: Example[] = [
             
             { type: 'subheading', text: 'Example 9. (Revenue application)' },
             
-            { type: 'step-by-step', text: 'Current daily revenue at a campus burger restaurant is $12,000. Over the next 30 days revenue is expected to increase by $1,000 each day as students return for the fall semester. What is the projected total revenue for the 31 days for which we have projected data?' },
+            { type: 'step-by-step', text: 'Current daily revenue at a campus burger restaurant is \\$12,000. Over the next 30 days revenue is expected to increase by \\$1,000 each day as students return for the fall semester. What is the projected total revenue for the 31 days for which we have projected data?' },
             
             { type: 'paragraph', text: '**Solution:** The daily revenue at the campus burger restaurant can be described as an arithmetic sequence with $a_1 = 12000$ and $d = 1000$. So, the revenue at $n^{th}$ day is given by' },
             
@@ -228,7 +228,7 @@ export const week10SeriesExamples: Example[] = [
             
             { type: 'math', text: 'S_{31} = \\frac{31}{2} \\cdot (12000 + 42000) = 837000' },
             
-            { type: 'pattern-highlight', text: 'So, the projected total revenue for the 31 days for which we have projected data is expected to be $837000.' },
+            { type: 'pattern-highlight', text: 'So, the projected total revenue for the 31 days for which we have projected data is expected to be \\$837000.' },
         ]
     }
 ];

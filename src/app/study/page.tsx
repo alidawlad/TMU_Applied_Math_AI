@@ -1,7 +1,8 @@
 import { LectureContentDisplay } from "@/components/LectureContentDisplay";
 import { lectures } from "@/lib/content";
 import type { ModuleContent, Lecture, Example } from "@/lib/types";
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 
 function findExampleContent(exampleId?: string | null): { module: ModuleContent, lecture: Lecture, example: Example } | null {
     if (!exampleId) {
@@ -23,8 +24,9 @@ function findExampleContent(exampleId?: string | null): { module: ModuleContent,
 }
 
 
-export default function StudyPage({ searchParams }: { searchParams: { example: string } }) {
-    const exampleId = searchParams.example;
+async function StudyPageContent({ searchParams }: { searchParams: Promise<{ example: string }> }) {
+    const resolvedParams = await searchParams;
+    const exampleId = resolvedParams.example;
     const contentData = findExampleContent(exampleId);
     
     if (!contentData) {
@@ -38,5 +40,13 @@ export default function StudyPage({ searchParams }: { searchParams: { example: s
         <main className="h-screen bg-muted/30">
             <LectureContentDisplay lecture={lecture} module={module} example={example} />
         </main>
+    );
+}
+
+export default function StudyPage({ searchParams }: { searchParams: Promise<{ example: string }> }) {
+    return (
+        <Suspense fallback={<div className="h-screen bg-muted/30 flex items-center justify-center">Loading...</div>}>
+            <StudyPageContent searchParams={searchParams} />
+        </Suspense>
     );
 }

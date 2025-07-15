@@ -8,8 +8,20 @@ interface MathRendererProps {
   text: string;
 }
 
-const combinedPattern = /(\$\$[^$]+\$\$|\\\[[^\]]+\\\]|\$[^$]+\$|\\\([^\)]+\\\)|\*\*([^*]+)\*\*)/g;
+const combinedPattern = /(\$\$[^$]+\$\$|\\\[[^\]]+\\\]|(?<!\w)\$[^$\d][^$]*\$(?!\w)|\\\([^\)]+\\\)|\*\*([^*]+)\*\*)/g;
+// Enhanced caching with LRU-like behavior
+const MAX_CACHE_SIZE = 1000;
 const mathCache = new Map<string, string>();
+
+// Clear cache when it gets too large to prevent memory issues
+const clearOldCacheEntries = () => {
+  if (mathCache.size > MAX_CACHE_SIZE) {
+    const entries = Array.from(mathCache.entries());
+    const keepEntries = entries.slice(-Math.floor(MAX_CACHE_SIZE * 0.75));
+    mathCache.clear();
+    keepEntries.forEach(([key, value]) => mathCache.set(key, value));
+  }
+};
 
 const renderMathExpression = (expression: string, isBlock: boolean): string => {
   const cacheKey = `${expression}-${isBlock}`;
@@ -23,6 +35,7 @@ const renderMathExpression = (expression: string, isBlock: boolean): string => {
       output: 'html',
     });
     mathCache.set(cacheKey, rendered);
+    clearOldCacheEntries();
     return rendered;
   } catch (error) {
     console.error('KaTeX rendering error:', error);
@@ -54,7 +67,8 @@ const processText = (text: string): string => {
   }).join('');
 };
 
-export function MathRenderer({ text }: MathRendererProps) {
+// Memoized component to prevent unnecessary re-renders
+export const MathRenderer = React.memo(function MathRenderer({ text }: MathRendererProps) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -77,4 +91,4 @@ export function MathRenderer({ text }: MathRendererProps) {
       className="math-renderer"
     />
   );
-}
+});

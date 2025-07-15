@@ -1,51 +1,63 @@
-export type Step = {
-  id: string | number;
-  title: string;
-  description: string;
-  solution: string;
-  hint?: string;
-  calculator_tip?: string;
-};
+// Core type definitions for the Focused Mastery application
 
-export type Problem = {
+export interface Example {
   id: string;
-  type: 'practice'; // Removed 'lead-example'
-  source: string;
-  skill: string;
   title: string;
-  description: string;
-  fullQuestion?: string;
-  steps: Step[];
-  idealTime?: number;
-};
-
-export type LectureContentSegment = {
-  type: 'heading' | 'subheading' | 'paragraph' | 'list' | 'numbered-list' | 'math' | 'image' | 'callout' | 'step-by-step' | 'pattern-highlight' | 'summary-box' | 'connection';
-  text?: string;
-  items?: string[];
-  imageUrl?: string;
-  alt?: string;
-  emphasis?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
-  icon?: string;
-};
-
-export type Example = {
-  id: string;
-  title:string;
-  segments: LectureContentSegment[];
-  relatedPracticeProblemIds: string[];
+  relatedPracticeProblemIds?: string[];
+  segments: Segment[];
 }
 
-export type ModuleContent = {
+export interface Problem {
   id: string;
-  name: string;
+  type?: string;
+  skill?: string;
+  source?: string;
+  title: string;
+  fullQuestion?: string;
+  description: string;
+  idealTime?: number;
+  steps: Step[];
+  relatedExampleIds?: string[];
+}
+
+export interface Step {
+  id: string;
+  title?: string;
+  explanation?: string;
+  description?: string;
+  question?: string;
+  answer?: string;
+  solution?: string;
+  hint?: string;
+  hints?: string[];
+  calculator_tip?: string;
+}
+
+export interface Segment {
+  type: 'heading' | 'paragraph' | 'math' | 'callout' | 'connection' | 'summary-box' | 'numbered-list' | 'bullet-list' | 'divider' | 'link';
+  text?: string;
+  items?: string[];
+  emphasis?: 'primary' | 'secondary' | 'accent';
+  href?: string;
+  linkText?: string;
+}
+
+export interface ModuleContent {
+  id: string;
+  name?: string; // Legacy property
+  title: string;
   description: string;
   examples: Example[];
   problems: Problem[];
 }
 
-export type Lecture = {
+export interface Lecture {
   id: string;
   title: string;
+  week: number;
+  description: string;
   modules: ModuleContent[];
-};
+}
+
+// Legacy segment type for compatibility
+export interface LectureContentSegment extends Segment {}
