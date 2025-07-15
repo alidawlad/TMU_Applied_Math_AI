@@ -89,7 +89,7 @@ export const week10SeriesExamples: Example[] = [
             
             { type: 'connection', text: 'This basically tells us to start with a number $a_1$ and get the next term by adding $d$. So, we have:' },
             
-            { type: 'math', text: '\\begin{align} a_1 \\\\ a_2 &= d + a_1 \\\\ a_3 &= d + a_2 \\\\ a_4 &= d + a_3 \\\\ &\\vdots \\end{align}' },
+            { type: 'math', text: '\\begin{align*} a_1 \\\\ a_2 &= d + a_1 \\\\ a_3 &= d + a_2 \\\\ a_4 &= d + a_3 \\\\ &\\vdots \\end{align*}' },
             
             { type: 'summary-box', text: 'If we know the first term $a_1$ and the common difference $d$, we can list a finite number of terms of the sequence.' },
             
@@ -99,7 +99,7 @@ export const week10SeriesExamples: Example[] = [
             
             { type: 'paragraph', text: '**Solution:** Using the defining property of an arithmetic sequence we have' },
             
-            { type: 'math', text: '\\begin{align} a_1 &= 5 \\\\ a_2 &= -6 + 5 = -1 \\\\ a_3 &= -6 + (-1) = -7 \\\\ a_4 &= -6 + (-7) = -13 \\\\ a_5 &= -6 + (-13) = -19 \\end{align}' },
+            { type: 'math', text: '\\begin{align*} a_1 &= 5 \\\\ a_2 &= -6 + 5 = -1 \\\\ a_3 &= -6 + (-1) = -7 \\\\ a_4 &= -6 + (-7) = -13 \\\\ a_5 &= -6 + (-13) = -19 \\end{align*}' },
             
             { type: 'pattern-highlight', text: 'So, the first five terms of this arithmetic sequence are: $5, -1, -7, -13, -19$' },
             
