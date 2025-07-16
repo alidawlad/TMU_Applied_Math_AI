@@ -72,6 +72,11 @@ export function ProblemSidebar({
   const moduleProgressData = createProgressData(moduleProgress.completed, moduleProgress.total);
   const lectureProgressData = createProgressData(lectureProgress.completed, lectureProgress.total);
   
+  // Function to check if a problem is completed (moved before usage)
+  const isProblemCompleted = (problem: Problem) => {
+    return completedProblems.includes(problem.id);
+  };
+  
   // Calculate problem completion progress
   const problemCompletionStats = practiceProblems.map(problem => {
     const isCompleted = isProblemCompleted(problem);
@@ -85,11 +90,6 @@ export function ProblemSidebar({
   });
   
   const completedProblemsCount = problemCompletionStats.filter(p => p.isCompleted).length;
-
-  // Function to check if a problem is completed
-  const isProblemCompleted = (problem: Problem) => {
-    return completedProblems.includes(problem.id);
-  };
 
   return (
     <div className={cn(

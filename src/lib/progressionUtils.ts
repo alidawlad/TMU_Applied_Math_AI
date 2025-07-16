@@ -33,15 +33,32 @@ export function calculateProgression(
   currentModuleId: string,
   currentProblemIndex: number
 ): ProgressionState {
+  // DEFENSIVE PROGRAMMING: Prevent errors that could block practice page
+  if (!lectures || !Array.isArray(lectures) || lectures.length === 0) {
+    console.warn('calculateProgression: Lectures not initialized, returning default progression');
+    return {
+      type: 'continue',
+      currentPosition: { lectureId: currentLectureId, moduleId: currentModuleId, problemIndex: currentProblemIndex }
+    };
+  }
+
   // Find current lecture, module, and problem
   const currentLecture = lectures.find(l => l.id === currentLectureId);
   if (!currentLecture) {
-    throw new Error('Current lecture not found');
+    console.warn('calculateProgression: Current lecture not found, returning default progression');
+    return {
+      type: 'continue',
+      currentPosition: { lectureId: currentLectureId, moduleId: currentModuleId, problemIndex: currentProblemIndex }
+    };
   }
 
   const currentModule = currentLecture.modules.find(m => m.id === currentModuleId);
   if (!currentModule) {
-    throw new Error('Current module not found');
+    console.warn('calculateProgression: Current module not found, returning default progression');
+    return {
+      type: 'continue',
+      currentPosition: { lectureId: currentLectureId, moduleId: currentModuleId, problemIndex: currentProblemIndex }
+    };
   }
 
   const currentPosition = { lectureId: currentLectureId, moduleId: currentModuleId, problemIndex: currentProblemIndex };
