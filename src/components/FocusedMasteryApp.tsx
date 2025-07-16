@@ -27,6 +27,7 @@ import { useServiceWorker } from "@/hooks/useServiceWorker";
 export function FocusedMasteryApp() {
   const [isClient, setIsClient] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const searchParams = useSearchParams()
   const router = useRouter();
@@ -35,9 +36,9 @@ export function FocusedMasteryApp() {
   useEffect(() => {
     setIsClient(true);
     
-    // Mobile detection and responsive handler
+    // Mobile detection and responsive handler - relaxed for tablets
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
+      setIsMobile(window.innerWidth < 768);
     };
     
     checkMobile();
@@ -200,6 +201,10 @@ export function FocusedMasteryApp() {
   const toggleDrawingMode = useCallback(() => {
     setIsDrawingModeActive(prev => !prev);
   }, []);
+  
+  const toggleDesktopSidebar = useCallback(() => {
+    setIsDesktopSidebarOpen(prev => !prev);
+  }, []);
 
   // Celebration handlers
   const handleCelebrationContinue = useCallback(() => {
@@ -358,13 +363,15 @@ export function FocusedMasteryApp() {
         moduleProgress={moduleProgress}
         isMobile={isMobile}
         onMobileSidebarToggle={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+        onDesktopSidebarToggle={toggleDesktopSidebar}
+        isDesktopSidebarOpen={isDesktopSidebarOpen}
       />
       <main className={cn(
         "flex-1 flex overflow-hidden",
         isDrawingModeActive && "pointer-events-none"
       )}>
         {/* Desktop Sidebar */}
-        {!isMobile && (
+        {!isMobile && isDesktopSidebarOpen && (
           <ProblemSidebar 
             currentLectureId={currentLectureId}
             onLectureChange={handleLectureChange}

@@ -256,12 +256,12 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
                     <p className="text-muted-foreground">
                       You've completed the example. Solidify your understanding by trying these related practice problems.
                     </p>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                       {relatedPracticeProblems.map(p => (
                         <Button 
                           key={p.id}
                           variant="outline" 
-                          className="w-full h-full text-left flex flex-col items-start p-4 justify-start hover:bg-accent"
+                          className="w-full h-auto min-h-[80px] text-left flex flex-col items-start p-4 justify-start hover:bg-accent border-2 hover:border-primary/50 transition-colors"
                           onClick={() => navigateToContent(p.id, 'problem', {
                             previousContent: {
                               type: 'example',
@@ -271,10 +271,10 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
                             }
                           })}
                         >
-                          <span className="font-semibold break-words">
+                          <span className="font-semibold break-words leading-relaxed mb-2 text-sm">
                             <MathRenderer text={p.title} />
                           </span>
-                          <span className="text-xs text-muted-foreground mt-1">{p.id}</span>
+                          <span className="text-xs text-muted-foreground mt-auto">{p.id}</span>
                         </Button>
                       ))}
                     </div>

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { DateTime } from "@/components/DateTime";
 import { Logo } from "@/components/icons";
-import { Menu, HelpCircle, Pencil, Clock, ChevronRight, Bug } from "lucide-react";
+import { Menu, HelpCircle, Pencil, Clock, ChevronRight, Bug, PanelLeftOpen, PanelLeftClose } from "lucide-react";
 import type { Lecture, Problem, ModuleContent } from "@/lib/types";
 import { Timer } from "./Timer";
 import { cn } from "@/lib/utils";
@@ -35,9 +35,11 @@ interface AppHeaderProps {
     };
     isMobile?: boolean;
     onMobileSidebarToggle?: () => void;
+    onDesktopSidebarToggle?: () => void;
+    isDesktopSidebarOpen?: boolean;
 }
 
-export function AppHeader({ lecture, problem, problemIndex, totalProblems, onToggleDrawingMode, isDrawingModeActive, module, moduleProgress, isMobile = false, onMobileSidebarToggle }: AppHeaderProps) {
+export function AppHeader({ lecture, problem, problemIndex, totalProblems, onToggleDrawingMode, isDrawingModeActive, module, moduleProgress, isMobile = false, onMobileSidebarToggle, onDesktopSidebarToggle, isDesktopSidebarOpen = true }: AppHeaderProps) {
   // Enhanced progress data
   const moduleProgressData = moduleProgress ? createProgressData(moduleProgress.completed, moduleProgress.total) : null;
   const problemProgressData = createProgressData(problemIndex + 1, totalProblems);
@@ -153,7 +155,21 @@ export function AppHeader({ lecture, problem, problemIndex, totalProblems, onTog
            "flex items-center",
            isMobile ? "gap-2" : "gap-4"
          )}>
-            {!isMobile && <Menu className="h-6 w-6" />}
+            {!isMobile && onDesktopSidebarToggle && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onDesktopSidebarToggle}
+                className="text-primary-foreground hover:bg-white/20 h-10 w-10"
+                aria-label="Toggle Sidebar"
+              >
+                {isDesktopSidebarOpen ? (
+                  <PanelLeftClose className="h-6 w-6" />
+                ) : (
+                  <PanelLeftOpen className="h-6 w-6" />
+                )}
+              </Button>
+            )}
             <div className={cn(
               isMobile ? "block" : "hidden md:block"
             )}>
