@@ -23,6 +23,9 @@ import {
 } from "@/lib/utils/progressUtils";
 import { MathInput } from "@/components/MathInput";
 import { QuestionRenderer } from "@/components/QuestionRenderer";
+import { ExampleViewer } from "@/components/ExampleViewer";
+import { BottomActionBar } from "@/components/BottomActionBar";
+import { QuestionHeader } from "@/components/QuestionHeader";
 import { checkAnswerAction, getFeedbackAction } from "@/lib/actions";
 import { AnswerReveal } from "@/components/AnswerReveal";
 import { AIStatusIndicator, CheckingModeSelector } from "@/components/AIStatusIndicator";
@@ -71,6 +74,12 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
   const [revealedAnswers, setRevealedAnswers] = useState<Record<string, boolean>>({});
   const [showModeSelector, setShowModeSelector] = useState(false);
   const [revealedDescriptions, setRevealedDescriptions] = useState<Record<string, boolean>>({});
+  
+  // New state for enhanced UI features
+  const [timeElapsed, setTimeElapsed] = useState(0);
+  const [showExamples, setShowExamples] = useState(false);
+  const [aiRequestCount, setAiRequestCount] = useState(0);
+  const [timerActive, setTimerActive] = useState(false);
   
   // Enhanced progress tracking
   const { preserveContext } = useLearningContext();
@@ -162,6 +171,43 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
       }
     }
   }, [stepStatuses, isHydrated, problem.id, problem.steps.length, updateContentProgress]);
+
+  // Calculate progress metrics
+  const correctStepsCount = useMemo(() => {
+    if (!problem?.steps || !stepStatuses) return 0;
+    return problem.steps.filter(step => {
+      const stepKey = `${problem.id}-${step.id}`;
+      return stepStatuses[stepKey] === 'correct';
+    }).length;
+  }, [problem?.id, problem?.steps, stepStatuses]);
+
+  const progress = problem?.steps?.length > 0 ? (correctStepsCount / problem.steps.length) * 100 : 0;
+
+  // Timer effect for tracking time elapsed
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (timerActive && attemptStarted) {
+      interval = setInterval(() => {
+        setTimeElapsed(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timerActive, attemptStarted]);
+
+  // Start timer when attempt starts
+  useEffect(() => {
+    if (attemptStarted && !timerActive) {
+      setTimerActive(true);
+    }
+  }, [attemptStarted, timerActive]);
+
+  // Stop timer when problem is completed
+  useEffect(() => {
+    const currentProgress = problem?.steps?.length > 0 ? (correctStepsCount / problem.steps.length) * 100 : 0;
+    if (currentProgress === 100 && timerActive) {
+      setTimerActive(false);
+    }
+  }, [correctStepsCount, problem?.steps?.length, timerActive]);
 
   const handleInputChange = (key: string, value: string) => {
     setStepInputs((prev) => ({ ...prev, [key]: value }));
@@ -262,16 +308,58 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
         });
     }
   };
-  
-  const correctStepsCount = useMemo(() => {
-    if (!problem?.steps || !stepStatuses) return 0;
-    return problem.steps.filter(step => {
-      const stepKey = `${problem.id}-${step.id}`;
-      return stepStatuses[stepKey] === 'correct';
-    }).length;
-  }, [problem?.id, problem?.steps, stepStatuses]);
 
-  const progress = problem?.steps?.length > 0 ? (correctStepsCount / problem.steps.length) * 100 : 0;
+  // New handlers for enhanced features
+  const handleAskAI = async () => {
+    // Get current step context
+    const currentStepIndex = firstIncompleteStepIndex;
+    if (currentStepIndex >= problem.steps.length) return;
+    
+    const currentStep = problem.steps[currentStepIndex];
+    const stepKey = `${problem.id}-${currentStep.id}`;
+    const userInput = stepInputs[stepKey] || "";
+    
+    setIsLoading(prev => ({ ...prev, [stepKey]: true }));
+    setAiRequestCount(prev => prev + 1);
+    
+    const previousSteps = problem.steps.slice(0, currentStepIndex).map(s => ({
+      title: s.title,
+      answer: stepInputs[`${problem.id}-${s.id}`] || "Not answered",
+    }));
+    
+    const feedbackResult = await getFeedbackAction({ 
+      problem, 
+      previousSteps, 
+      currentStep, 
+      studentInput: userInput 
+    });
+    
+    setIsLoading(prev => ({ ...prev, [stepKey]: false }));
+    
+    if (feedbackResult.error) {
+      toast({ title: "AI Error", description: feedbackResult.error, variant: "destructive" });
+    } else if (feedbackResult.feedback) {
+      setStepFeedback(prev => ({ ...prev, [stepKey]: feedbackResult.feedback as string }));
+      toast({ 
+        title: "AI Feedback", 
+        description: "I've analyzed your approach and provided feedback below.",
+        variant: "default"
+      });
+    }
+  };
+
+  const handleReset = () => {
+    setStepInputs({});
+    setStepStatuses({});
+    setStepFeedback({});
+    setStepCorrectiveFeedback({});
+    setStepHints({});
+    setRevealedAnswers({});
+    setRevealedDescriptions({});
+    setAttemptStarted(false);
+    setTimeElapsed(0);
+    setAiRequestCount(0);
+  };
   
   // Enhanced progress calculations
   const progressData = useMemo(() => {
@@ -579,68 +667,48 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
                   )}
 
                   <div className={cn(
-                    "flex justify-between items-center flex-wrap gap-2 mt-4",
+                    "flex justify-center items-center gap-2 mt-4",
                     isMobile && "flex-col space-y-2"
                   )}>
-                      <div className={cn(
-                        "flex gap-2",
-                        isMobile && "w-full justify-center"
-                      )}>
-                        <Button 
-                          variant="outline" 
-                          size={isMobile ? "default" : "sm"} 
-                          onClick={() => handleGetHint(step)} 
-                          disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
-                          className={cn(
-                            "min-h-[44px]", // Touch-friendly
-                            isMobile && "flex-1 max-w-32"
-                          )}
-                        >
-                          Get Hint
-                        </Button>
-                        
-                        {/* Mode selector for mobile */}
-                        {isMobile && (
-                          <Button
-                            variant="outline"
-                            size="default"
-                            onClick={() => setShowModeSelector(!showModeSelector)}
-                            className="min-h-[44px] flex-1 max-w-32"
-                          >
-                            Mode
-                          </Button>
-                        )}
-                      </div>
-                      <div className={cn(
-                        "flex gap-2",
-                        isMobile && "w-full"
-                      )}>
-                        <Button 
-                          variant="ghost" 
-                          size={isMobile ? "default" : "sm"} 
-                          onClick={() => handleInputChange(stepKey, '')} 
-                          disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading || answerCheckingMode === 'reveal'}
-                          className={cn(
-                            "min-h-[44px]", // Touch-friendly
-                            isMobile && "flex-1"
-                          )}
-                        >
-                          Clear
-                        </Button>
-                        <Button 
-                          onClick={() => handleCheckAnswer(step, index)} 
-                          disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
-                          size={isMobile ? "default" : "sm"}
-                          className={cn(
-                            "min-h-[44px]", // Touch-friendly
-                            isMobile && "flex-1"
-                          )}
-                        >
-                          {answerCheckingMode === 'reveal' ? 'Reveal Answer' : 
-                           answerCheckingMode === 'ai' ? 'Ask AI (Uses Token)' : 'Check Answer'}
-                        </Button>
-                      </div>
-                    </div>
+                    <Button 
+                      variant="outline" 
+                      size={isMobile ? "default" : "sm"} 
+                      onClick={() => handleGetHint(step)} 
+                      disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
+                      className={cn(
+                        "min-h-[44px]", // Touch-friendly
+                        isMobile && "flex-1 max-w-32"
+                      )}
+                    >
+                      Get Hint
+                    </Button>
+                    
+                    <Button 
+                      variant="ghost" 
+                      size={isMobile ? "default" : "sm"} 
+                      onClick={() => handleInputChange(stepKey, '')} 
+                      disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading || answerCheckingMode === 'reveal'}
+                      className={cn(
+                        "min-h-[44px]", // Touch-friendly
+                        isMobile && "flex-1 max-w-32"
+                      )}
+                    >
+                      Clear
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => handleCheckAnswer(step, index)} 
+                      disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
+                      size={isMobile ? "default" : "sm"}
+                      className={cn(
+                        "min-h-[44px]", // Touch-friendly
+                        isMobile && "flex-1"
+                      )}
+                    >
+                      {answerCheckingMode === 'reveal' ? 'Reveal Answer' : 
+                       answerCheckingMode === 'ai' ? 'Check Answer' : 'Check Answer'}
+                    </Button>
+                  </div>
                 </div>
               </div>
             );
@@ -652,86 +720,36 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
               isMobile ? "py-6" : "py-8"
             )}>
               <div className={cn(
-                isMobile ? "space-y-4" : "space-y-6"
+                "flex items-center justify-center",
+                isMobile ? "flex-col space-y-3" : "gap-4"
               )}>
-                <div className={cn(
-                  "flex items-center justify-center",
-                  isMobile ? "flex-col space-y-3" : "gap-4"
-                )}>
-                  <ProgressRing 
-                    value={progressData.completed} 
-                    max={progressData.total} 
-                    size={isMobile ? 60 : 80} 
-                    strokeWidth={isMobile ? 4 : 6}
-                    variant="success"
-                    showText={true}
-                  />
-                  <div className={cn(
-                    isMobile ? "text-center" : "text-left"
-                  )}>
-                    <h3 className={cn(
-                      "font-headline font-semibold mb-2",
-                      isMobile ? "text-lg" : "text-xl"
-                    )}>You mastered it! 🎉</h3>
-                    <p className={cn(
-                      "text-muted-foreground",
-                      isMobile ? "text-sm" : "text-base"
-                    )}>
-                      Perfect! You've completed all {progressData.total} steps correctly.
-                    </p>
-                  </div>
-                </div>
-                
-                <ProgressStats
-                  stats={[
-                    {
-                      label: "Steps Completed",
-                      value: progressData.completed,
-                      icon: <CheckCircle2 className="h-4 w-4" />,
-                      color: "text-green-600"
-                    },
-                    {
-                      label: "Accuracy",
-                      value: 100,
-                      icon: <Target className="h-4 w-4" />,
-                      color: "text-green-600"
-                    },
-                    {
-                      label: "Status",
-                      value: 1,
-                      icon: <Award className="h-4 w-4" />,
-                      color: "text-green-600"
-                    }
-                  ]}
-                  layout="horizontal"
+                <ProgressRing 
+                  value={progressData.completed} 
+                  max={progressData.total} 
+                  size={isMobile ? 60 : 80} 
+                  strokeWidth={isMobile ? 4 : 6}
+                  variant="success"
+                  showText={true}
                 />
-                
                 <div className={cn(
-                  "flex justify-center gap-3",
-                  isMobile && "flex-col items-center w-full max-w-sm mx-auto"
+                  isMobile ? "text-center" : "text-left"
                 )}>
-                   <Button 
-                     size={isMobile ? "default" : "lg"} 
-                     onClick={onNextProblem} 
-                     disabled={isProgressing}
-                     className={cn(
-                       "min-h-[44px]", // Touch-friendly
-                       isMobile && "w-full"
-                     )}
-                   >
-                     {isProgressing ? "Loading..." : "Next Problem"}
-                   </Button>
-                   <Button 
-                     size={isMobile ? "default" : "lg"} 
-                     variant="outline" 
-                     asChild
-                     className={cn(
-                       "min-h-[44px]", // Touch-friendly
-                       isMobile && "w-full"
-                     )}
-                   >
-                     <Link href="/study-plan">Back to Study Plan</Link>
-                   </Button>
+                  <h3 className={cn(
+                    "font-headline font-semibold mb-2",
+                    isMobile ? "text-lg" : "text-xl"
+                  )}>You mastered it! 🎉</h3>
+                  <p className={cn(
+                    "text-muted-foreground",
+                    isMobile ? "text-sm" : "text-base"
+                  )}>
+                    Perfect! You've completed all {progressData.total} steps correctly.
+                  </p>
+                  <p className={cn(
+                    "text-sm text-blue-600 mt-2",
+                    isMobile && "text-xs"
+                  )}>
+                    Use the Next button below to continue to the next problem.
+                  </p>
                 </div>
               </div>
             </div>
@@ -790,11 +808,49 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
   }
   
   return (
-    <div className={cn(
-      "flex-1 bg-background overflow-y-auto",
-      isMobile ? "p-4 pb-20" : "p-6 md:p-8 pb-24"
-    )}>
-      {renderPracticeProblem()}
+    <div className="flex-1 bg-background flex flex-col">
+      {/* Question Header */}
+      <QuestionHeader
+        questionNumber={1}
+        totalQuestions={5}
+        title={problem.title}
+        score={{
+          current: correctStepsCount,
+          total: problem.steps.length,
+          percentage: Math.round((correctStepsCount / problem.steps.length) * 100)
+        }}
+        timeElapsed={timeElapsed}
+        accuracy={correctStepsCount > 0 ? Math.round((correctStepsCount / problem.steps.length) * 100) : 0}
+        isMobile={isMobile}
+        onSettingsClick={() => setShowModeSelector(!showModeSelector)}
+      />
+
+      {/* Main Content */}
+      <div className={cn(
+        "flex-1 overflow-y-auto",
+        isMobile ? "p-4 pb-20" : "p-6 md:p-8 pb-24"
+      )}>
+        {renderPracticeProblem()}
+      </div>
+
+      {/* Example Viewer */}
+      <ExampleViewer
+        problem={problem}
+        isMobile={isMobile}
+      />
+
+      {/* Bottom Action Bar */}
+      <BottomActionBar
+        onNext={progress === 100 ? onNextProblem : undefined}
+        onAskAI={handleAskAI}
+        onReset={handleReset}
+        isNextDisabled={progress < 100 || isProgressing}
+        isAIDisabled={!attemptStarted || Object.values(isLoading).some(Boolean)}
+        isLoading={isProgressing}
+        isMobile={isMobile}
+        currentStep={firstIncompleteStepIndex + 1}
+        totalSteps={problem.steps.length}
+      />
     </div>
   );
 }

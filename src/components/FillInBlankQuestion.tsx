@@ -37,8 +37,8 @@ export function FillInBlankQuestion({
     <div className={cn("space-y-4", isMobile && "space-y-3")}>
       {/* Question with inline blanks */}
       <div className={cn(
-        "bg-blue-50/50 rounded-lg border border-blue-200 p-4",
-        isMobile && "p-3"
+        "bg-blue-50/50 rounded-lg border border-blue-200 p-6",
+        isMobile && "p-4"
       )}>
         <MathRendererWithBlanks
           text={questionTemplate}
@@ -46,12 +46,12 @@ export function FillInBlankQuestion({
           onBlankChange={onBlankChange}
           disabled={isDisabled}
           isMobile={isMobile}
-          containerType="auto"
+          containerType="display"
           enableOverflowScroll={true}
           instructionText={instructionText}
           className={cn(
-            "text-lg font-medium",
-            isMobile && "text-base"
+            "text-xl font-medium leading-relaxed",
+            isMobile && "text-lg"
           )}
         />
       </div>
