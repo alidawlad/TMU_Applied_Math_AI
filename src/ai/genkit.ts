@@ -58,14 +58,25 @@ function initializeGenkit() {
   
   try {
     console.log('🤖 Initializing AI with Gemini 2.0 Flash...');
+    
+    // Set the API key that Genkit expects from our custom environment variable
+    const apiKey = process.env.GOOGLE_AI_API_KEY;
+    if (apiKey) {
+      // Genkit expects GOOGLE_API_KEY, so we set it programmatically
+      process.env.GOOGLE_API_KEY = apiKey;
+    }
+    
     const aiInstance = genkit({
-      plugins: [googleAI()],
-      model: 'googleai/-2.0-flash',
+      plugins: [googleAI({
+        apiKey: apiKey // Explicitly pass the API key to avoid environment variable issues
+      })],
+      model: 'googleai/gemini-2.0-flash-exp',
     });
     console.log('✅ AI successfully initialized');
     return aiInstance;
   } catch (error) {
     console.error('❌ Failed to initialize AI:', error);
+    console.error('API Key available:', !!process.env.GOOGLE_AI_API_KEY);
     return null;
   }
 }
