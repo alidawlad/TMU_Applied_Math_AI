@@ -10,6 +10,7 @@ import { week11SimpleInterestExamples } from './week11-examples-simple-interest'
 import { week11CompoundInterestExamples } from './week11-examples-compound-interest';
 import { week11MixedProblemsExamples } from './week11-examples-mixed-problems';
 import { week11PracticeProblems } from './week11-practice';
+import { sampleEnhancedQuestions } from './sample-enhanced-questions';
 
 // Create modules by combining examples and practice problems
 const sequencesByGeneralTermModule: ModuleContent = {
@@ -135,6 +136,15 @@ const advancedFinancialProblemsModule: ModuleContent = {
     problems: week11PracticeProblems.filter(p => p.skill === 'Equivalent Payment Problems' || p.skill === 'Finding Unknown Interest Rates' || p.skill === 'Investment Doubling Time' || p.skill === 'Investment Tripling Time' || p.skill === 'Investment Growth Analysis')
 };
 
+// New enhanced questions module for demonstration
+const enhancedQuestionsModule: ModuleContent = {
+    id: 'enhanced-questions-demo',
+    name: 'Enhanced Question Types Demo',
+    description: 'Demonstration of multiple-choice, fill-in-blank, and mixed question formats.',
+    examples: [], // No examples for this demo module
+    problems: sampleEnhancedQuestions
+};
+
 // Assemble the lectures
 export const lectures: Lecture[] = [
     {
@@ -162,6 +172,7 @@ export const lectures: Lecture[] = [
             simpleInterestApplicationsModule,
             compoundInterestFundamentalsModule,
             advancedFinancialProblemsModule,
+            enhancedQuestionsModule,
         ]
     }
 ];

@@ -22,6 +22,7 @@ import {
   generateProgressInsights
 } from "@/lib/utils/progressUtils";
 import { MathInput } from "@/components/MathInput";
+import { QuestionRenderer } from "@/components/QuestionRenderer";
 import { checkAnswerAction, getFeedbackAction } from "@/lib/actions";
 import { AnswerReveal } from "@/components/AnswerReveal";
 import { AIStatusIndicator, CheckingModeSelector } from "@/components/AIStatusIndicator";
@@ -506,11 +507,13 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
                     </div>
                   </div>
 
-                  <MathInput
-                      value={stepInputs[stepKey] || ""}
-                      onChange={(value) => handleInputChange(stepKey, value)}
-                      placeholder="Enter your step here..."
-                      disabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
+                  <QuestionRenderer
+                      step={step}
+                      problem={problem}
+                      stepKey={stepKey}
+                      currentValue={stepInputs[stepKey] || ""}
+                      onInputChange={(value) => handleInputChange(stepKey, value)}
+                      isDisabled={!isStepUnlocked || currentStatus === 'correct' || isStepLoading}
                       isMobile={isMobile}
                     />
                   
