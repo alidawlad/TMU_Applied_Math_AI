@@ -82,16 +82,45 @@ const MIGRATION_KEY = 'fm-progress-migrated';
 
 // Function to check for module/lecture completion achievements
 function checkForCompletionAchievements(completedProblemId: string, allCompletedProblemIds: string[]) {
-  const contentData = lectures.flatMap(lecture => lecture.modules.flatMap(moduleItem => moduleItem.problems.map(problemItem => ({ 
-    problemId: problemItem.id, 
-    lectureId: lecture.id, 
-    moduleId: moduleItem.id,
-    lectureName: lecture.title,
-    moduleName: moduleItem.name
-  }))));
+  // Add safety guards to prevent 'Cannot access before initialization' errors
+  if (!lectures || !Array.isArray(lectures) || lectures.length === 0) {
+    console.warn('Lectures data not available for completion achievements');
+    return;
+  }
+
+  let contentData: any[] = [];
+  let completedProblem: any = null;
   
-  const completedProblem = contentData.find(c => c.problemId === completedProblemId);
-  if (!completedProblem) return;
+  try {
+    contentData = lectures.flatMap(lecture => {
+      if (!lecture || !lecture.modules || !Array.isArray(lecture.modules)) {
+        return [];
+      }
+      return lecture.modules.flatMap(moduleItem => {
+        if (!moduleItem || !moduleItem.problems || !Array.isArray(moduleItem.problems)) {
+          return [];
+        }
+        return moduleItem.problems.map(problemItem => {
+          if (!problemItem || !problemItem.id) {
+            return null;
+          }
+          return {
+            problemId: problemItem.id, 
+            lectureId: lecture.id || '',
+            moduleId: moduleItem.id || '',
+            lectureName: lecture.title || 'Untitled Lecture',
+            moduleName: moduleItem.name || 'Untitled Module'
+          };
+        }).filter(Boolean);
+      });
+    });
+    
+    completedProblem = contentData.find(c => c && c.problemId === completedProblemId);
+    if (!completedProblem) return;
+  } catch (error) {
+    console.error('Error in checkForCompletionAchievements:', error);
+    return;
+  }
   
   const { lectureId, moduleId, lectureName, moduleName } = completedProblem;
   

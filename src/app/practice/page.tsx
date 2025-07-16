@@ -1,15 +1,15 @@
 import { FocusedMasteryApp } from '@/components/FocusedMasteryApp';
-import { PageErrorBoundary } from '@/components/error-boundaries/PageErrorBoundary';
+import { PracticePageErrorBoundary } from '@/components/error-boundaries/PracticePageErrorBoundary';
 import { Suspense } from 'react';
 
 export default function PracticePage() {
   return (
-    <PageErrorBoundary pageName="Practice">
+    <PracticePageErrorBoundary>
       <main className="h-screen bg-muted/30">
           <Suspense fallback={<div>Loading...</div>}>
               <FocusedMasteryApp />
           </Suspense>
       </main>
-    </PageErrorBoundary>
+    </PracticePageErrorBoundary>
   );
 }
