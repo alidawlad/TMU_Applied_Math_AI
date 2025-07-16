@@ -5,7 +5,6 @@ import { generateProblemHint } from "@/ai/flows/generate-problem-hints";
 import { provideStepFeedback } from "@/ai/flows/provide-step-feedback";
 import { explainExampleStep } from "@/ai/flows/explain-example-step";
 import { isAIAvailable, getAIStatus, getAIConfig } from "@/ai/genkit";
-import { aiService, checkAnswerWithMode } from "@/lib/services/aiService";
 import type { Problem, Step } from "./types";
 import type { AnswerCheckingMode } from "@/lib/services/aiService";
 import { AIError, NetworkError, ValidationError, ErrorRecovery, ErrorMonitor } from "./error-handling/errorHandler";
@@ -168,10 +167,10 @@ export async function checkAnswerAction({
     };
   }
 
-  // Handle non-AI modes first
+  // Handle non-AI modes first (server-side manual checking)
   if (mode !== 'ai') {
     try {
-      const result = checkAnswerWithMode(studentAnswer, expectedAnswer, mode);
+      const result = checkAnswerManually(studentAnswer, expectedAnswer, mode);
       return {
         isEquivalent: result.isCorrect,
         feedback: result.feedback || null,
@@ -194,7 +193,7 @@ export async function checkAnswerAction({
   if (mode === 'ai' && !isAIAvailable()) {
     console.warn('AI requested but not available, falling back to manual mode');
     try {
-      const result = checkAnswerWithMode(studentAnswer, expectedAnswer, 'manual');
+      const result = checkAnswerManually(studentAnswer, expectedAnswer, 'manual');
       return {
         isEquivalent: result.isCorrect,
         feedback: result.feedback ? `${result.feedback} (AI unavailable, used manual checking)` : null,
@@ -244,7 +243,7 @@ export async function checkAnswerAction({
     
     // Try manual fallback
     try {
-      const fallbackResult = checkAnswerWithMode(studentAnswer, expectedAnswer, 'manual');
+      const fallbackResult = checkAnswerManually(studentAnswer, expectedAnswer, 'manual');
       return {
         isEquivalent: fallbackResult.isCorrect,
         feedback: fallbackResult.feedback ? `${fallbackResult.feedback} (AI failed, used manual checking)` : null,
@@ -334,13 +333,26 @@ export async function getAIStatusAction() {
     const status = getAIStatus();
     const config = getAIConfig();
     
+    // Also check environment variable directly for debugging
+    const envApiKey = process.env.GOOGLE_AI_API_KEY;
+    const envCheck = {
+      exists: !!envApiKey,
+      length: envApiKey?.length || 0,
+      preview: envApiKey ? envApiKey.substring(0, 8) + '...' : 'not set'
+    };
+    
     return {
       available: isAIAvailable(),
       status: status.status,
       message: status.message,
       configured: config.configured,
       error: config.error || null,
-      apiKeyHint: config.apiKey || null
+      apiKeyHint: config.apiKey || null,
+      debug: {
+        envCheck,
+        nodeEnv: process.env.NODE_ENV,
+        configuredCheck: config.configured
+      }
     };
   } catch (error) {
     return {
@@ -349,7 +361,89 @@ export async function getAIStatusAction() {
       message: 'Failed to check AI status',
       configured: false,
       error: error instanceof Error ? error.message : 'Unknown error',
-      apiKeyHint: null
+      apiKeyHint: null,
+      debug: {
+        envCheck: { exists: false, length: 0, preview: 'error checking' },
+        nodeEnv: process.env.NODE_ENV,
+        configuredCheck: false
+      }
     };
   }
+}
+
+// Server-side manual answer checking (isolated from client code)
+function checkAnswerManually(
+  studentAnswer: string,
+  expectedAnswer: string,
+  mode: AnswerCheckingMode
+): { isCorrect: boolean; feedback?: string; mode: AnswerCheckingMode; aiUsed: boolean; error?: string } {
+  // Handle reveal mode
+  if (mode === 'reveal') {
+    return {
+      isCorrect: true, // Always mark as correct when revealing
+      feedback: `Answer revealed: ${expectedAnswer}`,
+      mode: 'reveal',
+      aiUsed: false
+    };
+  }
+
+  // Manual comparison with advanced pattern matching
+  let student = studentAnswer.trim();
+  let expected = expectedAnswer.trim();
+
+  // Normalize for comparison
+  student = student.toLowerCase();
+  expected = expected.toLowerCase();
+
+  // Direct match
+  if (student === expected) {
+    return {
+      isCorrect: true,
+      feedback: "Correct!",
+      mode: 'manual',
+      aiUsed: false
+    };
+  }
+
+  // Advanced mathematical equivalence patterns
+  const mathEquivalencePatterns = [
+    // Remove spaces and compare
+    { 
+      student: student.replace(/\s+/g, ''), 
+      expected: expected.replace(/\s+/g, '') 
+    },
+    // Normalize multiplication symbols
+    { 
+      student: student.replace(/×/g, '*').replace(/·/g, '*'), 
+      expected: expected.replace(/×/g, '*').replace(/·/g, '*') 
+    },
+    // Normalize fractions
+    { 
+      student: student.replace(/\//g, '÷'), 
+      expected: expected.replace(/\//g, '÷') 
+    },
+    // Remove parentheses for simple cases
+    { 
+      student: student.replace(/[()]/g, ''), 
+      expected: expected.replace(/[()]/g, '') 
+    }
+  ];
+
+  for (const pattern of mathEquivalencePatterns) {
+    if (pattern.student === pattern.expected) {
+      return {
+        isCorrect: true,
+        feedback: "Mathematically correct! (Different notation but equivalent)",
+        mode: 'manual',
+        aiUsed: false
+      };
+    }
+  }
+
+  return {
+    isCorrect: false,
+    feedback: "Incorrect. The answer doesn't match the expected solution.",
+    mode: 'manual',
+    aiUsed: false
+  };
 }

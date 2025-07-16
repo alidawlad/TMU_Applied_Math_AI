@@ -60,7 +60,7 @@ function initializeGenkit() {
     console.log('🤖 Initializing AI with Gemini 2.0 Flash...');
     const aiInstance = genkit({
       plugins: [googleAI()],
-      model: 'googleai/gemini-2.0-flash',
+      model: 'googleai/-2.0-flash',
     });
     console.log('✅ AI successfully initialized');
     return aiInstance;
