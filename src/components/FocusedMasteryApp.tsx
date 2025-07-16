@@ -74,14 +74,14 @@ export function FocusedMasteryApp() {
 
   // Memoize expensive computations separately
   const allProblems = useMemo(() => 
-    lectures.flatMap(l => l.modules.flatMap(m => m.problems)), 
-    []
+    lectures.flatMap(lecture => lecture.modules.flatMap(moduleItem => moduleItem.problems)), 
+    [lectures]
   );
   
   const lectureData = useMemo(() => ({
     lectures,
     allProblems
-  }), [allProblems]);
+  }), [lectures, allProblems]);
 
   if (lectureData.allProblems.length === 0) {
     return (
@@ -130,7 +130,7 @@ export function FocusedMasteryApp() {
 
   // Memoized state change handlers to prevent unnecessary re-renders
   const handleLectureChange = useCallback((lectureId: string) => {
-    const newLecture = lectures.find(l => l.id === lectureId)!;
+    const newLecture = lectures.find(lecture => lecture.id === lectureId)!;
     const newModule = newLecture.modules[0];
     const newProblem = newModule.problems[0];
     setCurrentLectureId(lectureId);
@@ -142,11 +142,11 @@ export function FocusedMasteryApp() {
     if (isMobile) {
       setIsMobileSidebarOpen(false);
     }
-  }, [router, isMobile]);
+  }, [lectures, router, isMobile]);
 
   const handleModuleChange = useCallback((moduleId: string) => {
-    const lecture = lectures.find(l => l.id === currentLectureId)!;
-    const newModule = lecture.modules.find(m => m.id === moduleId)!;
+    const lecture = lectures.find(lectureItem => lectureItem.id === currentLectureId)!;
+    const newModule = lecture.modules.find(moduleItem => moduleItem.id === moduleId)!;
     const newProblem = newModule.problems[0];
     setCurrentModuleId(moduleId);
     setCurrentProblemIndex(0);
@@ -156,11 +156,11 @@ export function FocusedMasteryApp() {
     if (isMobile) {
       setIsMobileSidebarOpen(false);
     }
-  }, [currentLectureId, router, isMobile]);
+  }, [lectures, currentLectureId, router, isMobile]);
 
   const handleProblemChange = useCallback((problemIndex: number) => {
-    const lecture = lectures.find(l => l.id === currentLectureId)!;
-    const module = lecture.modules.find(m => m.id === currentModuleId)!;
+    const lecture = lectures.find(lectureItem => lectureItem.id === currentLectureId)!;
+    const module = lecture.modules.find(moduleItem => moduleItem.id === currentModuleId)!;
     const newProblem = module.problems[problemIndex];
     setCurrentProblemIndex(problemIndex);
     router.push(`/practice?problem=${newProblem.id}`, { scroll: false });
@@ -169,7 +169,7 @@ export function FocusedMasteryApp() {
     if (isMobile) {
       setIsMobileSidebarOpen(false);
     }
-  }, [currentLectureId, currentModuleId, router, isMobile]);
+  }, [lectures, currentLectureId, currentModuleId, router, isMobile]);
   
   const handleNextProblem = useCallback(() => {
     try {
@@ -183,8 +183,8 @@ export function FocusedMasteryApp() {
         setCurrentModuleId(moduleId);
         setCurrentProblemIndex(problemIndex);
         
-        const lecture = lectures.find(l => l.id === lectureId)!;
-        const module = lecture.modules.find(m => m.id === moduleId)!;
+        const lecture = lectures.find(lectureItem => lectureItem.id === lectureId)!;
+        const module = lecture.modules.find(moduleItem => moduleItem.id === moduleId)!;
         const problem = module.problems[problemIndex];
         router.push(`/practice?problem=${problem.id}`, { scroll: false });
       } else {
@@ -196,7 +196,7 @@ export function FocusedMasteryApp() {
     } finally {
       setIsProgressing(false);
     }
-  }, [currentLectureId, currentModuleId, currentProblemIndex, router]);
+  }, [lectures, currentLectureId, currentModuleId, currentProblemIndex, router]);
 
   const toggleDrawingMode = useCallback(() => {
     setIsDrawingModeActive(prev => !prev);
@@ -216,8 +216,8 @@ export function FocusedMasteryApp() {
         setCurrentModuleId(moduleId);
         setCurrentProblemIndex(problemIndex);
         
-        const lecture = lectures.find(l => l.id === lectureId)!;
-        const module = lecture.modules.find(m => m.id === moduleId)!;
+        const lecture = lectures.find(lectureItem => lectureItem.id === lectureId)!;
+        const module = lecture.modules.find(moduleItem => moduleItem.id === moduleId)!;
         const problem = module.problems[problemIndex];
         router.push(`/practice?problem=${problem.id}`, { scroll: false });
       }
@@ -227,7 +227,7 @@ export function FocusedMasteryApp() {
     } finally {
       setIsProgressing(false);
     }
-  }, [showCelebration, router]);
+  }, [lectures, showCelebration, router]);
 
   const handleBackToStudyPlan = useCallback(() => {
     setShowCelebration(null);
@@ -235,8 +235,8 @@ export function FocusedMasteryApp() {
   }, [router]);
 
   // Memoized derived state
-  const currentLecture = useMemo(() => lectures.find(l => l.id === currentLectureId), [currentLectureId]);
-  const currentModule = useMemo(() => currentLecture?.modules.find(m => m.id === currentModuleId), [currentLecture, currentModuleId]);
+  const currentLecture = useMemo(() => lectures.find(lecture => lecture.id === currentLectureId), [lectures, currentLectureId]);
+  const currentModule = useMemo(() => currentLecture?.modules.find(moduleItem => moduleItem.id === currentModuleId), [currentLecture, currentModuleId]);
   const currentProblem = useMemo(() => currentModule?.problems[currentProblemIndex], [currentModule, currentProblemIndex]);
   
   // Calculate module progress

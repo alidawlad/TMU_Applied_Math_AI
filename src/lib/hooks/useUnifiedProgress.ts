@@ -82,12 +82,12 @@ const MIGRATION_KEY = 'fm-progress-migrated';
 
 // Function to check for module/lecture completion achievements
 function checkForCompletionAchievements(completedProblemId: string, allCompletedProblemIds: string[]) {
-  const contentData = lectures.flatMap(l => l.modules.flatMap(m => m.problems.map(p => ({ 
-    problemId: p.id, 
-    lectureId: l.id, 
-    moduleId: m.id,
-    lectureName: l.title,
-    moduleName: m.name
+  const contentData = lectures.flatMap(lecture => lecture.modules.flatMap(moduleItem => moduleItem.problems.map(problemItem => ({ 
+    problemId: problemItem.id, 
+    lectureId: lecture.id, 
+    moduleId: moduleItem.id,
+    lectureName: lecture.title,
+    moduleName: moduleItem.name
   }))));
   
   const completedProblem = contentData.find(c => c.problemId === completedProblemId);
