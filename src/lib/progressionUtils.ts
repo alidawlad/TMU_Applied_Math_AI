@@ -192,24 +192,64 @@ export function getCurriculumProgress(
     moduleProgress: Array<{moduleId: string; completed: number; total: number; percentage: number}>
   }> 
 } {
-  const lectureProgress = lectures.map(lecture => {
-    const lectureStats = getLectureProgress(lecture.id, completedProblems);
+  // DEFENSIVE PROGRAMMING: Prevent "Cannot access 'N' before initialization" errors
+  if (!lectures || !Array.isArray(lectures) || lectures.length === 0) {
+    console.warn('getCurriculumProgress: Lectures not yet initialized, returning default progress');
     return {
-      lectureId: lecture.id,
-      ...lectureStats
+      completed: 0,
+      total: 0,
+      percentage: 0,
+      lectureProgress: []
     };
-  });
+  }
 
-  const totalProblems = lectures.reduce((sum, l) => sum + l.modules.reduce((mSum, m) => mSum + m.problems.length, 0), 0);
-  const completedCount = completedProblems.length;
-  const percentage = totalProblems > 0 ? (completedCount / totalProblems) * 100 : 0;
+  try {
+    const lectureProgress = lectures.map(lecture => {
+      if (!lecture || !lecture.id) {
+        return {
+          lectureId: '',
+          completed: 0,
+          total: 0,
+          percentage: 0,
+          moduleProgress: []
+        };
+      }
+      const lectureStats = getLectureProgress(lecture.id, completedProblems);
+      return {
+        lectureId: lecture.id,
+        ...lectureStats
+      };
+    });
 
-  return {
-    completed: completedCount,
-    total: totalProblems,
-    percentage,
-    lectureProgress
-  };
+    const totalProblems = lectures.reduce((sum, lecture) => {
+      if (!lecture || !lecture.modules || !Array.isArray(lecture.modules)) {
+        return sum;
+      }
+      return sum + lecture.modules.reduce((mSum, moduleItem) => {
+        if (!moduleItem || !moduleItem.problems || !Array.isArray(moduleItem.problems)) {
+          return mSum;
+        }
+        return mSum + moduleItem.problems.length;
+      }, 0);
+    }, 0);
+    const completedCount = completedProblems.length;
+    const percentage = totalProblems > 0 ? (completedCount / totalProblems) * 100 : 0;
+
+    return {
+      completed: completedCount,
+      total: totalProblems,
+      percentage,
+      lectureProgress
+    };
+  } catch (error) {
+    console.error('getCurriculumProgress: Error calculating progress, returning defaults:', error);
+    return {
+      completed: 0,
+      total: 0,
+      percentage: 0,
+      lectureProgress: []
+    };
+  }
 }
 
 export function getNextIncompleteContent(
