@@ -97,7 +97,9 @@ export function StudyPlanTabs({ lectures, topics, isMobile = false }: StudyPlanT
     };
 
     const overallProgress = useMemo(() => {
-        const allProblems = lectures.flatMap(l => l.modules.flatMap(m => m.problems));
+        const allProblems = lectures?.flatMap(lecture => 
+            lecture?.modules?.flatMap(moduleItem => moduleItem?.problems || []) || []
+        ) || [];
         const calculated = calculateProgress(allProblems);
         return createProgressData(calculated.completed, calculated.total);
     }, [lectures, progress, isClient]);

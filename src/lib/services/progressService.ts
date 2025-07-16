@@ -678,9 +678,10 @@ export class ProgressService {
 
         const data = JSON.parse(value);
         const match = key.match(/^fm-(stepInputs|stepStatuses)-(.+)$/);
-        if (!match) return;
+        if (!match || match.length < 3) return;
 
-        const [, type, problemId] = match;
+        const type = match[1];
+        const problemId = match[2];
         
         if (!migratedData[problemId]) {
           migratedData[problemId] = {

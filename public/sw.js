@@ -1,12 +1,10 @@
-const CACHE_NAME = 'tmu-math-mastery-v1';
+const CACHE_NAME = 'tmu-math-mastery-v2';
 const urlsToCache = [
   '/',
   '/practice',
   '/study-plan',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
-  '/manifest.json',
-  // Add other static assets you want to cache
+  '/study',
+  '/manifest.json'
 ];
 
 // Install event - cache resources

@@ -233,9 +233,10 @@ export function useUnifiedProgress() {
       
       try {
         const match = key.match(/^fm-(stepInputs|stepStatuses)-(.+)$/);
-        if (!match) return;
+        if (!match || match.length < 3) return;
         
-        const [, type, problemId] = match;
+        const type = match[1];
+        const problemId = match[2];
         const data = JSON.parse(value);
         
         if (!migratedProgress[problemId]) {

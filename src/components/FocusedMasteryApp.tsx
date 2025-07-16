@@ -49,28 +49,47 @@ export function FocusedMasteryApp() {
     };
   }, []);
 
-  const { initialLectureId, initialModuleId, initialProblemIndex } = useMemo(() => {
+  // Compute initial values safely without destructuring from useMemo
+  const initialValues = useMemo(() => {
+    // Ensure lectures array is available before processing
+    if (!lectures || lectures.length === 0) {
+      return {
+        initialLectureId: '',
+        initialModuleId: '',
+        initialProblemIndex: 0
+      };
+    }
+
     if (problemIdFromUrl) {
       for (const lecture of lectures) {
-        for (const module of lecture.modules) {
-          const problemIndex = module.problems.findIndex(p => p.id === problemIdFromUrl);
+        for (const moduleItem of lecture.modules) {
+          const problemIndex = moduleItem.problems.findIndex(problemItem => problemItem.id === problemIdFromUrl);
           if (problemIndex !== -1) {
             return {
               initialLectureId: lecture.id,
-              initialModuleId: module.id,
+              initialModuleId: moduleItem.id,
               initialProblemIndex: problemIndex
             };
           }
         }
       }
     }
+    
     // Default to the first problem of the first module of the first lecture
+    const firstLecture = lectures[0];
+    const firstModule = firstLecture?.modules[0];
+    
     return {
-      initialLectureId: lectures.length > 0 ? lectures[0].id : '',
-      initialModuleId: lectures.length > 0 && lectures[0].modules.length > 0 ? lectures[0].modules[0].id : '',
+      initialLectureId: firstLecture?.id || '',
+      initialModuleId: firstModule?.id || '',
       initialProblemIndex: 0
     };
-  }, [problemIdFromUrl]);
+  }, [lectures, problemIdFromUrl]);
+
+  // Extract values safely with fallbacks
+  const initialLectureId = initialValues.initialLectureId;
+  const initialModuleId = initialValues.initialModuleId;
+  const initialProblemIndex = initialValues.initialProblemIndex;
 
   // Memoize expensive computations separately
   const allProblems = useMemo(() => 

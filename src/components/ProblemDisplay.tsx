@@ -255,17 +255,21 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
     }
   };
   
-  const correctStepsCount = useMemo(() => problem.steps.filter(step => {
+  const correctStepsCount = useMemo(() => {
+    if (!problem?.steps || !stepStatuses) return 0;
+    return problem.steps.filter(step => {
       const stepKey = `${problem.id}-${step.id}`;
       return stepStatuses[stepKey] === 'correct';
-  }).length, [problem.id, problem.steps, stepStatuses]);
+    }).length;
+  }, [problem?.id, problem?.steps, stepStatuses]);
 
-  const progress = (correctStepsCount / problem.steps.length) * 100;
+  const progress = problem?.steps?.length > 0 ? (correctStepsCount / problem.steps.length) * 100 : 0;
   
   // Enhanced progress calculations
   const progressData = useMemo(() => {
-    return createProgressData(correctStepsCount, problem.steps.length);
-  }, [correctStepsCount, problem.steps.length]);
+    const stepCount = problem?.steps?.length || 0;
+    return createProgressData(correctStepsCount, stepCount);
+  }, [correctStepsCount, problem?.steps?.length]);
   
   const progressInsights = useMemo(() => {
     return generateProgressInsights(progressData, 85, 1); // Mock values for demo
