@@ -25,6 +25,7 @@ interface AnswerRevealProps {
   onHide?: () => void;
   className?: string;
   showHint?: boolean;
+  studentAnswer?: string;
 }
 
 export function AnswerReveal({
@@ -34,7 +35,8 @@ export function AnswerReveal({
   onReveal,
   onHide,
   className = "",
-  showHint = true
+  showHint = true,
+  studentAnswer = ""
 }: AnswerRevealProps) {
   const [showExplanation, setShowExplanation] = useState(false);
 
@@ -107,12 +109,28 @@ export function AnswerReveal({
           <CardContent className="pt-0">
             <div className="space-y-3">
               {/* Expected Answer */}
-              <div className="p-3 bg-white dark:bg-green-900 rounded-md border border-green-200 dark:border-green-700">
-                <div className="text-sm font-medium text-green-700 dark:text-green-300 mb-1">
-                  Expected Answer:
-                </div>
-                <div className="text-green-900 dark:text-green-100 font-mono">
-                  <MathRenderer text={step.solution} />
+              {/* Side-by-side comparison */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Student Answer */}
+                {studentAnswer && (
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900 rounded-md border border-blue-200 dark:border-blue-700">
+                    <div className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1">
+                      Your Answer:
+                    </div>
+                    <div className="text-blue-900 dark:text-blue-100 font-mono">
+                      <MathRenderer text={studentAnswer} />
+                    </div>
+                  </div>
+                )}
+                
+                {/* Expected Answer */}
+                <div className="p-3 bg-green-50 dark:bg-green-900 rounded-md border border-green-200 dark:border-green-700">
+                  <div className="text-sm font-medium text-green-700 dark:text-green-300 mb-1">
+                    Expected Answer:
+                  </div>
+                  <div className="text-green-900 dark:text-green-100 font-mono">
+                    <MathRenderer text={step.solution} />
+                  </div>
                 </div>
               </div>
 
@@ -124,11 +142,11 @@ export function AnswerReveal({
               )}
 
               {/* Additional Help */}
-              <div className="text-xs text-green-600 dark:text-green-400 flex items-start gap-2">
+              <div className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
                 <HelpCircle className="h-3 w-3 mt-0.5 flex-shrink-0" />
                 <span>
-                  Compare your answer with the solution above. If they match mathematically 
-                  (even with different formatting), you got it right!
+                  Compare your answer with the expected solution above. Even if the formatting is different, 
+                  they may be mathematically equivalent.
                 </span>
               </div>
             </div>

@@ -66,9 +66,10 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
   const [attemptStarted, setAttemptStarted] = useState(false);
   
   // Answer checking mode state
-  const [answerCheckingMode, setAnswerCheckingMode] = useState<AnswerCheckingMode>('ai');
+  const [answerCheckingMode, setAnswerCheckingMode] = useState<AnswerCheckingMode>('reveal');
   const [revealedAnswers, setRevealedAnswers] = useState<Record<string, boolean>>({});
   const [showModeSelector, setShowModeSelector] = useState(false);
+  const [revealedDescriptions, setRevealedDescriptions] = useState<Record<string, boolean>>({});
   
   // Enhanced progress tracking
   const { preserveContext } = useLearningContext();
@@ -207,6 +208,9 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
         if (answerCheckingMode === 'reveal') {
           setRevealedAnswers(prev => ({ ...prev, [stepKey]: true }));
         }
+        
+        // Always reveal step description after checking/revealing answer
+        setRevealedDescriptions(prev => ({ ...prev, [stepKey]: true }));
 
         if (isLastStep) {
           document.dispatchEvent(new CustomEvent('stopTimer'));
@@ -224,6 +228,9 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
         }
     } else {
       setStepStatuses((prev) => ({ ...prev, [stepKey]: "incorrect" }));
+      
+      // Do NOT reveal step description for incorrect answers to prevent solution leakage
+      // Descriptions often contain complete solutions and should only be shown after correct answers
       
       // Only get AI feedback for incorrect answers in AI/manual modes
       if (answerCheckingMode !== 'reveal') {
@@ -488,12 +495,14 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
                       )}>
                         <MathRenderer text={step.title} />
                       </h3>
-                      <p className={cn(
-                        "text-muted-foreground",
-                        isMobile ? "text-sm" : "text-base"
-                      )}>
-                        <MathRenderer text={step.description} />
-                      </p>
+                      {revealedDescriptions[stepKey] && (
+                        <p className={cn(
+                          "text-muted-foreground",
+                          isMobile ? "text-sm" : "text-base"
+                        )}>
+                          <MathRenderer text={step.description} />
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -561,6 +570,7 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
                         setRevealedAnswers(prev => ({ ...prev, [stepKey]: false }));
                         setStepStatuses(prev => ({ ...prev, [stepKey]: 'unanswered' }));
                       }}
+                      studentAnswer={stepInputs[stepKey] || ""}
                       className="mt-4"
                     />
                   )}
@@ -623,7 +633,8 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
                             isMobile && "flex-1"
                           )}
                         >
-                          {answerCheckingMode === 'reveal' ? 'Reveal Answer' : 'Check Answer'}
+                          {answerCheckingMode === 'reveal' ? 'Reveal Answer' : 
+                           answerCheckingMode === 'ai' ? 'Ask AI (Uses Token)' : 'Check Answer'}
                         </Button>
                       </div>
                     </div>
