@@ -6,6 +6,10 @@ import { week10GeometricExamples } from './week10-examples-geometric';
 import { week10GeometricSeriesExamples } from './week10-examples-geometric-series';
 import { week10InfiniteSeriesExamples } from './week10-examples-infinite-series';
 import { week10PracticeProblems } from './week10-practice';
+import { week11SimpleInterestExamples } from './week11-examples-simple-interest';
+import { week11CompoundInterestExamples } from './week11-examples-compound-interest';
+import { week11MixedProblemsExamples } from './week11-examples-mixed-problems';
+import { week11PracticeProblems } from './week11-practice';
 
 // Create modules by combining examples and practice problems
 const sequencesByGeneralTermModule: ModuleContent = {
@@ -98,7 +102,40 @@ const infiniteSeriesApplicationsModule: ModuleContent = {
     problems: week10PracticeProblems.filter(p => p.skill === 'Infinite Geometric Series' || p.skill === 'Economic Multiplier' || p.skill === 'Perpetuity Applications')
 };
 
-// Assemble the lecture
+// Week 11 Modules - Financial Mathematics
+const simpleInterestFundamentalsModule: ModuleContent = {
+    id: 'simple-interest-fundamentals',
+    name: 'Simple Interest Fundamentals',
+    description: 'Understanding interest basics, rate conversions, and simple interest calculations.',
+    examples: week11SimpleInterestExamples.filter(e => e.id === 'W11-E1' || e.id === 'W11-E2'),
+    problems: week11PracticeProblems.filter(p => p.skill === 'Interest Rate Conversion' || p.skill === 'Simple Interest Calculation')
+};
+
+const simpleInterestApplicationsModule: ModuleContent = {
+    id: 'simple-interest-applications',
+    name: 'Simple Interest Applications',
+    description: 'Solving for principal, rate, time, and future/present value with simple interest.',
+    examples: week11SimpleInterestExamples.filter(e => e.id === 'W11-E3').concat(week11CompoundInterestExamples.filter(e => e.id === 'W11-E4')),
+    problems: week11PracticeProblems.filter(p => p.skill === 'Solving for Principal' || p.skill === 'Solving for Interest Rate' || p.skill === 'Solving for Time' || p.skill === 'Future and Present Value')
+};
+
+const compoundInterestFundamentalsModule: ModuleContent = {
+    id: 'compound-interest-fundamentals',
+    name: 'Compound Interest Fundamentals',
+    description: 'Introduction to compound interest and present value calculations.',
+    examples: week11CompoundInterestExamples.filter(e => e.id === 'W11-E5' || e.id === 'W11-E6'),
+    problems: week11PracticeProblems.filter(p => p.skill === 'Compound Interest Comparison' || p.skill === 'Compound Interest Calculation' || p.skill === 'Present Value Compound Interest')
+};
+
+const advancedFinancialProblemsModule: ModuleContent = {
+    id: 'advanced-financial-problems',
+    name: 'Advanced Financial Problems',
+    description: 'Complex equivalent payments, unknown interest rates, and investment analysis.',
+    examples: week11MixedProblemsExamples.filter(e => e.id === 'W11-E7' || e.id === 'W11-E8' || e.id === 'W11-E9'),
+    problems: week11PracticeProblems.filter(p => p.skill === 'Equivalent Payment Problems' || p.skill === 'Finding Unknown Interest Rates' || p.skill === 'Investment Doubling Time' || p.skill === 'Investment Tripling Time' || p.skill === 'Investment Growth Analysis')
+};
+
+// Assemble the lectures
 export const lectures: Lecture[] = [
     {
         id: 'lecture-10',
@@ -115,6 +152,16 @@ export const lectures: Lecture[] = [
             geometricApplicationsModule,
             finiteGeometricSeriesModule,
             infiniteSeriesApplicationsModule,
+        ]
+    },
+    {
+        id: 'lecture-11',
+        title: 'Week 11: Financial Mathematics',
+        modules: [
+            simpleInterestFundamentalsModule,
+            simpleInterestApplicationsModule,
+            compoundInterestFundamentalsModule,
+            advancedFinancialProblemsModule,
         ]
     }
 ];
