@@ -8,7 +8,7 @@
  * - GenerateProblemHintOutput - The return type for the generateProblemHint function.
  */
 
-import {ai} from '@/ai/genkit';
+import {ai, isAIAvailable} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateProblemHintInputSchema = z.object({
@@ -26,10 +26,13 @@ const GenerateProblemHintOutputSchema = z.object({
 export type GenerateProblemHintOutput = z.infer<typeof GenerateProblemHintOutputSchema>;
 
 export async function generateProblemHint(input: GenerateProblemHintInput): Promise<GenerateProblemHintOutput> {
+  if (!isAIAvailable() || !ai || !generateProblemHintFlow) {
+    throw new Error('AI service is not available');
+  }
   return generateProblemHintFlow(input);
 }
 
-const prompt = ai.definePrompt({
+const prompt = ai?.definePrompt({
   name: 'generateProblemHintPrompt',
   input: {schema: GenerateProblemHintInputSchema},
   output: {schema: GenerateProblemHintOutputSchema},
@@ -44,13 +47,16 @@ Student Input: {{{studentInput}}}
 Provide a hint to guide the student towards the correct solution without giving away the answer directly. The hint should encourage critical thinking. Focus on their current step and input. Make sure not to reveal any answers.`,
 });
 
-const generateProblemHintFlow = ai.defineFlow(
+const generateProblemHintFlow = ai?.defineFlow(
   {
     name: 'generateProblemHintFlow',
     inputSchema: GenerateProblemHintInputSchema,
     outputSchema: GenerateProblemHintOutputSchema,
   },
   async input => {
+    if (!prompt) {
+      throw new Error('AI prompt not initialized');
+    }
     const {output} = await prompt(input);
     return output!;
   }

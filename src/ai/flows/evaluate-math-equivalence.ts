@@ -8,7 +8,7 @@
  * - EvaluateMathEquivalenceOutput - The return type for the evaluateMathEquivalence function.
  */
 
-import {ai} from '@/ai/genkit';
+import {ai, isAIAvailable} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const EvaluateMathEquivalenceInputSchema = z.object({
@@ -24,10 +24,13 @@ const EvaluateMathEquivalenceOutputSchema = z.object({
 export type EvaluateMathEquivalenceOutput = z.infer<typeof EvaluateMathEquivalenceOutputSchema>;
 
 export async function evaluateMathEquivalence(input: EvaluateMathEquivalenceInput): Promise<EvaluateMathEquivalenceOutput> {
+  if (!isAIAvailable() || !ai || !evaluateMathEquivalenceFlow) {
+    throw new Error('AI service is not available');
+  }
   return evaluateMathEquivalenceFlow(input);
 }
 
-const prompt = ai.definePrompt({
+const prompt = ai?.definePrompt({
   name: 'evaluateMathEquivalencePrompt',
   input: {schema: EvaluateMathEquivalenceInputSchema},
   output: {schema: EvaluateMathEquivalenceOutputSchema},
@@ -55,13 +58,16 @@ Follow these steps:
 `,
 });
 
-const evaluateMathEquivalenceFlow = ai.defineFlow(
+const evaluateMathEquivalenceFlow = ai?.defineFlow(
   {
     name: 'evaluateMathEquivalenceFlow',
     inputSchema: EvaluateMathEquivalenceInputSchema,
     outputSchema: EvaluateMathEquivalenceOutputSchema,
   },
   async input => {
+    if (!prompt) {
+      throw new Error('AI prompt not initialized');
+    }
     const {output} = await prompt(input);
     return output!;
   }

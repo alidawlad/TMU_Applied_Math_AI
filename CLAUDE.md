@@ -4,7 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is "Focused Mastery" - a NextJS application for TMU Applied Math Mastery that provides AI-powered learning for applied mathematics. The app uses Firebase Studio and features step-by-step problem solving with AI feedback and guidance.
+This is "CQMS110 - Applied Mathematics for Business" - an open source AI-powered integrated learning platform developed by Ali Houssein for Toronto Metropolitan University. This NextJS application provides AI-powered learning for applied mathematics with step-by-step problem solving, AI feedback, and guidance.
+
+### Open Source Information
+- **Repository**: https://github.com/alidawlad/TMU_Applied_Math_Mastery_AI
+- **License**: MIT License
+- **Developer**: Ali Houssein
+- **Institution**: Toronto Metropolitan University
+- **Issue Reporting**: https://github.com/alidawlad/TMU_Applied_Math_Mastery_AI/issues/new
 
 ## Development Commands
 

@@ -1,0 +1,53 @@
+{
+  "name": "TMU Applied Math Mastery AI",
+  "short_name": "Math Mastery",
+  "description": "AI-powered learning platform for applied mathematics at TMU",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F0FFFF",
+  "theme_color": "#008080",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "orientation": "portrait-primary",
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Practice Problems",
+      "short_name": "Practice",
+      "description": "Start solving math problems",
+      "url": "/practice",
+      "icons": [
+        {
+          "src": "/icons/practice-icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Study Plan",
+      "short_name": "Study",
+      "description": "View your study plan and progress",
+      "url": "/study-plan",
+      "icons": [
+        {
+          "src": "/icons/study-icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

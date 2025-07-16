@@ -13,16 +13,39 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { MathRenderer } from "./MathRenderer";
+import { ModuleCelebration, LectureCelebration, CurriculumCelebration } from "./CompletionCelebration";
+import { calculateProgression, type ProgressionState, getModuleProgress } from "@/lib/progressionUtils";
+import { useUnifiedProgress } from "@/lib/hooks/useUnifiedProgress";
+import { Menu, X } from "lucide-react";
+import { Button } from "./ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { cn } from "@/lib/utils";
+import { PWAInstallPrompt } from "./PWAInstallPrompt";
+import { useServiceWorker } from "@/hooks/useServiceWorker";
 
 
 export function FocusedMasteryApp() {
   const [isClient, setIsClient] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const searchParams = useSearchParams()
   const router = useRouter();
   const problemIdFromUrl = searchParams.get('problem');
 
   useEffect(() => {
     setIsClient(true);
+    
+    // Mobile detection and responsive handler
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
 
   const { initialLectureId, initialModuleId, initialProblemIndex } = useMemo(() => {
@@ -87,6 +110,14 @@ export function FocusedMasteryApp() {
   const [currentModuleId, setCurrentModuleId] = useState(initialModuleId);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(initialProblemIndex);
   const [isDrawingModeActive, setIsDrawingModeActive] = useState(false);
+  const [showCelebration, setShowCelebration] = useState<ProgressionState | null>(null);
+  const [isProgressing, setIsProgressing] = useState(false);
+  
+  // Progress tracking
+  const { progressData, getContentProgress } = useUnifiedProgress();
+  
+  // Service worker for PWA functionality
+  const { isSupported, isInstalled, updateAvailable } = useServiceWorker();
 
   // Effect to handle direct navigation
   useEffect(() => {
@@ -105,7 +136,12 @@ export function FocusedMasteryApp() {
     setCurrentModuleId(newModule.id);
     setCurrentProblemIndex(0);
     router.push(`/practice?problem=${newProblem.id}`, { scroll: false });
-  }, [router]);
+    
+    // Close mobile sidebar after selection
+    if (isMobile) {
+      setIsMobileSidebarOpen(false);
+    }
+  }, [router, isMobile]);
 
   const handleModuleChange = useCallback((moduleId: string) => {
     const lecture = lectures.find(l => l.id === currentLectureId)!;
@@ -114,7 +150,12 @@ export function FocusedMasteryApp() {
     setCurrentModuleId(moduleId);
     setCurrentProblemIndex(0);
     router.push(`/practice?problem=${newProblem.id}`, { scroll: false });
-  }, [currentLectureId, router]);
+    
+    // Close mobile sidebar after selection
+    if (isMobile) {
+      setIsMobileSidebarOpen(false);
+    }
+  }, [currentLectureId, router, isMobile]);
 
   const handleProblemChange = useCallback((problemIndex: number) => {
     const lecture = lectures.find(l => l.id === currentLectureId)!;
@@ -122,34 +163,94 @@ export function FocusedMasteryApp() {
     const newProblem = module.problems[problemIndex];
     setCurrentProblemIndex(problemIndex);
     router.push(`/practice?problem=${newProblem.id}`, { scroll: false });
-  }, [currentLectureId, currentModuleId, router]);
+    
+    // Close mobile sidebar after selection
+    if (isMobile) {
+      setIsMobileSidebarOpen(false);
+    }
+  }, [currentLectureId, currentModuleId, router, isMobile]);
   
   const handleNextProblem = useCallback(() => {
-    const lecture = lectures.find(l => l.id === currentLectureId)!;
-    const module = lecture.modules.find(m => m.id === currentModuleId)!;
-    
-    const nextProblemIndex = currentProblemIndex + 1;
-    if (nextProblemIndex < module.problems.length) {
-      handleProblemChange(nextProblemIndex);
-    } else {
-      // Handle case where it's the last problem of the module
-      // Maybe go to next module or show a completion message. For now, just stay.
+    try {
+      setIsProgressing(true);
+      const progression = calculateProgression(currentLectureId, currentModuleId, currentProblemIndex);
+      
+      if (progression.type === 'continue' && progression.nextPosition) {
+        // Simple case: continue to next problem
+        const { lectureId, moduleId, problemIndex } = progression.nextPosition;
+        setCurrentLectureId(lectureId);
+        setCurrentModuleId(moduleId);
+        setCurrentProblemIndex(problemIndex);
+        
+        const lecture = lectures.find(l => l.id === lectureId)!;
+        const module = lecture.modules.find(m => m.id === moduleId)!;
+        const problem = module.problems[problemIndex];
+        router.push(`/practice?problem=${problem.id}`, { scroll: false });
+      } else {
+        // Show celebration screen for module, lecture, or curriculum completion
+        setShowCelebration(progression);
+      }
+    } catch (error) {
+      console.error('Error calculating progression:', error);
+    } finally {
+      setIsProgressing(false);
     }
-  }, [currentLectureId, currentModuleId, currentProblemIndex, handleProblemChange]);
+  }, [currentLectureId, currentModuleId, currentProblemIndex, router]);
 
   const toggleDrawingMode = useCallback(() => {
     setIsDrawingModeActive(prev => !prev);
   }, []);
 
+  // Celebration handlers
+  const handleCelebrationContinue = useCallback(() => {
+    setIsProgressing(true);
+    try {
+      if (showCelebration && showCelebration.nextPosition) {
+        const { lectureId, moduleId, problemIndex } = showCelebration.nextPosition;
+        setCurrentLectureId(lectureId);
+        setCurrentModuleId(moduleId);
+        setCurrentProblemIndex(problemIndex);
+        
+        const lecture = lectures.find(l => l.id === lectureId)!;
+        const module = lecture.modules.find(m => m.id === moduleId)!;
+        const problem = module.problems[problemIndex];
+        router.push(`/practice?problem=${problem.id}`, { scroll: false });
+      }
+      setShowCelebration(null);
+    } catch (error) {
+      console.error('Error in celebration continue:', error);
+    } finally {
+      setIsProgressing(false);
+    }
+  }, [showCelebration, router]);
+
+  const handleBackToStudyPlan = useCallback(() => {
+    setShowCelebration(null);
+    router.push('/study-plan');
+  }, [router]);
+
   // Memoized derived state
   const currentLecture = useMemo(() => lectures.find(l => l.id === currentLectureId), [currentLectureId]);
   const currentModule = useMemo(() => currentLecture?.modules.find(m => m.id === currentModuleId), [currentLecture, currentModuleId]);
   const currentProblem = useMemo(() => currentModule?.problems[currentProblemIndex], [currentModule, currentProblemIndex]);
+  
+  // Calculate module progress
+  const moduleProgress = useMemo(() => {
+    if (!currentLectureId || !currentModuleId) return undefined;
+    const completedProblems = Object.keys(progressData.contentProgress).filter(
+      contentId => progressData.contentProgress[contentId].isCompleted
+    );
+    return getModuleProgress(currentLectureId, currentModuleId, completedProblems);
+  }, [currentLectureId, currentModuleId, progressData.contentProgress]);
 
   if (!isClient || !currentLecture || !currentModule || !currentProblem) {
     return (
         <div className="flex h-screen w-full bg-background">
-            <div className="w-80 flex-shrink-0 border-r bg-background/50 p-4 space-y-4">
+            {/* Mobile Loading State */}
+            <div className={cn(
+              "border-r bg-background/50 p-4 space-y-4",
+              isMobile ? "hidden" : "w-80 flex-shrink-0"
+            )}>
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-4 w-24 mt-4" />
@@ -159,7 +260,7 @@ export function FocusedMasteryApp() {
                     <Skeleton className="h-8 w-full" />
                 </div>
             </div>
-            <div className="flex-1 p-8">
+            <div className="flex-1 p-4 md:p-8">
                 <Skeleton className="h-8 w-3/4 mb-4" />
                 <Skeleton className="h-4 w-1/2 mb-8" />
                 <Skeleton className="h-48 w-full" />
@@ -167,6 +268,79 @@ export function FocusedMasteryApp() {
         </div>
     );
   }
+
+  // Show celebration if needed
+  if (showCelebration) {
+    return (
+      <div className="flex flex-col h-screen font-sans">
+        <AppHeader 
+          lecture={currentLecture}
+          problem={currentProblem}
+          problemIndex={currentProblemIndex}
+          totalProblems={currentModule.problems.length}
+          onToggleDrawingMode={toggleDrawingMode}
+          isDrawingModeActive={isDrawingModeActive}
+          module={currentModule}
+          moduleProgress={moduleProgress}
+        />
+        <main className="flex-1 flex overflow-hidden">
+          <div className="flex-1 bg-background p-6 md:p-8 overflow-y-auto">
+            {showCelebration.type === 'module_complete' && showCelebration.completedInfo && (
+              <ModuleCelebration
+                moduleName={showCelebration.completedInfo.moduleName!}
+                moduleDescription={showCelebration.completedInfo.moduleDescription!}
+                problemsCompleted={showCelebration.completedInfo.problemsCompleted!}
+                totalProblems={showCelebration.completedInfo.totalProblems!}
+                nextModuleName={showCelebration.completedInfo.nextModuleName}
+                onContinue={handleCelebrationContinue}
+                onBackToStudyPlan={handleBackToStudyPlan}
+                isProgressing={isProgressing}
+              />
+            )}
+            {showCelebration.type === 'lecture_complete' && showCelebration.completedInfo && (
+              <LectureCelebration
+                lectureTitle={showCelebration.completedInfo.lectureTitle!}
+                modulesCompleted={showCelebration.completedInfo.modulesCompleted!}
+                totalModules={showCelebration.completedInfo.totalModules!}
+                totalProblemsCompleted={showCelebration.completedInfo.totalProblemsCompleted!}
+                nextLectureTitle={showCelebration.completedInfo.nextLectureTitle}
+                onContinue={handleCelebrationContinue}
+                onBackToStudyPlan={handleBackToStudyPlan}
+              />
+            )}
+            {showCelebration.type === 'curriculum_complete' && showCelebration.completedInfo && (
+              <CurriculumCelebration
+                totalProblems={showCelebration.completedInfo.totalProblems!}
+                totalModules={showCelebration.completedInfo.totalModules!}
+                totalLectures={showCelebration.completedInfo.totalLectures!}
+                totalTimeSpent={Math.round(progressData.overallStats.totalTimeSpent / 60000)} // Convert to minutes
+                onBackToStudyPlan={handleBackToStudyPlan}
+              />
+            )}
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  const MobileSidebar = () => (
+    <Sheet open={isMobileSidebarOpen} onOpenChange={setIsMobileSidebarOpen}>
+      <SheetContent side="left" className="p-0 w-80">
+        <SheetHeader className="p-4 border-b">
+          <SheetTitle>Navigation</SheetTitle>
+        </SheetHeader>
+        <ProblemSidebar 
+          currentLectureId={currentLectureId}
+          onLectureChange={handleLectureChange}
+          currentModuleId={currentModuleId}
+          onModuleChange={handleModuleChange}
+          currentProblemIndex={currentProblemIndex}
+          onProblemChange={handleProblemChange}
+          isMobile={true}
+        />
+      </SheetContent>
+    </Sheet>
+  );
 
   return (
     <div className="flex flex-col h-screen font-sans">
@@ -180,24 +354,45 @@ export function FocusedMasteryApp() {
         totalProblems={currentModule.problems.length}
         onToggleDrawingMode={toggleDrawingMode}
         isDrawingModeActive={isDrawingModeActive}
+        module={currentModule}
+        moduleProgress={moduleProgress}
+        isMobile={isMobile}
+        onMobileSidebarToggle={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
       />
-      <main className={`flex-1 flex overflow-hidden ${isDrawingModeActive ? 'pointer-events-none' : ''}`}>
-        <ProblemSidebar 
-          currentLectureId={currentLectureId}
-          onLectureChange={handleLectureChange}
-          currentModuleId={currentModuleId}
-          onModuleChange={handleModuleChange}
-          currentProblemIndex={currentProblemIndex}
-          onProblemChange={handleProblemChange}
-        />
+      <main className={cn(
+        "flex-1 flex overflow-hidden",
+        isDrawingModeActive && "pointer-events-none"
+      )}>
+        {/* Desktop Sidebar */}
+        {!isMobile && (
+          <ProblemSidebar 
+            currentLectureId={currentLectureId}
+            onLectureChange={handleLectureChange}
+            currentModuleId={currentModuleId}
+            onModuleChange={handleModuleChange}
+            currentProblemIndex={currentProblemIndex}
+            onProblemChange={handleProblemChange}
+            isMobile={false}
+          />
+        )}
+        
+        {/* Mobile Sidebar */}
+        {isMobile && <MobileSidebar />}
+        
+        {/* Main Content */}
         <ProblemDisplay 
             key={currentProblem.id}
             lecture={currentLecture}
             module={currentModule}
             problem={currentProblem}
             onNextProblem={handleNextProblem}
+            isProgressing={isProgressing}
+            isMobile={isMobile}
           />
       </main>
+      
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt isMobile={isMobile} />
     </div>
   );
 }

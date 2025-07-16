@@ -3,6 +3,7 @@ import { lectures } from "@/lib/content";
 import type { ModuleContent, Lecture, Example } from "@/lib/types";
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
+import { PageErrorBoundary } from "@/components/error-boundaries/PageErrorBoundary";
 
 function findExampleContent(exampleId?: string | null): { module: ModuleContent, lecture: Lecture, example: Example } | null {
     if (!exampleId) {
@@ -45,8 +46,10 @@ async function StudyPageContent({ searchParams }: { searchParams: Promise<{ exam
 
 export default function StudyPage({ searchParams }: { searchParams: Promise<{ example: string }> }) {
     return (
-        <Suspense fallback={<div className="h-screen bg-muted/30 flex items-center justify-center">Loading...</div>}>
-            <StudyPageContent searchParams={searchParams} />
-        </Suspense>
+        <PageErrorBoundary pageName="Study">
+            <Suspense fallback={<div className="h-screen bg-muted/30 flex items-center justify-center">Loading...</div>}>
+                <StudyPageContent searchParams={searchParams} />
+            </Suspense>
+        </PageErrorBoundary>
     );
 }

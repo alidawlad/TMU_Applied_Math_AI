@@ -1,4 +1,4 @@
-// Firebase configuration for Focused Mastery application
+// Firebase configuration for CQMS110 - Applied Mathematics for Business
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getFirestore, connectFirestoreEmulator, type Firestore } from 'firebase/firestore';
 

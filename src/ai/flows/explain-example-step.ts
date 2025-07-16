@@ -8,7 +8,7 @@
  * - ExplainExampleStepOutput - The return type for the explainExampleStep function.
  */
 
-import { ai } from '@/ai/genkit';
+import { ai, isAIAvailable } from '@/ai/genkit';
 import { z } from 'genkit';
 
 const ExplainExampleStepInputSchema = z.object({
@@ -38,10 +38,13 @@ export type ExplainExampleStepOutput = z.infer<
 export async function explainExampleStep(
   input: ExplainExampleStepInput
 ): Promise<ExplainExampleStepOutput> {
+  if (!isAIAvailable() || !ai || !explainExampleStepFlow) {
+    throw new Error('AI service is not available');
+  }
   return explainExampleStepFlow(input);
 }
 
-const prompt = ai.definePrompt({
+const prompt = ai?.definePrompt({
   name: 'explainExampleStepPrompt',
   input: { schema: ExplainExampleStepInputSchema },
   output: { schema: ExplainExampleStepOutputSchema },
@@ -65,13 +68,16 @@ Keep your explanation concise, friendly, and focused on clarifying the user's sp
 Please provide a clear explanation to help the student understand.`,
 });
 
-const explainExampleStepFlow = ai.defineFlow(
+const explainExampleStepFlow = ai?.defineFlow(
   {
     name: 'explainExampleStepFlow',
     inputSchema: ExplainExampleStepInputSchema,
     outputSchema: ExplainExampleStepOutputSchema,
   },
   async (input) => {
+    if (!prompt) {
+      throw new Error('AI prompt not initialized');
+    }
     const { output } = await prompt(input);
     return output!;
   }

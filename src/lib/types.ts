@@ -1,4 +1,4 @@
-// Core type definitions for the Focused Mastery application
+// Core type definitions for the CQMS110 - Applied Mathematics for Business application
 
 export interface Example {
   id: string;

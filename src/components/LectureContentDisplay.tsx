@@ -12,9 +12,8 @@ import { explainExampleStepAction } from '@/lib/actions';
 import Link from 'next/link';
 import { AiPanel } from './AiPanel';
 import { FloatingContinueButton } from './FloatingContinueButton';
-import { useProgressTracking } from '@/lib/hooks/useProgressTracking';
 import { useLearningContext } from '@/lib/contexts/LearningContext';
-import { useUnifiedProgress } from '@/lib/hooks/useUnifiedProgress';
+import { useProgress } from '@/lib/hooks/useProgress';
 import { UnifiedNavigation, NavigationModeSwitch } from './UnifiedNavigation';
 
 interface LectureContentDisplayProps {
@@ -65,21 +64,24 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
   const contentRef = useRef<HTMLDivElement>(null);
   const lastRevealedRef = useRef<HTMLDivElement>(null);
   
-  const { updateExampleProgress, getExampleProgress, markExampleComplete, incrementQuestionCount } = useProgressTracking();
   const { navigateToContent, preserveContext } = useLearningContext();
-  const { updateContentProgress, getContentProgress, trackContentAccess } = useUnifiedProgress();
+  const { 
+    updateContentProgress, 
+    getContentProgress, 
+    trackContentAccess,
+    getExampleProgress,
+    updateExampleProgress,
+    markExampleComplete,
+    incrementQuestionCount
+  } = useProgress();
 
   // Track content access and load progress
   useEffect(() => {
     trackContentAccess(example.id);
     
-    // Load from both old and new progress systems
+    // Load progress from unified system
     const savedProgress = getExampleProgress(example.id);
-    const unifiedProgress = getContentProgress(example.id);
-    
-    if (unifiedProgress?.revealedStepIndex !== undefined) {
-      setRevealedStepIndex(unifiedProgress.revealedStepIndex);
-    } else if (savedProgress) {
+    if (savedProgress) {
       setRevealedStepIndex(savedProgress.revealedStepIndex);
     }
     
@@ -92,17 +94,16 @@ export function LectureContentDisplay({ lecture, module, example }: LectureConte
         lectureId: lecture.id
       }
     });
-  }, [example.id, module.id, lecture.id, getExampleProgress, getContentProgress, trackContentAccess, preserveContext]);
+  }, [example.id, module.id, lecture.id, getExampleProgress, trackContentAccess, preserveContext]);
 
   // Save progress when step index changes
   useEffect(() => {
-    // Update both old and new progress systems for now (migration period)
-    updateExampleProgress(example.id, { revealedStepIndex });
+    // Update unified progress system
     updateContentProgress(example.id, 'example', { 
       revealedStepIndex,
       timeSpent: 1000 // Add 1 second per step reveal
     });
-  }, [revealedStepIndex, example.id, updateExampleProgress, updateContentProgress]);
+  }, [revealedStepIndex, example.id, updateContentProgress]);
 
   // Auto-scroll to newly revealed content
   useEffect(() => {

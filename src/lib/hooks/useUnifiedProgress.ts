@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLearningContext } from '@/lib/contexts/LearningContext';
+import { getModuleProgress, getLectureProgress } from '@/lib/progressionUtils';
+import { lectures } from '@/lib/content';
 
 // Unified progress data structure
 export interface ContentProgress {
@@ -77,6 +79,65 @@ interface ProgressUpdate {
 
 const STORAGE_KEY = 'fm-unified-progress';
 const MIGRATION_KEY = 'fm-progress-migrated';
+
+// Function to check for module/lecture completion achievements
+function checkForCompletionAchievements(completedProblemId: string, allCompletedProblemIds: string[]) {
+  const contentData = lectures.flatMap(l => l.modules.flatMap(m => m.problems.map(p => ({ 
+    problemId: p.id, 
+    lectureId: l.id, 
+    moduleId: m.id,
+    lectureName: l.title,
+    moduleName: m.name
+  }))));
+  
+  const completedProblem = contentData.find(c => c.problemId === completedProblemId);
+  if (!completedProblem) return;
+  
+  const { lectureId, moduleId, lectureName, moduleName } = completedProblem;
+  
+  // Check if module is now complete
+  const moduleProgress = getModuleProgress(lectureId, moduleId, allCompletedProblemIds);
+  const previousModuleProgress = getModuleProgress(lectureId, moduleId, allCompletedProblemIds.filter(id => id !== completedProblemId));
+  
+  if (moduleProgress.percentage === 100 && previousModuleProgress.percentage < 100) {
+    // Module just completed
+    const achievement = {
+      type: 'module_complete',
+      moduleId,
+      moduleName,
+      lectureId,
+      lectureName,
+      timestamp: new Date().toISOString(),
+      problemsCompleted: moduleProgress.total
+    };
+    
+    // Store in session storage for potential celebration display
+    const existingAchievements = JSON.parse(sessionStorage.getItem('fm-achievements') || '[]');
+    existingAchievements.push(achievement);
+    sessionStorage.setItem('fm-achievements', JSON.stringify(existingAchievements));
+  }
+  
+  // Check if lecture is now complete
+  const lectureProgress = getLectureProgress(lectureId, allCompletedProblemIds);
+  const previousLectureProgress = getLectureProgress(lectureId, allCompletedProblemIds.filter(id => id !== completedProblemId));
+  
+  if (lectureProgress.percentage === 100 && previousLectureProgress.percentage < 100) {
+    // Lecture just completed
+    const achievement = {
+      type: 'lecture_complete',
+      lectureId,
+      lectureName,
+      timestamp: new Date().toISOString(),
+      modulesCompleted: lectureProgress.moduleProgress.length,
+      totalProblems: lectureProgress.total
+    };
+    
+    // Store in session storage for potential celebration display
+    const existingAchievements = JSON.parse(sessionStorage.getItem('fm-achievements') || '[]');
+    existingAchievements.push(achievement);
+    sessionStorage.setItem('fm-achievements', JSON.stringify(existingAchievements));
+  }
+}
 
 export function useUnifiedProgress() {
   const { session, findContentById } = useLearningContext();
@@ -308,6 +369,16 @@ export function useUnifiedProgress() {
       const allProgress = Object.values(newContentProgress);
       const completedCount = allProgress.filter(p => p.isCompleted).length;
       const totalTime = allProgress.reduce((sum, p) => sum + p.timeSpent, 0);
+      
+      // Check for module/lecture completion achievements
+      const completedProblemIds = Object.keys(newContentProgress).filter(
+        id => newContentProgress[id].isCompleted && newContentProgress[id].contentType === 'problem'
+      );
+      
+      // Store completion achievements in session storage for celebration display
+      if (updates.isCompleted && contentType === 'problem') {
+        checkForCompletionAchievements(contentId, completedProblemIds);
+      }
       
       return {
         ...prev,

@@ -1,4 +1,4 @@
-// Firebase types for Focused Mastery application
+// Firebase types for CQMS110 - Applied Mathematics for Business application
 
 export interface UserProfile {
   uid: string;

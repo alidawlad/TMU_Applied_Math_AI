@@ -93,4 +93,500 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Mobile-first optimizations */
+  html {
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    /* Prevent text size adjustment on orientation change */
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  
+  /* Touch optimizations */
+  button, 
+  input, 
+  select, 
+  textarea {
+    /* Prevent zoom on iOS */
+    font-size: 16px;
+  }
+  
+  /* Custom scrollbar for mobile */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 2px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--border) / 0.8);
+  }
+  
+  /* Math renderer CSS custom properties for responsive sizing */
+  :root {
+    /* Base font sizes for math expressions */
+    --math-font-size-base: 1rem;
+    --math-font-size-inline: 1em;
+    --math-font-size-display: 1.2em;
+    
+    /* Responsive math sizing */
+    --math-scale-mobile: 0.85;
+    --math-scale-tablet: 0.95;
+    --math-scale-desktop: 1.0;
+    
+    /* Math spacing */
+    --math-spacing-inline: 0.125rem;
+    --math-spacing-display: 1rem;
+    
+    /* Math container constraints */
+    --math-max-width: 100%;
+    --math-overflow-padding: 1rem;
+  }
+  
+  /* Mobile breakpoint adjustments */
+  @media (max-width: 640px) {
+    :root {
+      --math-font-size-base: 0.9rem;
+      --math-font-size-display: 1.1em;
+      --math-spacing-display: 0.75rem;
+    }
+  }
+  
+  /* Tablet breakpoint adjustments */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    :root {
+      --math-font-size-base: 0.95rem;
+      --math-font-size-display: 1.15em;
+      --math-spacing-display: 0.875rem;
+    }
+  }
+  
+  /* Desktop breakpoint adjustments */
+  @media (min-width: 1025px) {
+    :root {
+      --math-font-size-base: 1rem;
+      --math-font-size-display: 1.2em;
+      --math-spacing-display: 1rem;
+    }
+  }
+}
+
+@layer components {
+  /* Math renderer component styles */
+  .math-renderer {
+    line-height: 1.6;
+    font-size: var(--math-font-size-base);
+    
+    /* Ensure proper text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Inline math styling */
+  .math-renderer .katex {
+    font-size: var(--math-font-size-inline) !important;
+    margin: 0 var(--math-spacing-inline);
+    
+    /* Prevent breaking layout */
+    display: inline-block;
+    vertical-align: baseline;
+    
+    /* Handle long expressions */
+    max-width: var(--math-max-width);
+    overflow-x: auto;
+    overflow-y: hidden;
+    
+    /* Add subtle scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  
+  .math-renderer .katex::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .math-renderer .katex::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .math-renderer .katex::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 2px;
+  }
+  
+  .math-renderer .katex::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--border) / 0.8);
+  }
+  
+  /* Display math (block) styling */
+  .math-renderer .katex-display {
+    font-size: var(--math-font-size-display) !important;
+    margin: var(--math-spacing-display) 0;
+    
+    /* Center alignment */
+    text-align: center;
+    
+    /* Overflow handling for long expressions */
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    
+    /* Add padding for overflow scroll */
+    padding: 0 var(--math-overflow-padding);
+    
+    /* Box sizing */
+    box-sizing: border-box;
+    
+    /* Add subtle scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  
+  .math-renderer .katex-display::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .math-renderer .katex-display::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+    border-radius: 3px;
+  }
+  
+  .math-renderer .katex-display::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 3px;
+  }
+  
+  .math-renderer .katex-display::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--border) / 0.8);
+  }
+  
+  /* Math container for proper overflow handling */
+  .math-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .math-container-inline {
+    display: inline-block;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    vertical-align: baseline;
+    
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    
+    /* Add subtle border for scrollable content */
+    border: 1px solid transparent;
+    border-radius: calc(var(--radius) - 2px);
+    transition: border-color 0.2s ease;
+  }
+  
+  .math-container-inline:hover {
+    border-color: hsl(var(--border) / 0.5);
+  }
+  
+  .math-container-display {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    
+    /* Add subtle background for scrollable content */
+    background: hsl(var(--muted) / 0.3);
+    border-radius: var(--radius);
+    padding: 0.5rem;
+    margin: var(--math-spacing-display) 0;
+    
+    /* Transition for hover effects */
+    transition: background-color 0.2s ease;
+  }
+  
+  .math-container-display:hover {
+    background: hsl(var(--muted) / 0.5);
+  }
+  
+  /* Math fallback styling */
+  .math-fallback {
+    font-style: italic;
+    color: hsl(var(--muted-foreground));
+    border-bottom: 1px dotted hsl(var(--border));
+    cursor: help;
+    position: relative;
+    
+    /* Add subtle warning indicator */
+    background: linear-gradient(45deg, transparent 40%, hsl(var(--destructive) / 0.1) 50%, transparent 60%);
+    background-size: 8px 8px;
+    background-repeat: repeat;
+    border-radius: 2px;
+    padding: 0.125rem 0.25rem;
+    
+    /* Smooth transitions */
+    transition: all 0.2s ease;
+  }
+  
+  .math-fallback:hover {
+    color: hsl(var(--foreground));
+    background: hsl(var(--destructive) / 0.1);
+    border-color: hsl(var(--destructive) / 0.5);
+  }
+  
+  /* Error state for math expressions */
+  .math-error {
+    color: hsl(var(--destructive));
+    background: hsl(var(--destructive) / 0.1);
+    border: 1px solid hsl(var(--destructive) / 0.3);
+    border-radius: calc(var(--radius) - 2px);
+    padding: 0.25rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    
+    /* Add icon or indicator */
+    position: relative;
+  }
+  
+  .math-error::before {
+    content: "⚠";
+    margin-right: 0.5rem;
+    color: hsl(var(--destructive));
+  }
+  
+  /* Responsive adjustments for math containers */
+  @media (max-width: 640px) {
+    .math-container-display {
+      padding: 0.25rem;
+      margin: 0.5rem 0;
+    }
+    
+    .math-renderer .katex-display {
+      padding: 0 0.5rem;
+    }
+    
+    .math-fallback {
+      font-size: 0.875em;
+    }
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .math-fallback {
+      border-bottom: 2px solid hsl(var(--border));
+      background: hsl(var(--muted));
+    }
+    
+    .math-container-display {
+      border: 1px solid hsl(var(--border));
+    }
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .math-container-inline,
+    .math-container-display,
+    .math-fallback {
+      transition: none;
+    }
+    
+    .math-container-inline,
+    .math-container-display {
+      scroll-behavior: auto;
+    }
+  }
+  
+  /* Mobile-specific utility classes */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .touch-target-lg {
+    min-height: 48px;
+    min-width: 48px;
+  }
+  
+  /* Mobile-friendly tap highlights */
+  .tap-highlight {
+    -webkit-tap-highlight-color: hsl(var(--primary) / 0.1);
+    -moz-tap-highlight-color: hsl(var(--primary) / 0.1);
+  }
+  
+  /* Mobile-specific animations */
+  .mobile-bounce {
+    animation: bounce-subtle 0.6s ease-out;
+  }
+  
+  /* Mobile-specific focus styles */
+  .mobile-focus:focus {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+  
+  /* Mobile-specific button styles */
+  .mobile-button {
+    @apply touch-target rounded-lg font-medium transition-all duration-200;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .mobile-button:active {
+    transform: scale(0.98);
+  }
+  
+  /* Mobile-specific card styles */
+  .mobile-card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+  
+  /* Mobile-specific input styles */
+  .mobile-input {
+    @apply touch-target rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  
+  .mobile-input:focus {
+    @apply outline-none ring-2 ring-ring ring-offset-2;
+  }
+  
+  /* Mobile-specific spacing utilities */
+  .mobile-spacing-sm {
+    @apply space-y-3;
+  }
+  
+  .mobile-spacing-md {
+    @apply space-y-4;
+  }
+  
+  .mobile-spacing-lg {
+    @apply space-y-6;
+  }
+  
+  /* Mobile-specific grid utilities */
+  .mobile-grid-tight {
+    @apply grid gap-2;
+  }
+  
+  .mobile-grid-normal {
+    @apply grid gap-4;
+  }
+  
+  .mobile-grid-loose {
+    @apply grid gap-6;
+  }
+  
+  /* Mobile-specific overflow handling */
+  .mobile-overflow-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  
+  /* Mobile-specific responsive images */
+  .mobile-image {
+    @apply max-w-full h-auto;
+  }
+  
+  /* Mobile-specific typography */
+  .mobile-text-sm {
+    @apply text-sm leading-5;
+  }
+  
+  .mobile-text-base {
+    @apply text-base leading-6;
+  }
+  
+  .mobile-text-lg {
+    @apply text-lg leading-7;
+  }
+  
+  /* Mobile-specific animation delays for staggered effects */
+  .mobile-delay-100 {
+    animation-delay: 100ms;
+  }
+  
+  .mobile-delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .mobile-delay-300 {
+    animation-delay: 300ms;
+  }
+  
+  /* Mobile-specific breakpoint utilities */
+  @media (max-width: 640px) {
+    .mobile-hidden {
+      display: none;
+    }
+    
+    .mobile-block {
+      display: block;
+    }
+    
+    .mobile-flex {
+      display: flex;
+    }
+    
+    .mobile-grid {
+      display: grid;
+    }
+    
+    .mobile-p-2 {
+      padding: 0.5rem;
+    }
+    
+    .mobile-p-4 {
+      padding: 1rem;
+    }
+    
+    .mobile-m-2 {
+      margin: 0.5rem;
+    }
+    
+    .mobile-m-4 {
+      margin: 1rem;
+    }
+    
+    .mobile-text-center {
+      text-align: center;
+    }
+    
+    .mobile-w-full {
+      width: 100%;
+    }
+    
+    .mobile-h-screen {
+      height: 100vh;
+    }
+    
+    .mobile-flex-col {
+      flex-direction: column;
+    }
+    
+    .mobile-justify-center {
+      justify-content: center;
+    }
+    
+    .mobile-items-center {
+      align-items: center;
+    }
+  }
 }

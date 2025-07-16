@@ -21,6 +21,9 @@ import { Button } from "@/components/ui/button";
 import { StudyPlanTabs } from "@/components/StudyPlanTabs";
 import type { ModuleContent, Problem } from "@/lib/types";
 import { ArrowLeft } from "lucide-react";
+import { PageErrorBoundary } from "@/components/error-boundaries/PageErrorBoundary";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { OpenSourceFooter } from "@/components/OpenSourceFooter";
 
 export type Topic = {
   name: string;
@@ -66,29 +69,39 @@ const topics = getTopicsFromLectures();
 
 export default function StudyPlanPage() {
   return (
-    <div className="min-h-screen bg-muted/40">
-      <header className="bg-background border-b">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="h-16 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Link href="/" passHref>
-                        <Button variant="ghost" size="icon">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Button>
-                    </Link>
-                    <h1 className="text-xl font-headline font-semibold">Study Plan</h1>
-                </div>
-                <div className="flex items-center gap-4 text-sm font-medium">
-                   <span>Ali Houssein</span>
-                   <Button variant="outline" size="sm">Sign Out</Button>
-                </div>
-            </div>
-        </div>
-      </header>
+    <PageErrorBoundary pageName="StudyPlan">
+      <div className="min-h-screen bg-muted/40">
+        <header className="bg-background border-b">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="h-16 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                      <Link href="/" passHref>
+                          <Button variant="ghost" size="icon">
+                              <ArrowLeft className="h-5 w-5" />
+                          </Button>
+                      </Link>
+                      <h1 className="text-xl font-headline font-semibold">Study Plan</h1>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm font-medium">
+                     <span>Ali Houssein</span>
+                     <Button variant="outline" size="sm">Sign Out</Button>
+                  </div>
+              </div>
+          </div>
+        </header>
 
-      <main className="container mx-auto p-4 sm:p-6 lg:p-8">
-        <StudyPlanTabs lectures={lectures} topics={topics} />
-      </main>
-    </div>
+        <main className="container mx-auto p-4 sm:p-6 lg:p-8">
+          <StudyPlanTabs lectures={lectures} topics={topics} />
+        </main>
+        
+        {/* Open Source Footer */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <OpenSourceFooter variant="minimal" />
+        </div>
+        
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt />
+      </div>
+    </PageErrorBoundary>
   );
 }

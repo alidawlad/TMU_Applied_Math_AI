@@ -8,7 +8,7 @@
  * - ProvideStepFeedbackOutput - The return type for the provideStepFeedback function.
  */
 
-import {ai} from '@/ai/genkit';
+import {ai, isAIAvailable} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ProvideStepFeedbackInputSchema = z.object({
@@ -25,10 +25,13 @@ const ProvideStepFeedbackOutputSchema = z.object({
 export type ProvideStepFeedbackOutput = z.infer<typeof ProvideStepFeedbackOutputSchema>;
 
 export async function provideStepFeedback(input: ProvideStepFeedbackInput): Promise<ProvideStepFeedbackOutput> {
+  if (!isAIAvailable() || !ai || !provideStepFeedbackFlow) {
+    throw new Error('AI service is not available');
+  }
   return provideStepFeedbackFlow(input);
 }
 
-const prompt = ai.definePrompt({
+const prompt = ai?.definePrompt({
   name: 'provideStepFeedbackPrompt',
   input: {schema: ProvideStepFeedbackInputSchema},
   output: {schema: ProvideStepFeedbackOutputSchema},
@@ -47,13 +50,16 @@ const prompt = ai.definePrompt({
   Do not provide the correct answer. The feedback should be concise, encouraging, and actionable.`,
 });
 
-const provideStepFeedbackFlow = ai.defineFlow(
+const provideStepFeedbackFlow = ai?.defineFlow(
   {
     name: 'provideStepFeedbackFlow',
     inputSchema: ProvideStepFeedbackInputSchema,
     outputSchema: ProvideStepFeedbackOutputSchema,
   },
   async input => {
+    if (!prompt) {
+      throw new Error('AI prompt not initialized');
+    }
     const {output} = await prompt(input);
     return output!;
   }
