@@ -2,94 +2,113 @@ import type { Example } from '@/lib/types';
 
 export const week11MixedProblemsExamples: Example[] = [
     {
-        id: 'W11-E7',
-        title: 'Example 7: Equivalent Payment Problems',
+        id: 'W11-E21',
+        title: 'Example 21: Business Decision Making',
         relatedPracticeProblemIds: ['MP1', 'MP2', 'MP3'],
         segments: [
-            { type: 'heading', text: 'Advanced Equivalent Payment Problems' },
+            { type: 'subheading', text: 'Example 21: Business Decision Making' },
             
-            { type: 'callout', text: 'Real businesses often need to restructure multiple payments - let\'s see how!', emphasis: 'primary' },
+            { type: 'callout', text: 'Which option provides better value? Use present value analysis to make informed business decisions!', emphasis: 'primary' },
             
-            { type: 'subheading', text: 'Example 7: Multiple Payment Restructuring' },
-            { type: 'step-by-step', text: 'A construction company has scheduled debt payments of $750 due 7 months ago, $600 due 2 months ago, and $900 due in 5 months. They want to replace these with two equal payments: one due now and one due 3 months from now. Find the payment amount if interest is 9% compounded monthly.' },
+            { type: 'step-by-step', text: 'A man can buy a piece of land for $400,000 cash now, or by payments of $230,000 down and $200,000 in 5 years. If he can earn 4% interest compounded semi-annually, which plan is better?' },
             
-            { type: 'paragraph', text: 'Let\'s use **now** as our focal date and call the equal replacement payments $x$.' },
+            { type: 'paragraph', text: 'To compare the two plans fairly, we need to calculate their present values and choose the smaller amount.' },
             
-            { type: 'paragraph', text: 'Given: $r = 9\\% = 0.09$, $m = 12$ (monthly), so $i = \\frac{0.09}{12} = 0.0075$' },
+            { type: 'paragraph', text: 'Given: $r = 4\\% = 0.04$, $m = 2$ (semi-annually), so $i = \\frac{0.04}{2} = 0.02$, and $n = 2 \\times 5 = 10$ periods' },
             
-            { type: 'summary-box', text: 'Step 1: Calculate equivalent values of original payments at focal date (now)' },
+            { type: 'summary-box', text: 'Plan 1: Full Cash Payment Now' },
+            { type: 'paragraph', text: 'Present value of Plan 1: $P_1 = \\$400,000$' },
             
-            { type: 'paragraph', text: 'For the $750 payment due 7 months ago (use future value):' },
-            { type: 'math', text: 'E_1 = 750(1 + 0.0075)^7 = 750(1.0540) = \\$790.50' },
+            { type: 'summary-box', text: 'Plan 2: Down Payment Plus Future Payment' },
+            { type: 'paragraph', text: 'The down payment of $230,000 is already at present value.' },
+            { type: 'paragraph', text: 'For the $200,000 payment in 5 years, we need to discount it to present value:' },
+            { type: 'math', text: 'PV = \\frac{200,000}{(1 + 0.02)^{10}} = \\frac{200,000}{(1.02)^{10}}' },
             
-            { type: 'paragraph', text: 'For the $600 payment due 2 months ago (use future value):' },
-            { type: 'math', text: 'E_2 = 600(1 + 0.0075)^2 = 600(1.0150) = \\$609.00' },
+            { type: 'paragraph', text: 'Calculate $(1.02)^{10}$:' },
+            { type: 'math', text: '(1.02)^{10} = 1.218994' },
             
-            { type: 'paragraph', text: 'For the $900 payment due in 5 months (use present value):' },
-            { type: 'math', text: 'E_3 = \\frac{900}{(1 + 0.0075)^5} = \\frac{900}{1.0378} = \\$867.27' },
+            { type: 'paragraph', text: 'Therefore:' },
+            { type: 'math', text: 'PV = \\frac{200,000}{1.218994} = \\$164,069.66' },
             
-            { type: 'summary-box', text: 'Step 2: Calculate equivalent values of replacement payments' },
+            { type: 'paragraph', text: 'Total present value of Plan 2:' },
+            { type: 'math', text: 'P_2 = 230,000 + 164,069.66 = \\$394,069.66' },
             
-            { type: 'paragraph', text: 'First payment: $x$ due now = $x$' },
-            { type: 'paragraph', text: 'Second payment: $x$ due in 3 months = $\\frac{x}{(1.0075)^3} = \\frac{x}{1.0226} = 0.9779x$' },
+            { type: 'connection', text: 'Comparison of Plans:' },
+            { type: 'list', items: [
+                'Plan 1: $400,000 present value',
+                'Plan 2: $394,069.66 present value'
+            ]},
             
-            { type: 'summary-box', text: 'Step 3: Set up equation (total original = total replacement)' },
-            { type: 'math', text: '790.50 + 609.00 + 867.27 = x + 0.9779x' },
-            { type: 'math', text: '2266.77 = 1.9779x' },
-            { type: 'math', text: 'x = \\frac{2266.77}{1.9779} = \\$1146.00' },
+            { type: 'pattern-highlight', text: 'Plan 2 is better by saving $400,000 - $394,069.66 = $5,930.34' },
             
-            { type: 'pattern-highlight', text: 'Each equal payment should be $1,146.00' },
+            { type: 'summary-box', text: 'Business Decision: Choose Plan 2 - the payment plan with $230,000 down and $200,000 in 5 years provides better value.' },
             
-            { type: 'connection', text: 'This allows the company to restructure their debt payments in a way that\'s financially equivalent!' },
+            { type: 'callout', text: 'Key insight: When comparing payment options, always convert to present value using your opportunity cost of capital!', emphasis: 'success' }
         ]
     },
     {
-        id: 'W11-E8',
-        title: 'Example 8: Finding Unknown Interest Rates',
+        id: 'W11-E22',
+        title: 'Example 22: Computing Interest Rate for Equivalent Payments',
         relatedPracticeProblemIds: ['MP4', 'MP5', 'MP6'],
         segments: [
-            { type: 'subheading', text: 'Example 8: Solving for Unknown Interest Rates' },
+            { type: 'subheading', text: 'Example 22: Computing Interest Rate for Equivalent Payments' },
             
-            { type: 'callout', text: 'Sometimes we need to find what rate of return we\'re actually getting!', emphasis: 'primary' },
+            { type: 'callout', text: 'Find the interest rate that makes a series of payments equivalent to a final balance!', emphasis: 'primary' },
             
-            { type: 'step-by-step', text: 'A tech startup invests $5,000 today, $3,000 in one year, and $2,000 in two years. These investments will be settled by a single payment of $11,000 in three years. What annual interest rate (compounded annually) makes this arrangement fair?' },
+            { type: 'step-by-step', text: 'Caitlin opens a saving account with a deposit of $5000. She deposits $3000 a year later and $2000 a year after that. The account grows by interest rate $r$ compounded yearly. Just after Caitlin\'s $2000 deposit, her balance is $11,000. Find the annual rate of interest $r$.' },
             
-            { type: 'paragraph', text: 'Let\'s use **three years from now** as our focal date and call the unknown rate $r$.' },
+            { type: 'paragraph', text: 'We need to arrange the payments on a time diagram and find the focal date. Since the most logical focal date is 2 years from now (when the final balance is known), we use the future value formula.' },
             
-            { type: 'summary-box', text: 'Step 1: Express all payments at the focal date' },
+            { type: 'paragraph', text: 'Given: $m = 1$ (annual compounding), $t = 2$ years' },
             
-            { type: 'paragraph', text: 'Investment of $5,000 today (grows for 3 years):' },
-            { type: 'math', text: 'FV_1 = 5000(1 + r)^3' },
+            { type: 'summary-box', text: 'Setting up the timeline:' },
+            { type: 'list', items: [
+                'Year 0: $5000 deposit',
+                'Year 1: $3000 deposit', 
+                'Year 2: $2000 deposit + final balance = $11,000'
+            ]},
             
-            { type: 'paragraph', text: 'Investment of $3,000 in 1 year (grows for 2 years):' },
-            { type: 'math', text: 'FV_2 = 3000(1 + r)^2' },
+            { type: 'summary-box', text: 'Step 1: Express future values at the focal date (2 years)' },
             
-            { type: 'paragraph', text: 'Investment of $2,000 in 2 years (grows for 1 year):' },
-            { type: 'math', text: 'FV_3 = 2000(1 + r)^1' },
+            { type: 'paragraph', text: 'We are given $PV = \\$5000.00$, $m = 1$, and $t = 2$. Hence $n = (1)(2) = 2$. Using formula (6) we have:' },
+            { type: 'math', text: 'FV = 5000(1 + r)^2' },
             
-            { type: 'paragraph', text: 'The settlement payment is $11,000 at the focal date.' },
+            { type: 'paragraph', text: 'So, the equivalent value of the $5000 at the focal date is $5000(1 + r)^2$.' },
             
-            { type: 'summary-box', text: 'Step 2: Set up equation' },
-            { type: 'math', text: '5000(1 + r)^3 + 3000(1 + r)^2 + 2000(1 + r) = 11000' },
+            { type: 'paragraph', text: 'For the $3000 deposit made 1 year before the focal date:' },
+            { type: 'math', text: 'FV = 3000(1 + r)^1 = 3000(1 + r)' },
             
-            { type: 'paragraph', text: 'Let $x = 1 + r$, then:' },
-            { type: 'math', text: '5000x^3 + 3000x^2 + 2000x = 11000' },
-            { type: 'math', text: '5x^3 + 3x^2 + 2x - 11 = 0' },
+            { type: 'paragraph', text: 'The $2000 deposit is made exactly at the focal date, so its value is $2000.' },
             
-            { type: 'summary-box', text: 'Step 3: Solve the cubic equation' },
-            { type: 'paragraph', text: 'Using the quadratic formula or numerical methods, we find:' },
-            { type: 'math', text: 'x = 1.074727' },
+            { type: 'summary-box', text: 'Step 2: Set up the equation of equivalent values' },
+            { type: 'paragraph', text: 'Total future value of all deposits = Final account balance' },
+            { type: 'math', text: '5000(1 + r)^2 + 3000(1 + r) + 2000 = 11000' },
             
-            { type: 'paragraph', text: 'Therefore: $r = x - 1 = 0.074727 \\approx 7.47\\%$' },
+            { type: 'paragraph', text: 'Rearranging:' },
+            { type: 'math', text: '5000(1 + r)^2 + 3000(1 + r) = 9000' },
             
-            { type: 'connection', text: 'The startup is effectively earning about 7.47% annually on their investments!' },
+            { type: 'paragraph', text: 'Let $x = 1 + r$:' },
+            { type: 'math', text: '5000x^2 + 3000x = 9000' },
+            { type: 'math', text: '5x^2 + 3x - 9 = 0' },
             
-            { type: 'pattern-highlight', text: 'This type of analysis helps evaluate whether investment opportunities are worthwhile.' },
+            { type: 'summary-box', text: 'Step 3: Solve the quadratic equation' },
+            { type: 'paragraph', text: 'Using the quadratic formula: $x = \\frac{-3 \\pm \\sqrt{9 + 180}}{10} = \\frac{-3 \\pm \\sqrt{189}}{10}$' },
+            
+            { type: 'paragraph', text: 'Since $x = 1 + r$ must be positive, we take the positive root:' },
+            { type: 'math', text: 'x = \\frac{-3 + \\sqrt{189}}{10} = \\frac{-3 + 13.75}{10} = 1.075' },
+            
+            { type: 'paragraph', text: 'Therefore: $r = x - 1 = 0.075 = 7.5\\%$' },
+            
+            { type: 'connection', text: 'Verification: $5000(1.075)^2 + 3000(1.075) + 2000 = 5000(1.1556) + 3225 + 2000 = 5778 + 3225 + 2000 = 11,003 \\approx 11,000$ ✓' },
+            
+            { type: 'pattern-highlight', text: 'The annual interest rate is 7.5%' },
+            
+            { type: 'callout', text: 'This technique helps determine the effective return rate on investment accounts with multiple deposits!', emphasis: 'success' }
         ]
     },
     {
-        id: 'W11-E9',
-        title: 'Example 9: Investment Doubling and Tripling Time',
+        id: 'W11-E23',
+        title: 'Example 23: Investment Doubling and Tripling Time',
         relatedPracticeProblemIds: ['MP7', 'MP8', 'MP9'],
         segments: [
             { type: 'subheading', text: 'Example 9: How Long to Double or Triple an Investment' },

@@ -108,31 +108,55 @@ const simpleInterestFundamentalsModule: ModuleContent = {
     id: 'simple-interest-fundamentals',
     name: 'Simple Interest Fundamentals',
     description: 'Understanding interest basics, rate conversions, and simple interest calculations.',
-    examples: week11SimpleInterestExamples.filter(e => e.id === 'W11-E1' || e.id === 'W11-E2'),
+    examples: week11SimpleInterestExamples.filter(e => e.id === 'W11-E1' || e.id === 'W11-E2' || e.id === 'W11-E3'),
     problems: week11PracticeProblems.filter(p => p.skill === 'Interest Rate Conversion' || p.skill === 'Simple Interest Calculation')
 };
 
 const simpleInterestApplicationsModule: ModuleContent = {
     id: 'simple-interest-applications',
     name: 'Simple Interest Applications',
-    description: 'Solving for principal, rate, time, and future/present value with simple interest.',
-    examples: week11SimpleInterestExamples.filter(e => e.id === 'W11-E3').concat(week11CompoundInterestExamples.filter(e => e.id === 'W11-E4')),
+    description: 'Solving for principal, rate, time, and advanced simple interest problems.',
+    examples: week11SimpleInterestExamples.filter(e => e.id === 'W11-E4' || e.id === 'W11-E5' || e.id === 'W11-E6' || e.id === 'W11-E7'),
     problems: week11PracticeProblems.filter(p => p.skill === 'Solving for Principal' || p.skill === 'Solving for Interest Rate' || p.skill === 'Solving for Time' || p.skill === 'Future and Present Value')
+};
+
+const simpleInterestAdvancedModule: ModuleContent = {
+    id: 'simple-interest-advanced',
+    name: 'Advanced Simple Interest',
+    description: 'Complex simple interest scenarios including business applications and comparison problems.',
+    examples: week11SimpleInterestExamples.filter(e => e.id === 'W11-E8' || e.id === 'W11-E9' || e.id === 'W11-E10' || e.id === 'W11-E11'),
+    problems: week11PracticeProblems.filter(p => p.skill === 'Complex Business Applications' || p.skill === 'Portfolio Interest Analysis' || p.skill === 'Strategic Financial Analysis')
 };
 
 const compoundInterestFundamentalsModule: ModuleContent = {
     id: 'compound-interest-fundamentals',
     name: 'Compound Interest Fundamentals',
-    description: 'Introduction to compound interest and present value calculations.',
-    examples: week11CompoundInterestExamples.filter(e => e.id === 'W11-E5' || e.id === 'W11-E6'),
-    problems: week11PracticeProblems.filter(p => p.skill === 'Compound Interest Comparison' || p.skill === 'Compound Interest Calculation' || p.skill === 'Present Value Compound Interest')
+    description: 'Introduction to compound interest, present value, and compounding frequency comparison.',
+    examples: week11CompoundInterestExamples.filter(e => e.id === 'W11-E12' || e.id === 'W11-E13' || e.id === 'W11-E14'),
+    problems: week11PracticeProblems.filter(p => p.skill === 'Compound Interest Comparison' || p.skill === 'Compound Interest Calculation' || p.skill === 'Present Value Compound Interest' || p.skill === 'Compound Interest Frequency Comparison')
 };
 
-const advancedFinancialProblemsModule: ModuleContent = {
-    id: 'advanced-financial-problems',
-    name: 'Advanced Financial Problems',
-    description: 'Complex equivalent payments, unknown interest rates, and investment analysis.',
-    examples: week11MixedProblemsExamples.filter(e => e.id === 'W11-E7' || e.id === 'W11-E8' || e.id === 'W11-E9'),
+const compoundInterestApplicationsModule: ModuleContent = {
+    id: 'compound-interest-applications',
+    name: 'Compound Interest Applications',
+    description: 'Effective annual rates, solving for time and rate in compound interest problems.',
+    examples: week11CompoundInterestExamples.filter(e => e.id === 'W11-E15' || e.id === 'W11-E16' || e.id === 'W11-E17'),
+    problems: week11PracticeProblems.filter(p => p.skill === 'Effective Annual Rate Analysis' || p.skill === 'Solving for Time Period' || p.skill === 'Solving for Interest Rate')
+};
+
+const advancedFinancialApplicationsModule: ModuleContent = {
+    id: 'advanced-financial-applications',
+    name: 'Advanced Financial Applications',
+    description: 'Complex business scenarios, investment analysis, and multi-component financial planning.',
+    examples: week11CompoundInterestExamples.filter(e => e.id === 'W11-E18' || e.id === 'W11-E19' || e.id === 'W11-E20'),
+    problems: week11PracticeProblems.filter(p => p.skill === 'Complex Project Financing' || p.skill === 'Investment Growth Analysis' || p.skill === 'Advanced Multi-Component Analysis')
+};
+
+const mixedFinancialProblemsModule: ModuleContent = {
+    id: 'mixed-financial-problems',
+    name: 'Mixed Financial Problems',
+    description: 'Complex equivalent payments, unknown interest rates, and specialized financial scenarios.',
+    examples: week11MixedProblemsExamples.filter(e => e.id === 'W11-E21' || e.id === 'W11-E22' || e.id === 'W11-E23'),
     problems: week11PracticeProblems.filter(p => p.skill === 'Equivalent Payment Problems' || p.skill === 'Finding Unknown Interest Rates' || p.skill === 'Investment Doubling Time' || p.skill === 'Investment Tripling Time' || p.skill === 'Investment Growth Analysis')
 };
 
@@ -170,8 +194,11 @@ export const lectures: Lecture[] = [
         modules: [
             simpleInterestFundamentalsModule,
             simpleInterestApplicationsModule,
+            simpleInterestAdvancedModule,
             compoundInterestFundamentalsModule,
-            advancedFinancialProblemsModule,
+            compoundInterestApplicationsModule,
+            advancedFinancialApplicationsModule,
+            mixedFinancialProblemsModule,
             enhancedQuestionsModule,
         ]
     }
