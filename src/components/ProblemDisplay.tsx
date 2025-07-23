@@ -25,7 +25,6 @@ import { MathInput } from "@/components/MathInput";
 import { QuestionRenderer } from "@/components/QuestionRenderer";
 import { ExampleViewer } from "@/components/ExampleViewer";
 import { BottomActionBar } from "@/components/BottomActionBar";
-import { QuestionHeader } from "@/components/QuestionHeader";
 import { checkAnswerAction, getFeedbackAction } from "@/lib/actions";
 import { AnswerReveal } from "@/components/AnswerReveal";
 import { AIStatusIndicator, CheckingModeSelector } from "@/components/AIStatusIndicator";
@@ -42,7 +41,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { useLearningContext } from '@/lib/contexts/LearningContext';
 import { useProgress } from '@/lib/hooks/useProgress';
-import { UnifiedNavigation, NavigationModeSwitch } from './UnifiedNavigation';
 import { AIErrorBoundary } from '@/components/error-boundaries/AIErrorBoundary';
 import { cn } from "@/lib/utils";
 
@@ -55,9 +53,13 @@ interface ProblemDisplayProps {
   onNextProblem: () => void;
   isProgressing?: boolean;
   isMobile?: boolean;
+  timeElapsed: number;
+  setTimeElapsed: (value: number) => void;
+  isTimerActive: boolean;
+  setIsTimerActive: (value: boolean) => void;
 }
 
-export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProgressing = false, isMobile = false }: ProblemDisplayProps) {
+export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProgressing = false, isMobile = false, timeElapsed, setTimeElapsed, isTimerActive, setIsTimerActive }: ProblemDisplayProps) {
   const { toast } = useToast();
 
   const [stepInputs, setStepInputs] = useState<Record<string, string>>({});
@@ -76,10 +78,8 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
   const [revealedDescriptions, setRevealedDescriptions] = useState<Record<string, boolean>>({});
   
   // New state for enhanced UI features
-  const [timeElapsed, setTimeElapsed] = useState(0);
   const [showExamples, setShowExamples] = useState(false);
   const [aiRequestCount, setAiRequestCount] = useState(0);
-  const [timerActive, setTimerActive] = useState(false);
   
   // Enhanced progress tracking
   const { preserveContext } = useLearningContext();
@@ -186,28 +186,28 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
   // Timer effect for tracking time elapsed
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (timerActive && attemptStarted) {
+    if (isTimerActive && attemptStarted) {
       interval = setInterval(() => {
-        setTimeElapsed(prev => prev + 1);
+        setTimeElapsed(timeElapsed + 1);
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [timerActive, attemptStarted]);
+  }, [isTimerActive, attemptStarted, timeElapsed, setTimeElapsed]);
 
   // Start timer when attempt starts
   useEffect(() => {
-    if (attemptStarted && !timerActive) {
-      setTimerActive(true);
+    if (attemptStarted && !isTimerActive) {
+      setIsTimerActive(true);
     }
-  }, [attemptStarted, timerActive]);
+  }, [attemptStarted, isTimerActive, setIsTimerActive]);
 
   // Stop timer when problem is completed
   useEffect(() => {
     const currentProgress = problem?.steps?.length > 0 ? (correctStepsCount / problem.steps.length) * 100 : 0;
-    if (currentProgress === 100 && timerActive) {
-      setTimerActive(false);
+    if (currentProgress === 100 && isTimerActive) {
+      setIsTimerActive(false);
     }
-  }, [correctStepsCount, problem?.steps?.length, timerActive]);
+  }, [correctStepsCount, problem?.steps?.length, isTimerActive, setIsTimerActive]);
 
   const handleInputChange = (key: string, value: string) => {
     setStepInputs((prev) => ({ ...prev, [key]: value }));
@@ -215,6 +215,8 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
 
   const handleStartAttempt = () => {
     setAttemptStarted(true);
+    setTimeElapsed(0);
+    setIsTimerActive(true);
     document.dispatchEvent(new CustomEvent('startTimer'));
   };
 
@@ -358,6 +360,7 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
     setRevealedDescriptions({});
     setAttemptStarted(false);
     setTimeElapsed(0);
+    setIsTimerActive(false);
     setAiRequestCount(0);
   };
   
@@ -809,21 +812,6 @@ export function ProblemDisplay({ lecture, module, problem, onNextProblem, isProg
   
   return (
     <div className="flex-1 bg-background flex flex-col">
-      {/* Question Header */}
-      <QuestionHeader
-        questionNumber={1}
-        totalQuestions={5}
-        title={problem.title}
-        score={{
-          current: correctStepsCount,
-          total: problem.steps.length,
-          percentage: Math.round((correctStepsCount / problem.steps.length) * 100)
-        }}
-        timeElapsed={timeElapsed}
-        accuracy={correctStepsCount > 0 ? Math.round((correctStepsCount / problem.steps.length) * 100) : 0}
-        isMobile={isMobile}
-        onSettingsClick={() => setShowModeSelector(!showModeSelector)}
-      />
 
       {/* Main Content */}
       <div className={cn(

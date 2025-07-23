@@ -13,9 +13,6 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { MathRenderer } from "./MathRenderer";
-import { ModuleCelebration, LectureCelebration, CurriculumCelebration } from "./CompletionCelebration";
-import { calculateProgression, type ProgressionState, getModuleProgress } from "@/lib/progressionUtils";
-import { useUnifiedProgress } from "@/lib/hooks/useUnifiedProgress";
 import { Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
@@ -130,11 +127,12 @@ export function FocusedMasteryApp() {
   const [currentModuleId, setCurrentModuleId] = useState(initialModuleId);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(initialProblemIndex);
   const [isDrawingModeActive, setIsDrawingModeActive] = useState(false);
-  const [showCelebration, setShowCelebration] = useState<ProgressionState | null>(null);
   const [isProgressing, setIsProgressing] = useState(false);
   
-  // Progress tracking
-  const { progressData, getContentProgress } = useUnifiedProgress();
+  // Timer state (lifted from ProblemDisplay)
+  const [timeElapsed, setTimeElapsed] = useState(0);
+  const [isTimerActive, setIsTimerActive] = useState(false);
+  
   
   // Service worker for PWA functionality
   const { isSupported, isInstalled, updateAvailable } = useServiceWorker();
@@ -145,6 +143,12 @@ export function FocusedMasteryApp() {
     setCurrentModuleId(initialModuleId);
     setCurrentProblemIndex(initialProblemIndex);
   }, [initialLectureId, initialModuleId, initialProblemIndex]);
+
+  // Reset timer when problem changes
+  useEffect(() => {
+    setTimeElapsed(0);
+    setIsTimerActive(false);
+  }, [currentProblemIndex, currentModuleId, currentLectureId]);
 
 
   // Memoized state change handlers to prevent unnecessary re-renders
@@ -191,29 +195,22 @@ export function FocusedMasteryApp() {
   }, [lectures, currentLectureId, currentModuleId, router, isMobile]);
   
   const handleNextProblem = useCallback(() => {
-    try {
-      setIsProgressing(true);
-      const progression = calculateProgression(currentLectureId, currentModuleId, currentProblemIndex);
-      
-      if (progression.type === 'continue' && progression.nextPosition) {
-        // Simple case: continue to next problem
-        const { lectureId, moduleId, problemIndex } = progression.nextPosition;
-        setCurrentLectureId(lectureId);
-        setCurrentModuleId(moduleId);
-        setCurrentProblemIndex(problemIndex);
-        
-        const lecture = lectures.find(lectureItem => lectureItem.id === lectureId)!;
-        const module = lecture.modules.find(moduleItem => moduleItem.id === moduleId)!;
-        const problem = module.problems[problemIndex];
-        router.push(`/practice?problem=${problem.id}`, { scroll: false });
-      } else {
-        // Show celebration screen for module, lecture, or curriculum completion
-        setShowCelebration(progression);
-      }
-    } catch (error) {
-      console.error('Error calculating progression:', error);
-    } finally {
-      setIsProgressing(false);
+    const currentLecture = lectures.find(l => l.id === currentLectureId);
+    const currentModule = currentLecture?.modules.find(m => m.id === currentModuleId);
+    
+    if (!currentModule) return;
+    
+    // Simple logic: go to next problem in current module
+    const nextProblemIndex = currentProblemIndex + 1;
+    
+    if (nextProblemIndex < currentModule.problems.length) {
+      // Next problem in same module
+      setCurrentProblemIndex(nextProblemIndex);
+      const nextProblem = currentModule.problems[nextProblemIndex];
+      router.push(`/practice?problem=${nextProblem.id}`, { scroll: false });
+    } else {
+      // End of module - could implement simple next module logic here
+      console.log('Module completed!');
     }
   }, [lectures, currentLectureId, currentModuleId, currentProblemIndex, router]);
 
@@ -225,47 +222,12 @@ export function FocusedMasteryApp() {
     setIsDesktopSidebarOpen(prev => !prev);
   }, []);
 
-  // Celebration handlers
-  const handleCelebrationContinue = useCallback(() => {
-    setIsProgressing(true);
-    try {
-      if (showCelebration && showCelebration.nextPosition) {
-        const { lectureId, moduleId, problemIndex } = showCelebration.nextPosition;
-        setCurrentLectureId(lectureId);
-        setCurrentModuleId(moduleId);
-        setCurrentProblemIndex(problemIndex);
-        
-        const lecture = lectures.find(lectureItem => lectureItem.id === lectureId)!;
-        const module = lecture.modules.find(moduleItem => moduleItem.id === moduleId)!;
-        const problem = module.problems[problemIndex];
-        router.push(`/practice?problem=${problem.id}`, { scroll: false });
-      }
-      setShowCelebration(null);
-    } catch (error) {
-      console.error('Error in celebration continue:', error);
-    } finally {
-      setIsProgressing(false);
-    }
-  }, [lectures, showCelebration, router]);
-
-  const handleBackToStudyPlan = useCallback(() => {
-    setShowCelebration(null);
-    router.push('/study-plan');
-  }, [router]);
 
   // Memoized derived state
   const currentLecture = useMemo(() => lectures.find(lecture => lecture.id === currentLectureId), [lectures, currentLectureId]);
   const currentModule = useMemo(() => currentLecture?.modules.find(moduleItem => moduleItem.id === currentModuleId), [currentLecture, currentModuleId]);
   const currentProblem = useMemo(() => currentModule?.problems[currentProblemIndex], [currentModule, currentProblemIndex]);
   
-  // Calculate module progress
-  const moduleProgress = useMemo(() => {
-    if (!currentLectureId || !currentModuleId) return undefined;
-    const completedProblems = Object.keys(progressData.contentProgress).filter(
-      contentId => progressData.contentProgress[contentId].isCompleted
-    );
-    return getModuleProgress(currentLectureId, currentModuleId, completedProblems);
-  }, [currentLectureId, currentModuleId, progressData.contentProgress]);
 
   if (!isClient || !currentLecture || !currentModule || !currentProblem) {
     return (
@@ -293,59 +255,6 @@ export function FocusedMasteryApp() {
     );
   }
 
-  // Show celebration if needed
-  if (showCelebration) {
-    return (
-      <div className="flex flex-col h-screen font-sans">
-        <AppHeader 
-          lecture={currentLecture}
-          problem={currentProblem}
-          problemIndex={currentProblemIndex}
-          totalProblems={currentModule.problems.length}
-          onToggleDrawingMode={toggleDrawingMode}
-          isDrawingModeActive={isDrawingModeActive}
-          module={currentModule}
-          moduleProgress={moduleProgress}
-        />
-        <main className="flex-1 flex overflow-hidden">
-          <div className="flex-1 bg-background p-6 md:p-8 overflow-y-auto">
-            {showCelebration.type === 'module_complete' && showCelebration.completedInfo && (
-              <ModuleCelebration
-                moduleName={showCelebration.completedInfo.moduleName!}
-                moduleDescription={showCelebration.completedInfo.moduleDescription!}
-                problemsCompleted={showCelebration.completedInfo.problemsCompleted!}
-                totalProblems={showCelebration.completedInfo.totalProblems!}
-                nextModuleName={showCelebration.completedInfo.nextModuleName}
-                onContinue={handleCelebrationContinue}
-                onBackToStudyPlan={handleBackToStudyPlan}
-                isProgressing={isProgressing}
-              />
-            )}
-            {showCelebration.type === 'lecture_complete' && showCelebration.completedInfo && (
-              <LectureCelebration
-                lectureTitle={showCelebration.completedInfo.lectureTitle!}
-                modulesCompleted={showCelebration.completedInfo.modulesCompleted!}
-                totalModules={showCelebration.completedInfo.totalModules!}
-                totalProblemsCompleted={showCelebration.completedInfo.totalProblemsCompleted!}
-                nextLectureTitle={showCelebration.completedInfo.nextLectureTitle}
-                onContinue={handleCelebrationContinue}
-                onBackToStudyPlan={handleBackToStudyPlan}
-              />
-            )}
-            {showCelebration.type === 'curriculum_complete' && showCelebration.completedInfo && (
-              <CurriculumCelebration
-                totalProblems={showCelebration.completedInfo.totalProblems!}
-                totalModules={showCelebration.completedInfo.totalModules!}
-                totalLectures={showCelebration.completedInfo.totalLectures!}
-                totalTimeSpent={Math.round(progressData.overallStats.totalTimeSpent / 60000)} // Convert to minutes
-                onBackToStudyPlan={handleBackToStudyPlan}
-              />
-            )}
-          </div>
-        </main>
-      </div>
-    );
-  }
 
   const MobileSidebar = () => (
     <Sheet open={isMobileSidebarOpen} onOpenChange={setIsMobileSidebarOpen}>
@@ -373,17 +282,16 @@ export function FocusedMasteryApp() {
 
       <AppHeader 
         lecture={currentLecture}
-        problem={currentProblem}
         problemIndex={currentProblemIndex}
         totalProblems={currentModule.problems.length}
         onToggleDrawingMode={toggleDrawingMode}
         isDrawingModeActive={isDrawingModeActive}
-        module={currentModule}
-        moduleProgress={moduleProgress}
         isMobile={isMobile}
         onMobileSidebarToggle={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
         onDesktopSidebarToggle={toggleDesktopSidebar}
         isDesktopSidebarOpen={isDesktopSidebarOpen}
+        timeElapsed={timeElapsed}
+        isTimerActive={isTimerActive}
       />
       <main className={cn(
         "flex-1 flex overflow-hidden",
@@ -414,6 +322,10 @@ export function FocusedMasteryApp() {
             onNextProblem={handleNextProblem}
             isProgressing={isProgressing}
             isMobile={isMobile}
+            timeElapsed={timeElapsed}
+            setTimeElapsed={setTimeElapsed}
+            isTimerActive={isTimerActive}
+            setIsTimerActive={setIsTimerActive}
           />
       </main>
       
